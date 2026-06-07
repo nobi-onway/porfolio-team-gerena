@@ -80,9 +80,10 @@ function poseFor(role) {
    (chỉ giữ nét mực đen). Bay sang +x (mỏ phải). Khung ~36×16, tâm ở gốc (0,0). */
 function lacBird() {
   const w = 36, h = 36 * 284 / 650;   // giữ tỉ lệ ảnh
+  // image-rendering=optimizeQuality + style chống bilinear soft khi browser scale ảnh
   return `<image href="img/lac-bird.jpg" x="${(-w/2).toFixed(1)}" y="${(-h/2).toFixed(1)}"
     width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="xMidYMid meet"
-    filter="url(#lacKey)"/>`;
+    filter="url(#lacKey)" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"/>`;
 }
 
 function dongSonDrum() {
@@ -135,11 +136,15 @@ function dongSonDrum() {
       <defs>
         <!-- Biến ảnh chim (nền trắng) → CHỈ GIỮ nét mực, tô màu trống.
              B1: alpha = 1 - độ-sáng (đen→đục, trắng→trong).
-             B2: tô đè màu mực đồng (#1c1a17) qua phần đục đó. -->
+             B2: hard-threshold để mép chim SẮC NÉT (không bị fringe do JPG anti-alias).
+             B3: tô đè màu mực đồng (#1c1a17) qua phần đục đó. -->
         <filter id="lacKey" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
-          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 1" result="a"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 1" result="aRaw"/>
+          <feComponentTransfer in="aRaw" result="aSharp">
+            <feFuncA type="table" tableValues="0 0 0 0.85 1 1 1 1"/>
+          </feComponentTransfer>
           <feFlood flood-color="#1c1a17" result="ink"/>
-          <feComposite in="ink" in2="a" operator="in"/>
+          <feComposite in="ink" in2="aSharp" operator="in"/>
         </filter>
       </defs>
       <circle class="ds-line" cx="100" cy="100" r="97"/>
@@ -213,6 +218,37 @@ function loreHTML(lore, accent) {
   `;
 }
 
+/* ---- Cột Mốc Sự Nghiệp — dải ngang, hover tooltip + click mở modal ---- */
+function escAttr(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function milestonesHTML(milestones, memberIdx) {
+  if (!milestones || !milestones.length) return "";
+  const items = milestones.map((ms, i) => `
+    <li class="ms-item">
+      <button class="ms-dot js-ms-open" type="button"
+              data-member="${memberIdx}" data-milestone="${i}"
+              aria-label="${escAttr(ms.year + " — " + ms.event)}">
+        <span class="ms-dot__inner"></span>
+        <span class="ms-tooltip" role="tooltip">
+          <span class="ms-tooltip__year">${ms.year}</span>
+          <span class="ms-tooltip__event">${ms.event}</span>
+          <span class="ms-tooltip__hint">Nhấn để xem chi tiết</span>
+        </span>
+      </button>
+      <div class="ms-year font-display">${ms.year}</div>
+      <div class="ms-event">${ms.event}</div>
+    </li>
+  `).join("");
+  return `
+    ${sectionLabel("Cột Mốc")}
+    <div class="ms-strip">
+      <div class="ms-rail" aria-hidden="true"></div>
+      <ol class="ms-list">${items}</ol>
+    </div>
+  `;
+}
+
 /* ---- Dự án / Thành tựu ---- */
 function projectsHTML(projects) {
   return `
@@ -229,6 +265,237 @@ function projectsHTML(projects) {
         </li>
       `).join("")}
     </ul>
+  `;
+}
+
+/* =========================================================
+   LAYOUT v2 — "BỨC HỌA TAM ĐOẠN" (thử nghiệm cho member 0)
+   3 phần dọc: Chuyên Môn / Cột Mốc / Sản Phẩm (HERO).
+   Sản phẩm là trọng tâm — cover dạng tranh treo, chuyển trang
+   bằng số Hán 一二三.
+========================================================= */
+
+/* Số đếm chữ Hán (đến 10) — dùng cho pager sản phẩm */
+const HAN_NUMS = ["一","二","三","四","五","六","七","八","九","十"];
+
+/* Sinh "cover" SVG inline — bức tranh thủy mặc mini theo scene key.
+   Không cần file ảnh thật; cover hoà hợp với tone giấy & mực. */
+function coverSVG(sceneKey, title, accent) {
+  const W = 480, H = 300;
+  const ink = "rgba(28,26,23,";
+  let scene = "";
+  if (sceneKey === "scene:mountain") {
+    scene = `
+      <path d="M0 ${H} L 70 220 L 130 250 L 200 170 L 270 235 L 340 195 L 420 250 L ${W} 215 L ${W} ${H} Z"
+            fill="${ink}0.32)"/>
+      <path d="M0 ${H} L 90 250 L 160 270 L 240 230 L 320 265 L 410 245 L ${W} 270 L ${W} ${H} Z"
+            fill="${ink}0.55)"/>
+      <path d="M-20 110 q 60 -30 130 0 t 130 10 t 140 -10 t 150 5" stroke="${ink}0.18)" stroke-width="1.2" fill="none"/>
+      <path d="M-20 145 q 80 -20 160 -5 t 180 0 t 180 -10" stroke="${ink}0.12)" stroke-width="1" fill="none"/>
+    `;
+  } else if (sceneKey === "scene:river") {
+    scene = `
+      <path d="M-20 200 Q 120 170 240 210 T ${W+20} 200" stroke="${ink}0.45)" stroke-width="2" fill="none"/>
+      <path d="M-20 230 Q 140 200 260 240 T ${W+20} 230" stroke="${ink}0.28)" stroke-width="1.4" fill="none"/>
+      <path d="M-20 258 Q 130 230 250 268 T ${W+20} 258" stroke="${ink}0.18)" stroke-width="1.1" fill="none"/>
+      <path d="M40 200 L 40 158 M 44 200 L 44 168 M 48 200 L 48 162" stroke="${ink}0.55)" stroke-width="1.6" fill="none"/>
+      <path d="M${W-80} 200 L ${W-80} 162 M ${W-76} 200 L ${W-76} 170 M ${W-72} 200 L ${W-72} 158"
+            stroke="${ink}0.5)" stroke-width="1.6" fill="none"/>
+      <path d="M120 ${H} l -6 -20 l 12 0 z" fill="${ink}0.48)"/>
+    `;
+  } else if (sceneKey === "scene:bamboo") {
+    scene = `
+      <g stroke="${ink}0.55)" stroke-width="2.4" fill="none" stroke-linecap="round">
+        <path d="M70 ${H} L 80 30"/>
+        <path d="M70 80 L 80 80 M 70 140 L 80 140 M 70 200 L 80 200 M 70 250 L 80 250"/>
+        <path d="M82 60 Q 130 50 165 30" />
+        <path d="M82 130 Q 140 120 180 100" />
+        <path d="M82 195 Q 130 185 165 165" />
+      </g>
+      <g stroke="${ink}0.32)" stroke-width="2" fill="none" stroke-linecap="round">
+        <path d="M380 ${H} L 390 60"/>
+        <path d="M380 110 L 390 110 M 380 170 L 390 170 M 380 230 L 390 230"/>
+        <path d="M388 90 Q 350 80 320 65" />
+        <path d="M388 160 Q 340 150 305 130" />
+      </g>
+      <path d="M0 ${H-30} Q ${W/2} ${H-50} ${W} ${H-30}" stroke="${ink}0.15)" stroke-width="1" fill="none"/>
+    `;
+  } else {
+    scene = `<rect width="${W}" height="${H}" fill="${ink}0.08)"/>`;
+  }
+  return `
+    <svg class="prod-cover-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice"
+         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#f7f1e3"/>
+          <stop offset="100%" stop-color="#ebe1cb"/>
+        </linearGradient>
+        <radialGradient id="mistGrad" cx="50%" cy="35%" r="60%">
+          <stop offset="0%"  stop-color="rgba(255,255,255,0.55)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+      </defs>
+      <rect width="${W}" height="${H}" fill="url(#paperGrad)"/>
+      ${scene}
+      <rect width="${W}" height="${H}" fill="url(#mistGrad)"/>
+      <rect x="${W-44}" y="${H-44}" width="28" height="28" rx="2"
+            fill="${accent || "#b5362a"}" opacity="0.92"/>
+      <text x="${W-30}" y="${H-25}" text-anchor="middle"
+            font-family="'Cinzel', serif" font-weight="700"
+            font-size="14" fill="#f4efe4">印</text>
+    </svg>
+  `;
+}
+
+/* "Câu đối" — 2 cột dọc cho khối Chuyên Môn (craft) hoặc Chất Riêng (soul) */
+function coupletHTML(lore, accent) {
+  if (lore.kind === "soul") {
+    const rows = [
+      { k: "Dấu ấn", v: lore.signature || "" },
+      { k: "Nguồn cảm hứng", v: (lore.inspiration || []).join(" · ") },
+      { k: "Sắc thái", v: (lore.mood || []).join(" · ") },
+    ];
+    return `
+      <div class="couplet">
+        <div class="couplet__intro">${lore.intro}</div>
+        <div class="couplet__rows">
+          ${rows.map(r => `
+            <div class="couplet__row">
+              <span class="couplet__k">${r.k}</span>
+              <span class="couplet__sep">·</span>
+              <span class="couplet__v" style="--accent:${accent}">${r.v}</span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+  return `
+    <div class="couplet">
+      <div class="couplet__intro">${lore.intro}</div>
+      <div class="couplet__rows">
+        ${lore.focus.map(f => `
+          <div class="couplet__row">
+            <span class="couplet__k">${f.k}</span>
+            <span class="couplet__sep">·</span>
+            <span class="couplet__v">${f.v}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+/* SẢN PHẨM — 1 sản phẩm HERO + Hán pager. Slide chuyển bằng JS. */
+function productHeroHTML(p, idx, memberIdx, accent) {
+  const tags = (p.tags || []).map(t => `<span class="prod-tag">${t}</span>`).join("");
+  return `
+    <article class="prod-slide" data-prod-idx="${idx}" aria-hidden="${idx === 0 ? "false" : "true"}">
+      <div class="prod-frame">
+        ${coverSVG(p.cover || "", p.name, accent)}
+        <span class="prod-frame__corner tl"></span>
+        <span class="prod-frame__corner tr"></span>
+        <span class="prod-frame__corner bl"></span>
+        <span class="prod-frame__corner br"></span>
+      </div>
+      <div class="prod-info">
+        <header class="prod-info__head">
+          <h4 class="prod-info__title font-display">${p.name}</h4>
+          <div class="prod-info__meta">
+            <span class="prod-info__role">${p.role}</span>
+            <span class="prod-info__sep">·</span>
+            <span class="prod-info__year font-display">${p.year}</span>
+          </div>
+        </header>
+        ${p.contribution ? `<p class="prod-info__contrib">${p.contribution}</p>` : ""}
+        ${tags ? `<div class="prod-info__tags">${tags}</div>` : ""}
+        ${p.metric ? `<div class="prod-info__metric"><span class="prod-info__metric-seal">印</span>${p.metric}</div>` : ""}
+      </div>
+    </article>
+  `;
+}
+function productPagerHTML(total) {
+  let dots = "";
+  for (let i = 0; i < total; i++) {
+    dots += `<button type="button" class="prod-pager__dot ${i === 0 ? "is-active" : ""}"
+                     data-prod-go="${i}" aria-label="Sản phẩm ${i + 1}">
+               <span class="prod-pager__han font-display">${HAN_NUMS[i] || (i+1)}</span>
+             </button>`;
+  }
+  return `
+    <nav class="prod-pager" aria-label="Chuyển sản phẩm">
+      <button type="button" class="prod-pager__arrow" data-prod-prev aria-label="Sản phẩm trước">‹</button>
+      <div class="prod-pager__dots">${dots}</div>
+      <button type="button" class="prod-pager__arrow" data-prod-next aria-label="Sản phẩm kế">›</button>
+    </nav>
+  `;
+}
+
+/* Khối KINH NGHIỆM CÁ NHÂN — HERO (xưa là "Sản Phẩm") */
+function productsHeroHTML(projects, memberIdx, accent) {
+  if (!projects || !projects.length) return "";
+  const slides = projects.map((p, i) => productHeroHTML(p, i, memberIdx, accent)).join("");
+  return `
+    ${sectionLabel("Kinh Nghiệm Cá Nhân")}
+    <div class="prod-stage" data-member="${memberIdx}" data-prod-current="0">
+      <div class="prod-slides">${slides}</div>
+      ${productPagerHTML(projects.length)}
+    </div>
+  `;
+}
+
+/* Card layout v2 — dành cho member được "chốt mock" */
+function memberCardHTMLv2(m, i) {
+  return `
+    <div class="ghost-index absolute select-none text-[40vh] md:text-[55vh] right-[3vw] top-1/2 -translate-y-1/2 -z-10">
+      ${String(i + 1).padStart(2, "0")}
+    </div>
+
+    <div class="w-full h-full max-w-[1400px] mx-auto px-10 md:px-14 lg:px-20
+                grid grid-cols-1 md:grid-cols-[36%_1fr] gap-6 md:gap-10 lg:gap-14 items-center">
+
+      <!-- ===== NỬA TRÁI: avatar (dời sang phải so với v1) ===== -->
+      <div class="flex flex-col items-center md:items-start justify-center md:ml-[3%] lg:ml-[5%]">
+        <div class="reveal d1">
+          ${avatarHTML(m)}
+        </div>
+      </div>
+
+      <!-- ===== NỬA PHẢI: BỨC HỌA TAM ĐOẠN ===== -->
+      <div class="card-v2-right flex flex-col justify-center md:max-h-[88vh] ${m.lore.kind === "soul" ? "has-tools-rail" : ""}">
+        <span class="v2-seal" aria-hidden="true">印</span>
+        ${m.lore.kind === "soul" ? `
+          <!-- Cột công cụ overlay (chỉ Artist) — icon dọc, mép phải -->
+          <aside class="v2-tools-rail" aria-label="Công cụ thường dùng">
+            ${m.skills.map(skillTagHTML).join("")}
+          </aside>
+        ` : ""}
+
+        <!-- ĐOẠN 1 · Chuyên Môn / Chất Riêng -->
+        <section class="reveal d3 v2-sect v2-sect--lore">
+          ${sectionLabel(m.lore.title)}
+          ${coupletHTML(m.lore, m.accent)}
+        </section>
+
+        <!-- vệt mực loang phân cách -->
+        <div class="v2-divider" aria-hidden="true"></div>
+
+        <!-- ĐOẠN 2 · Cột Mốc -->
+        <section class="reveal d3b v2-sect v2-sect--milestones">
+          ${milestonesHTML(m.milestones, i)}
+        </section>
+
+        <!-- vệt mực loang phân cách -->
+        <div class="v2-divider" aria-hidden="true"></div>
+
+        <!-- ĐOẠN 3 · SẢN PHẨM (HERO) -->
+        <section class="reveal d4 v2-sect v2-sect--products">
+          ${productsHeroHTML(m.projects, i, m.accent)}
+        </section>
+
+      </div>
+    </div>
   `;
 }
 
@@ -250,11 +517,16 @@ function memberCardHTML(m, i) {
       </div>
 
       <!-- ===== NỬA PHẢI: các khối thông tin ===== -->
-      <div class="flex flex-col justify-center gap-5 md:gap-6 md:pr-4 md:max-h-[82vh] overflow-hidden">
+      <div class="flex flex-col justify-center gap-5 md:gap-6 md:pr-4 md:max-h-[88vh]">
 
         <!-- Khối theo role (craft / soul) -->
         <div class="reveal d3 info-block">
           ${loreHTML(m.lore, m.accent)}
+        </div>
+
+        <!-- Cột Mốc — dải ngang, KHÔNG đóng khung -->
+        <div class="reveal d3b ms-block">
+          ${milestonesHTML(m.milestones, i)}
         </div>
 
         <!-- Grid 2 cột: Dự án | Kỹ năng -->
@@ -277,23 +549,110 @@ function memberCardHTML(m, i) {
   `;
 }
 
+/* =========================================================
+   INTRO SLIDE — trang mở đầu giới thiệu team
+   Bố cục: PORTFOLIO (giữa, sau drum) + khung video to (đè giữa)
+   + các khung nhỏ moodboard xung quanh (sản phẩm + team).
+========================================================= */
+function introThumbHTML(scene, label, pos, rot) {
+  return `
+    <article class="intro-frame intro-frame--thumb intro-frame--${pos}" style="--rot:${rot}deg">
+      <div class="intro-frame__media">
+        ${coverSVG(scene, "", "#b5362a")}
+      </div>
+      <span class="prod-frame__corner tl"></span>
+      <span class="prod-frame__corner tr"></span>
+      <span class="prod-frame__corner bl"></span>
+      <span class="prod-frame__corner br"></span>
+      <div class="intro-frame__caption">${label}</div>
+    </article>
+  `;
+}
+function introCardHTML() {
+  return `
+    <div class="intro-card">
+      <h1 class="intro-portfolio" aria-hidden="true">Portfolio</h1>
+
+      <div class="intro-meta">
+        <span class="intro-meta__seal">印</span>
+        <span class="intro-meta__year font-display">2024</span>
+        <span class="intro-meta__sep">·</span>
+        <span class="intro-meta__brand">THIÊN DI STUDIO</span>
+      </div>
+
+      <div class="intro-frames">
+        <!-- KHUNG VIDEO LỚN — đè lên Portfolio + drum -->
+        <article class="intro-frame intro-frame--video">
+          <div class="intro-frame__media intro-frame__media--video">
+            <div class="intro-video-bg"></div>
+            <button type="button" class="intro-play" aria-label="Phát showreel">
+              <svg viewBox="0 0 36 36" aria-hidden="true">
+                <polygon points="13,9 28,18 13,27" fill="currentColor"/>
+              </svg>
+            </button>
+            <div class="intro-frame__overlay">
+              <div class="intro-frame__title font-display">Team Showreel</div>
+              <div class="intro-frame__sub">Highlight 2024 · 02:18</div>
+            </div>
+          </div>
+          <span class="prod-frame__corner tl"></span>
+          <span class="prod-frame__corner tr"></span>
+          <span class="prod-frame__corner bl"></span>
+          <span class="prod-frame__corner br"></span>
+          <div class="intro-frame__caption">SHOWREEL</div>
+        </article>
+
+        <!-- KHUNG NHỎ — sản phẩm + team (moodboard scatter) -->
+        ${introThumbHTML("scene:mountain", "Sản Phẩm I", "p1", -4)}
+        ${introThumbHTML("scene:bamboo",   "Team Off-site", "p2", 3)}
+        ${introThumbHTML("scene:river",    "Sản Phẩm II", "p3", -2)}
+        ${introThumbHTML("scene:bamboo",   "Sản Phẩm III", "p4", 4)}
+        ${introThumbHTML("scene:mountain", "Sự Kiện 2023", "p5", 2)}
+        ${introThumbHTML("scene:river",    "Sản Phẩm IV", "p6", -3)}
+      </div>
+
+      <p class="intro-tagline">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor —
+        team game studio dệt cảm hứng Việt vào từng dự án.
+      </p>
+    </div>
+  `;
+}
+
 /* ---- Dựng track chứa toàn bộ card (xếp dọc, morph trượt liền) + nav dots ---- */
 function renderMembers(stage, navDots, onDotClick) {
   const track = document.createElement("div");
   track.id = "cardTrack";
 
+  // SLIDE 0 — INTRO (giới thiệu team, phải nằm trên cùng)
+  const intro = document.createElement("article");
+  intro.className = "member-card member-card--intro";
+  intro.dataset.index = 0;
+  intro.innerHTML = introCardHTML();
+  track.appendChild(intro);
+
+  const introDot = document.createElement("button");
+  introDot.className = "nav-dot nav-dot--intro";
+  introDot.dataset.name = "Mở Đầu";
+  introDot.setAttribute("aria-label", "Trang mở đầu");
+  introDot.addEventListener("click", () => onDotClick(0));
+  navDots.appendChild(introDot);
+
+  // SLIDE 1..N — các thành viên (memberIdx = i; slidePos = i+1)
   MEMBERS.forEach((m, i) => {
     const card = document.createElement("article");
     card.className = "member-card";
-    card.dataset.index = i;
-    card.innerHTML = memberCardHTML(m, i);
+    card.dataset.index = i + 1;
+    // Layout v2 ("Bức Họa Tam Đoạn") áp dụng cho toàn bộ thành viên.
+    // Artist (lore.kind === "soul") có thêm cột Công Cụ overlay.
+    card.innerHTML = memberCardHTMLv2(m, i);
     track.appendChild(card);
 
     const dot = document.createElement("button");
     dot.className = "nav-dot";
     dot.dataset.name = m.name;
     dot.setAttribute("aria-label", "Xem " + m.name);
-    dot.addEventListener("click", () => onDotClick(i));
+    dot.addEventListener("click", () => onDotClick(i + 1));
     navDots.appendChild(dot);
   });
 

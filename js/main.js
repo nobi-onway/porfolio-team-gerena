@@ -18,14 +18,13 @@
   // Chia đều cho (n-1) bước slide → slide cuối chạm đáy tranh.
   let bgTravel = 0;   // px ảnh phải dịch giữa slide 0 và slide cuối
   function measureScene() {
-    const segs = MEMBERS.length;
     const imgH = sceneImg.getBoundingClientRect().height;   // cao thật sau khi fit rộng
     const viewH = window.innerHeight;
     bgTravel = Math.max(0, imgH - viewH);
-    if (segs > 1) applyBgShift(current);   // đặt lại vị trí theo slide hiện tại
+    if (typeof current !== "undefined") applyBgShift(current);   // đặt lại vị trí theo slide hiện tại
   }
   function applyBgShift(idx) {
-    const segs = MEMBERS.length;
+    const segs = (typeof SLIDES_COUNT === "number" && SLIDES_COUNT) || 1;
     const t = segs > 1 ? idx / (segs - 1) : 0;
     sceneImg.style.setProperty("--bg-shift", (-bgTravel * t).toFixed(1) + "px");
   }
@@ -48,8 +47,12 @@
   const cardTrack = document.getElementById("cardTrack");
   const cards = [...cardTrack.querySelectorAll(".member-card")];
 
+  // Tổng số slide = intro + thành viên. Dùng SLIDES_COUNT thay cho MEMBERS.length
+  // ở mọi chỗ liên quan đến điều hướng (slide index 0 = intro, 1..N = members).
+  const SLIDES_COUNT = cards.length;
+
   document.getElementById("totalIdx").textContent =
-    String(MEMBERS.length).padStart(2, "0");
+    String(SLIDES_COUNT).padStart(2, "0");
 
   /* =========================================================
      ĐIỀU HƯỚNG + TRANSITION (MORPH: dịch track)
@@ -80,14 +83,20 @@
     });
   }
   function setHeaderMember(idx) {
-    const m = MEMBERS[idx];
     clearTimeout(switchTimer);
     memberName.classList.add("is-switching");        // fade out tên cũ
     memberRole.style.opacity = "0";
     switchTimer = setTimeout(() => {
-      memberRole.textContent = m.roleVi.toUpperCase();
+      if (idx === 0) {
+        // Slide intro: header hiện tên team thay vì 1 thành viên
+        memberRole.textContent = "TEAM PORTFOLIO";
+        typeName("Thiên Di Studio");
+      } else {
+        const m = MEMBERS[idx - 1];                  // members shift +1 do intro chiếm idx 0
+        memberRole.textContent = m.roleVi.toUpperCase();
+        typeName(m.name);
+      }
       memberRole.style.opacity = "";
-      typeName(m.name);                              // viết tên mới ra
     }, 360);                                         // khớp transition fade-out 0.35s
   }
 
@@ -102,12 +111,12 @@
     setHeaderMember(current);              // tên + vai trò lên header
     dots.forEach((d, i) => d.classList.toggle("active", i === current));
     curIdx.textContent = String(current + 1).padStart(2, "0");
-    progressBar.style.height = ((current + 1) / MEMBERS.length) * 100 + "%";
+    progressBar.style.height = ((current + 1) / SLIDES_COUNT) * 100 + "%";
   }
 
   function goTo(idx) {
     if (animating || idx === current) return;
-    idx = Math.max(0, Math.min(MEMBERS.length - 1, idx));
+    idx = Math.max(0, Math.min(SLIDES_COUNT - 1, idx));
     if (idx === current) return;
     const prev = current;
     current = idx;
@@ -134,11 +143,96 @@
   function next() { goTo(current + 1); }
   function prev() { goTo(current - 1); }
 
-  /* ---- Khởi tạo (track đã ở vị trí 0) ---- */
+  /* =========================================================
+     MODAL CỘT MỐC — click triện trên dải ngang để xem chi tiết
+  ========================================================= */
+  const msModal = document.getElementById("msModal");
+  const msYearEl = document.getElementById("msModalYear");
+  const msTitleEl = document.getElementById("msModalTitle");
+  const msDetailEl = document.getElementById("msModalDetail");
+  let lastFocusedBeforeModal = null;
+  function modalIsOpen() {
+    return msModal.classList.contains("is-open");
+  }
+  function openMilestoneModal(memberIdx, milestoneIdx, triggerEl) {
+    const m = MEMBERS[memberIdx];
+    if (!m || !m.milestones || !m.milestones[milestoneIdx]) return;
+    const ms = m.milestones[milestoneIdx];
+    msYearEl.textContent = ms.year;
+    msTitleEl.textContent = ms.event;
+    msDetailEl.textContent = ms.detail || "";
+    lastFocusedBeforeModal = triggerEl || document.activeElement;
+    msModal.classList.add("is-open");
+    msModal.setAttribute("aria-hidden", "false");
+    // chuyển focus vào nút đóng để hỗ trợ bàn phím / screen reader
+    requestAnimationFrame(() => {
+      const closeBtn = msModal.querySelector(".ms-modal__close");
+      if (closeBtn) closeBtn.focus();
+    });
+  }
+  function closeMilestoneModal() {
+    if (!modalIsOpen()) return;
+    msModal.classList.remove("is-open");
+    msModal.setAttribute("aria-hidden", "true");
+    if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === "function") {
+      lastFocusedBeforeModal.focus();
+    }
+    lastFocusedBeforeModal = null;
+  }
+  // Delegated click — nút .js-ms-open có thể nằm trong bất kỳ card nào
+  document.addEventListener("click", (e) => {
+    const opener = e.target.closest(".js-ms-open");
+    if (opener) {
+      e.preventDefault();
+      const mi = Number(opener.dataset.member);
+      const ms = Number(opener.dataset.milestone);
+      openMilestoneModal(mi, ms, opener);
+      return;
+    }
+    if (e.target.closest("[data-ms-close]")) {
+      e.preventDefault();
+      closeMilestoneModal();
+    }
+    // ===== Pager SẢN PHẨM (layout v2) =====
+    const stage = e.target.closest(".prod-stage");
+    if (!stage) return;
+    const goBtn = e.target.closest("[data-prod-go]");
+    const prevBtn = e.target.closest("[data-prod-prev]");
+    const nextBtn = e.target.closest("[data-prod-next]");
+    if (!goBtn && !prevBtn && !nextBtn) return;
+    e.preventDefault();
+    const slides = [...stage.querySelectorAll(".prod-slide")];
+    const dots = [...stage.querySelectorAll(".prod-pager__dot")];
+    const total = slides.length;
+    if (total === 0) return;
+    let next = Number(stage.dataset.prodCurrent || 0);
+    if (goBtn) next = Number(goBtn.dataset.prodGo);
+    if (prevBtn) next = (next - 1 + total) % total;
+    if (nextBtn) next = (next + 1) % total;
+    setActiveProduct(stage, slides, dots, next);
+  });
+  function setActiveProduct(stage, slides, dots, idx) {
+    stage.dataset.prodCurrent = String(idx);
+    slides.forEach((s, i) => {
+      const on = i === idx;
+      s.setAttribute("aria-hidden", on ? "false" : "true");
+      s.classList.toggle("is-active", on);
+    });
+    dots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
+    // hiệu ứng "quét bút lông": flash class ngắn rồi remove
+    stage.classList.remove("is-switching");
+    void stage.offsetWidth;
+    stage.classList.add("is-switching");
+    setTimeout(() => stage.classList.remove("is-switching"), 420);
+  }
+
+  /* ---- Khởi tạo (track đã ở vị trí 0 = INTRO) ---- */
   function init() {
     dots[0].classList.add("active");
-    memberRole.textContent = MEMBERS[0].roleVi.toUpperCase();
-    typeName(MEMBERS[0].name);                            // tên đầu được "viết ra"
+    memberRole.textContent = "TEAM PORTFOLIO";
+    typeName("Thiên Di Studio");                          // header intro
+    curIdx.textContent = "01";
+    progressBar.style.height = (1 / SLIDES_COUNT) * 100 + "%";
     document.getElementById("curtain").classList.add("gone");
     // kích hoạt card đầu sau khi màn mở → chạy animation xuất hiện lần đầu
     requestAnimationFrame(() => cards[0].classList.add("active"));
@@ -149,6 +243,8 @@
   ========================================================= */
   let wheelLock = false;
   window.addEventListener("wheel", (e) => {
+    // Modal mở → cho phép cuộn nội dung modal, không chặn, không chuyển slide
+    if (modalIsOpen()) return;
     e.preventDefault();
     if (wheelLock || animating) return;
     if (Math.abs(e.deltaY) < 12) return;
@@ -160,11 +256,16 @@
   // Touch
   let touchStartY = null;
   window.addEventListener("touchstart", (e) => {
+    if (modalIsOpen()) return;
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
-  window.addEventListener("touchmove", (e) => { e.preventDefault(); }, { passive: false });
+  window.addEventListener("touchmove", (e) => {
+    if (modalIsOpen()) return;          // modal mở → cho scroll bên trong
+    e.preventDefault();
+  }, { passive: false });
   window.addEventListener("touchend", (e) => {
     if (touchStartY === null) return;
+    if (modalIsOpen()) { touchStartY = null; return; }
     const dy = touchStartY - e.changedTouches[0].clientY;
     if (Math.abs(dy) > 50) dy > 0 ? next() : prev();
     touchStartY = null;
@@ -172,10 +273,14 @@
 
   // Keyboard
   window.addEventListener("keydown", (e) => {
+    if (modalIsOpen()) {
+      if (e.key === "Escape") { e.preventDefault(); closeMilestoneModal(); }
+      return;                            // các phím điều hướng bị vô hiệu khi modal mở
+    }
     if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); next(); }
     if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); prev(); }
     if (e.key === "Home") goTo(0);
-    if (e.key === "End") goTo(MEMBERS.length - 1);
+    if (e.key === "End") goTo(SLIDES_COUNT - 1);
   });
 
   /* =========================================================

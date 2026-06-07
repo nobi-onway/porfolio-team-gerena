@@ -5,22 +5,30 @@
 ========================================================= */
 
 :root {
-  --ink: #1c1a17;          /* mực đen ngả nâu */
-  --ink-soft: #4a4640;     /* mực nhạt */
-  --paper: #f4efe4;        /* giấy dó */
+  --ink: #1c1a17;
+  /* mực đen ngả nâu */
+  --ink-soft: #4a4640;
+  /* mực nhạt */
+  --paper: #f4efe4;
+  /* giấy dó */
   --paper-2: #efe8d8;
-  --seal: #b5362a;         /* đỏ son (ấn triện) */
+  --seal: #b5362a;
+  /* đỏ son (ấn triện) */
   --seal-dark: #8f2a20;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;            /* KHÓA scroll x & y */
+  overflow: hidden;
+  /* KHÓA scroll x & y */
   background: var(--paper);
   color: var(--ink);
   font-family: 'Be Vietnam Pro', sans-serif;
@@ -30,10 +38,11 @@ html, body {
 /* ===== Nền giấy dó ===== */
 .bg-paper {
   background:
-    radial-gradient(ellipse at 18% 12%, rgba(181,54,42,0.05), transparent 45%),
-    radial-gradient(ellipse at 85% 88%, rgba(28,26,23,0.05), transparent 50%),
+    radial-gradient(ellipse at 18% 12%, rgba(181, 54, 42, 0.05), transparent 45%),
+    radial-gradient(ellipse at 85% 88%, rgba(28, 26, 23, 0.05), transparent 50%),
     #f4efe4;
 }
+
 /* Vân giấy nổi nhẹ (multiply để ăn vào nền sáng) */
 .bg-grain::before {
   content: "";
@@ -52,7 +61,7 @@ html, body {
   z-index: 20;
   width: 56px;
   height: 56px;
-  border-color: rgba(28,26,23,0.45);
+  border-color: rgba(28, 26, 23, 0.45);
   border-width: 1px;
   opacity: 0.8;
 }
@@ -62,7 +71,8 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px; height: 18px;
+  width: 18px;
+  height: 18px;
   font-family: 'Cinzel', serif;
   font-size: 11px;
   color: var(--paper);
@@ -71,8 +81,13 @@ html, body {
 }
 
 /* ===== Tiện ích màu ===== */
-.text-ink { color: var(--ink); }
-.text-seal { color: var(--seal); }
+.text-ink {
+  color: var(--ink);
+}
+
+.text-seal {
+  color: var(--seal);
+}
 
 /* =========================================================
    VẾT MỰC LOANG TĨNH (nền)
@@ -85,15 +100,21 @@ html, body {
   opacity: 0.45;
   pointer-events: none;
 }
+
 .ink-wash-1 {
-  top: -130px; left: -110px;
-  width: 480px; height: 420px;
-  background: radial-gradient(circle at 40% 40%, rgba(28,26,23,0.20), transparent 65%);
+  top: -130px;
+  left: -110px;
+  width: 480px;
+  height: 420px;
+  background: radial-gradient(circle at 40% 40%, rgba(28, 26, 23, 0.20), transparent 65%);
 }
+
 .ink-wash-2 {
-  bottom: -150px; right: -90px;
-  width: 520px; height: 460px;
-  background: radial-gradient(circle at 60% 60%, rgba(181,54,42,0.12), transparent 65%);
+  bottom: -150px;
+  right: -90px;
+  width: 520px;
+  height: 460px;
+  background: radial-gradient(circle at 60% 60%, rgba(181, 54, 42, 0.12), transparent 65%);
 }
 
 /* =========================================================
@@ -103,7 +124,8 @@ html, body {
 ========================================================= */
 #sceneScroll {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   /* height set inline theo số đoạn */
   transform: translateY(0);
@@ -120,42 +142,54 @@ html, body {
    dán đáy màn (sticky-like), rồi tự cuộn ẢNH bên trong wrap. */
 .scene-longwrap {
   position: absolute;
-  top: 0; right: 0;
-  width: 60vw;                     /* vùng phải dành cho tranh */
+  top: 0;
+  right: 0;
+  width: 60vw;
+  /* vùng phải dành cho tranh */
   height: 100vh;
   overflow: hidden;
   pointer-events: none;
 }
+
 .scene-long {
   position: absolute;
-  top: 0; right: 0;                /* neo mép phải */
-  width: 100%;                     /* khớp chiều rộng vùng phải */
-  height: auto;                    /* cao theo tỉ lệ ảnh (không méo) */
+  top: 0;
+  right: 0;
+  /* neo mép phải */
+  width: 100%;
+  /* khớp chiều rộng vùng phải */
+  height: auto;
+  /* cao theo tỉ lệ ảnh (không méo) */
   display: block;
-  transform: translateY(var(--bg-shift, 0px));   /* JS cuộn ảnh dọc tại đây */
+  transform: translateY(var(--bg-shift, 0px));
+  /* JS cuộn ảnh dọc tại đây */
   transition: transform 1.25s cubic-bezier(0.7, 0, 0.2, 1);
   will-change: transform;
   filter: grayscale(0.12) contrast(0.96) brightness(1.04);
   opacity: 0.92;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 26%, rgba(0,0,0,1) 100%);
-          mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 26%, rgba(0,0,0,1) 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 26%, rgba(0, 0, 0, 1) 100%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 26%, rgba(0, 0, 0, 1) 100%);
 }
 
 /* màng giấy dó phủ lên ảnh: làm dịu, thống nhất tông; đậm bên trái (dưới trống) */
 .scene-veil {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   pointer-events: none;
 }
+
 .scene-veil--long {
   background:
-    linear-gradient(to right, #f4efe4 20%, rgba(244,239,228,0.25) 46%, rgba(244,239,228,0) 70%),
-    radial-gradient(140% 60% at 75% 50%, rgba(244,239,228,0) 45%, rgba(244,239,228,0.4) 100%);
+    linear-gradient(to right, #f4efe4 20%, rgba(244, 239, 228, 0.25) 46%, rgba(244, 239, 228, 0) 70%),
+    radial-gradient(140% 60% at 75% 50%, rgba(244, 239, 228, 0) 45%, rgba(244, 239, 228, 0.4) 100%);
 }
 
 /* lớp hiệu ứng SVG (nếu dùng) chồng lên ảnh */
 .seg-fx {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
@@ -164,32 +198,86 @@ html, body {
    vector-effect giữ độ dày nét đều dù SVG bị kéo (preserveAspectRatio=none). */
 .ink-stroke {
   fill: none;
-  stroke: rgba(38, 48, 58, 0.52);   /* #26303a pha chàm */
+  stroke: rgba(38, 48, 58, 0.52);
+  /* #26303a pha chàm */
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.ink-stroke.faint { stroke: rgba(46, 58, 70, 0.24); stroke-width: 1.8; }
-.ink-stroke.bold  { stroke: rgba(30, 40, 50, 0.7);  stroke-width: 2.8; }
-.ink-fill-soft { fill: rgba(40, 52, 64, 0.055); stroke: none; }
-.seal-fill { fill: var(--seal); stroke: none; }
+
+.ink-stroke.faint {
+  stroke: rgba(46, 58, 70, 0.24);
+  stroke-width: 1.8;
+}
+
+.ink-stroke.bold {
+  stroke: rgba(30, 40, 50, 0.7);
+  stroke-width: 2.8;
+}
+
+.ink-fill-soft {
+  fill: rgba(40, 52, 64, 0.055);
+  stroke: none;
+}
+
+.seal-fill {
+  fill: var(--seal);
+  stroke: none;
+}
 
 /* Mảng tô "wash" thủy mặc — KHỐI mực gradient + mép loang */
-.ink-wash       { stroke: none; }
-.ink-wash.w1    { fill: url(#washInk1); }
-.ink-wash.w2    { fill: url(#washInk2); }
-.ink-wash.w3    { fill: url(#washFaint); }
-.ink-top        { fill: url(#washTop); stroke: none; }   /* đỉnh sáng */
+.ink-wash {
+  stroke: none;
+}
+
+.ink-wash.w1 {
+  fill: url(#washInk1);
+}
+
+.ink-wash.w2 {
+  fill: url(#washInk2);
+}
+
+.ink-wash.w3 {
+  fill: url(#washFaint);
+}
+
+.ink-top {
+  fill: url(#washTop);
+  stroke: none;
+}
+
+/* đỉnh sáng */
 /* mép mực loang (turbulence) — gọi qua filter, áp cho mảng wash & nét nhấn */
-.bleed          { filter: url(#inkBleed); }
-.bleed-soft     { filter: url(#inkBleedSoft); }
-.far-haze       { filter: url(#farHaze); }               /* vật xa: blur tầng không khí */
-.dry            { filter: url(#dryBrush); }              /* vệt bút khô */
+.bleed {
+  filter: url(#inkBleed);
+}
+
+.bleed-soft {
+  filter: url(#inkBleedSoft);
+}
+
+.far-haze {
+  filter: url(#farHaze);
+}
+
+/* vật xa: blur tầng không khí */
+.dry {
+  filter: url(#dryBrush);
+}
+
+/* vệt bút khô */
 
 /* Nét bút lông tô-fill (hình nêm) — đậm ở thân, thon ở đuôi */
-.brush-fill     { fill: rgba(30,40,50,0.62); stroke: none; }
-.brush-fill.soft{ fill: rgba(38,48,58,0.34); }
+.brush-fill {
+  fill: rgba(30, 40, 50, 0.62);
+  stroke: none;
+}
+
+.brush-fill.soft {
+  fill: rgba(38, 48, 58, 0.34);
+}
 
 /* ---- Draw-on: nét được "vẽ ra" khi tải tranh ---- */
 .draw {
@@ -197,40 +285,132 @@ html, body {
   stroke-dashoffset: var(--len, 1200);
   animation: drawIn 2.6s ease forwards;
 }
-@keyframes drawIn { to { stroke-dashoffset: 0; } }
+
+@keyframes drawIn {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 
 /* ---- Trôi nổi nhẹ (parallax/float) cho vật trang trí ---- */
-.float-slow { animation: floatY 9s ease-in-out infinite; }
-.float-mid  { animation: floatY 6.5s ease-in-out infinite; }
-.float-x    { animation: floatX 14s ease-in-out infinite; }
-@keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-@keyframes floatX { 0%,100% { transform: translateX(0); } 50% { transform: translateX(22px); } }
+.float-slow {
+  animation: floatY 9s ease-in-out infinite;
+}
+
+.float-mid {
+  animation: floatY 6.5s ease-in-out infinite;
+}
+
+.float-x {
+  animation: floatX 14s ease-in-out infinite;
+}
+
+@keyframes floatY {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes floatX {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(22px);
+  }
+}
 
 /* ---- SỐNG ĐỘNG: cảnh vật "thở" ---- */
 /* Hạc vỗ cánh chậm (scale dọc nhẹ quanh thân) */
-.flap { transform-box: fill-box; transform-origin: 50% 60%; animation: flap 3.4s ease-in-out infinite; }
-@keyframes flap { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.82) translateY(-2px); } }
+.flap {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  animation: flap 3.4s ease-in-out infinite;
+}
+
+@keyframes flap {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.82) translateY(-2px);
+  }
+}
 
 /* Sương trôi ngang chậm, mờ dần hai đầu */
-.mist { animation: mistDrift 22s ease-in-out infinite; }
+.mist {
+  animation: mistDrift 22s ease-in-out infinite;
+}
+
 @keyframes mistDrift {
-  0%,100% { transform: translateX(0);   opacity: .5; }
-  50%     { transform: translateX(46px); opacity: .8; }
+
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: .5;
+  }
+
+  50% {
+    transform: translateX(46px);
+    opacity: .8;
+  }
 }
 
 /* Gợn nước lăn tăn (dịch ngang nhỏ, đổi nhịp) */
-.ripple-go { animation: rippleGo 6s ease-in-out infinite; }
-@keyframes rippleGo { 0%,100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+.ripple-go {
+  animation: rippleGo 6s ease-in-out infinite;
+}
+
+@keyframes rippleGo {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(10px);
+  }
+}
 
 /* Cánh đào rơi — xoay + bay xuống (đặt trên .petal-fall, mỗi cái lệch pha) */
-.petal-fall { transform-box: fill-box; transform-origin: center;
+.petal-fall {
+  transform-box: fill-box;
+  transform-origin: center;
   animation: petalFall var(--pf-dur, 9s) linear infinite;
-  animation-delay: var(--pf-delay, 0s); }
+  animation-delay: var(--pf-delay, 0s);
+}
+
 @keyframes petalFall {
-  0%   { transform: translate(0,0) rotate(0deg);            opacity: 0; }
-  10%  { opacity: .8; }
-  90%  { opacity: .8; }
-  100% { transform: translate(var(--pf-dx,-30px), var(--pf-dy,120px)) rotate(var(--pf-rot,300deg)); opacity: 0; }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: .8;
+  }
+
+  90% {
+    opacity: .8;
+  }
+
+  100% {
+    transform: translate(var(--pf-dx, -30px), var(--pf-dy, 120px)) rotate(var(--pf-rot, 300deg));
+    opacity: 0;
+  }
 }
 
 /* =========================================================
@@ -238,10 +418,14 @@ html, body {
    Tất cả card xếp dọc trong #cardTrack; khi chuyển, dịch cả track
    translateY(-current×100vh). KHÔNG fade — chỉ trượt liên tục.
 ========================================================= */
-#stage { overflow: hidden; }
+#stage {
+  overflow: hidden;
+}
+
 #cardTrack {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   /* chiều cao = số card × 100vh (tự tính qua các .member-card height:100vh) */
   transform: translateY(0);
@@ -249,6 +433,7 @@ html, body {
   transition: transform 1.25s cubic-bezier(0.7, 0, 0.2, 1);
   will-change: transform;
 }
+
 .member-card {
   position: relative;
   width: 100%;
@@ -271,19 +456,44 @@ html, body {
     transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
     filter 0.7s ease;
 }
+
 .member-card.active .reveal {
   opacity: 1;
   transform: none;
   filter: none;
 }
+
 /* Stagger: avatar → tên/role → 3 khối thông tin, chỉ tính từ khi card active */
-.member-card.active .reveal.d1 { transition-delay: 0.10s; }
-.member-card.active .reveal.d2 { transition-delay: 0.26s; }
-.member-card.active .reveal.d3 { transition-delay: 0.42s; }
-.member-card.active .reveal.d4 { transition-delay: 0.56s; }
-.member-card.active .reveal.d5 { transition-delay: 0.70s; }
+.member-card.active .reveal.d1 {
+  transition-delay: 0.10s;
+}
+
+.member-card.active .reveal.d2 {
+  transition-delay: 0.26s;
+}
+
+.member-card.active .reveal.d3 {
+  transition-delay: 0.42s;
+}
+
+.member-card.active .reveal.d3b {
+  transition-delay: 0.50s;
+}
+
+.member-card.active .reveal.d4 {
+  transition-delay: 0.58s;
+}
+
+.member-card.active .reveal.d4b {
+  transition-delay: 0.66s;
+}
+
+.member-card.active .reveal.d5 {
+  transition-delay: 0.72s;
+}
 
 @media (prefers-reduced-motion: reduce) {
+
   .member-card .reveal,
   .member-card.active .reveal {
     transition: none;
@@ -298,7 +508,10 @@ html, body {
    Nửa trống (cung 1/2) xòe sang phải, ôm lấy avatar.
    Xoay +1 góc cố định mỗi lần transition (JS set --drum-rot).
 ========================================================= */
-#drumLayer { z-index: 5; }
+#drumLayer {
+  z-index: 5;
+}
+
 .dongson-drum {
   position: absolute;
   top: 50%;
@@ -312,15 +525,27 @@ html, body {
   opacity: 0.4;
   will-change: transform;
 }
+
 .dongson-drum .ds-line {
   fill: none;
-  stroke: rgba(28,26,23,0.5);
+  stroke: rgba(28, 26, 23, 0.5);
   stroke-width: 1.1;
   vector-effect: non-scaling-stroke;
 }
-.dongson-drum .ds-line.faint { stroke: rgba(28,26,23,0.26); }
-.dongson-drum .ds-fill { fill: rgba(28,26,23,0.55); stroke: none; }
-.dongson-drum .ds-dot  { fill: rgba(28,26,23,0.42); stroke: none; }
+
+.dongson-drum .ds-line.faint {
+  stroke: rgba(28, 26, 23, 0.26);
+}
+
+.dongson-drum .ds-fill {
+  fill: rgba(28, 26, 23, 0.55);
+  stroke: none;
+}
+
+.dongson-drum .ds-dot {
+  fill: rgba(28, 26, 23, 0.42);
+  stroke: none;
+}
 
 /* =========================================================
    AVATAR — khung nét đứt mực + pose nét mực + dấu triện
@@ -331,15 +556,15 @@ html, body {
   z-index: 1;
   max-height: 50vh;
   border-radius: 10px;
-  border: 2px dashed rgba(28,26,23,0.4);
+  border: 2px dashed rgba(28, 26, 23, 0.4);
   background:
     repeating-linear-gradient(45deg,
-      rgba(28,26,23,0.025) 0px, rgba(28,26,23,0.025) 10px,
+      rgba(28, 26, 23, 0.025) 0px, rgba(28, 26, 23, 0.025) 10px,
       transparent 10px, transparent 20px),
-    radial-gradient(circle at 50% 30%, rgba(181,54,42,0.05), transparent 70%),
-    rgba(244,239,228,0.78);
+    radial-gradient(circle at 50% 30%, rgba(181, 54, 42, 0.05), transparent 70%),
+    rgba(244, 239, 228, 0.78);
   backdrop-filter: blur(2px);
-  box-shadow: 0 10px 45px rgba(28,26,23,0.16), inset 0 0 30px rgba(255,255,255,0.45);
+  box-shadow: 0 10px 45px rgba(28, 26, 23, 0.16), inset 0 0 30px rgba(255, 255, 255, 0.45);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
@@ -350,53 +575,72 @@ html, body {
   content: "";
   position: absolute;
   inset: 7px;
-  border: 1px dashed rgba(28,26,23,0.18);
+  border: 1px dashed rgba(28, 26, 23, 0.18);
   border-radius: 6px;
   pointer-events: none;
 }
+
 /* Con dấu triện đỏ góc dưới-phải */
 .avatar-frame::after {
   content: "印";
   position: absolute;
-  right: 10px; bottom: 10px;
-  width: 30px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
+  right: 10px;
+  bottom: 10px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Cinzel', serif;
   font-size: 15px;
   color: var(--paper);
   background: var(--seal);
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(181,54,42,0.4);
+  box-shadow: 0 2px 8px rgba(181, 54, 42, 0.4);
   opacity: 0.92;
 }
+
 .avatar-frame .frame-label {
   position: absolute;
-  top: 10px; left: 50%;
+  top: 10px;
+  left: 50%;
   transform: translateX(-50%);
   font-size: 9px;
   letter-spacing: 0.25em;
-  color: rgba(28,26,23,0.45);
+  color: rgba(28, 26, 23, 0.45);
   font-family: 'Be Vietnam Pro', sans-serif;
   white-space: nowrap;
 }
-.pose-svg { width: 78%; height: 88%; display: block; }
+
+.pose-svg {
+  width: 78%;
+  height: 88%;
+  display: block;
+}
+
 .pose-svg path,
 .pose-svg circle,
 .pose-svg line,
 .pose-svg polyline {
   fill: none;
-  stroke: rgba(28,26,23,0.7);
+  stroke: rgba(28, 26, 23, 0.7);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 5 5;
 }
+
 .pose-svg path,
 .pose-svg circle,
 .pose-svg polyline {
   animation: dashflow 18s linear infinite;
 }
-@keyframes dashflow { to { stroke-dashoffset: -200; } }
+
+@keyframes dashflow {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
 
 /* =========================================================
    CHỮ / NHÃN
@@ -404,44 +648,75 @@ html, body {
 .name-ink {
   color: var(--ink);
 }
-.role-badge { letter-spacing: 0.35em; }
+
+.role-badge {
+  letter-spacing: 0.35em;
+}
 
 /* ===== Cụm TÊN trên header — điểm nhấn ===== */
-.member-name-wrap { position: relative; }
+.member-name-wrap {
+  position: relative;
+}
 
 /* tên: font serif khắc bia (Cormorant Garamond) — có dấu tiếng Việt,
    giữ chất thư pháp/La Mã giống Cinzel; thêm chiều sâu mực */
 #memberName {
   font-family: 'Lobster', cursive;
-  font-weight: 400;           /* Lobster chỉ có 1 weight */
+  font-weight: 400;
+  /* Lobster chỉ có 1 weight */
   letter-spacing: 0.02em;
   text-shadow: 0 1px 0 rgba(244, 239, 228, 0.6);
-  min-height: 1em;            /* giữ chiều cao khi rỗng (lúc xóa để gõ lại) */
+  min-height: 1em;
+  /* giữ chiều cao khi rỗng (lúc xóa để gõ lại) */
 }
+
 /* MẤT: fade out thuần */
 #memberName {
   transition: opacity 0.35s ease;
 }
-#memberName.is-switching { opacity: 0; }
+
+#memberName.is-switching {
+  opacity: 0;
+}
 
 /* HIỆN: mỗi ký tự "chảy ra" mềm mại như nét bút thư pháp
    (bắt đầu mờ + nhòe + dịch lên nhẹ → mượt về rõ; delay tăng dần do JS đặt) */
 .name-char {
   display: inline-block;
-  white-space: pre;                 /* giữ khoảng trắng */
+  white-space: pre;
+  /* giữ khoảng trắng */
   opacity: 0;
   transform: translateY(0.22em) scale(0.96);
   filter: blur(4px);
   animation: nameStroke 0.42s cubic-bezier(0.22, 0.7, 0.25, 1) forwards;
 }
+
 @keyframes nameStroke {
-  0%   { opacity: 0;   transform: translateY(0.22em) scale(0.96); filter: blur(4px); }
-  60%  { opacity: 0.85; filter: blur(1px); }
-  100% { opacity: 1;   transform: translateY(0) scale(1);        filter: blur(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(0.22em) scale(0.96);
+    filter: blur(4px);
+  }
+
+  60% {
+    opacity: 0.85;
+    filter: blur(1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .name-char { animation: none; opacity: 1; transform: none; filter: none; }
+  .name-char {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
 /* hai nét mực mảnh hai bên tên (kiểu khắc bia), thuôn dần về đuôi */
@@ -451,6 +726,7 @@ html, body {
   height: 1px;
   background: linear-gradient(to right, transparent, rgba(28, 26, 23, 0.45));
 }
+
 .name-rule:last-of-type {
   background: linear-gradient(to left, transparent, rgba(28, 26, 23, 0.45));
 }
@@ -468,19 +744,23 @@ html, body {
   height: 38px;
   transition: transform 0.25s ease;
 }
-.skill-chip:hover { transform: translateY(-3px) scale(1.06); }
+
+.skill-chip:hover {
+  transform: translateY(-3px) scale(1.06);
+}
 
 /* KHUNG CHUNG (đồng nhất mọi loại icon) — bo góc, viền mực mảnh, nền giấy */
 .skill-chip--framed {
-  border: 1.5px solid rgba(28,26,23,0.55);
+  border: 1.5px solid rgba(28, 26, 23, 0.55);
   border-radius: 10px;
-  background: rgba(255,255,255,0.28);
-  box-shadow: 0 2px 8px rgba(28,26,23,0.06);
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 2px 8px rgba(28, 26, 23, 0.06);
   transition: transform 0.25s ease, border-color 0.3s ease, background 0.3s ease;
 }
+
 .skill-chip--framed:hover {
   border-color: var(--brand, var(--seal));
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* hai lớp icon chồng (CDN): mực mặc định + màu gốc khi hover */
@@ -491,18 +771,38 @@ html, body {
   object-fit: contain;
   transition: opacity 0.3s ease;
 }
-.skill-chip .ic-ink   { opacity: 0.78; }
-.skill-chip .ic-color { opacity: 0; }
-.skill-chip:hover .ic-ink   { opacity: 0; }
-.skill-chip:hover .ic-color { opacity: 1; }
+
+.skill-chip .ic-ink {
+  opacity: 0.78;
+}
+
+.skill-chip .ic-color {
+  opacity: 0;
+}
+
+.skill-chip:hover .ic-ink {
+  opacity: 0;
+}
+
+.skill-chip:hover .ic-color {
+  opacity: 1;
+}
 
 /* icon tự vẽ (SVG currentColor): mực mặc định → màu brand khi hover */
 .skill-chip--svg {
-  color: rgba(28,26,23,0.78);
+  color: rgba(28, 26, 23, 0.78);
   transition: transform 0.25s ease, color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
-.skill-chip--svg .ic-svg { width: 76%; height: 76%; display: block; }
-.skill-chip--svg:hover { color: var(--brand, var(--seal)); }
+
+.skill-chip--svg .ic-svg {
+  width: 76%;
+  height: 76%;
+  display: block;
+}
+
+.skill-chip--svg:hover {
+  color: var(--brand, var(--seal));
+}
 
 /* chữ fallback — cùng khung, chữ căn giữa */
 .skill-chip--text {
@@ -510,9 +810,12 @@ html, body {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: rgba(28,26,23,0.78);
+  color: rgba(28, 26, 23, 0.78);
 }
-.skill-chip--text:hover { color: var(--brand, var(--seal)); }
+
+.skill-chip--text:hover {
+  color: var(--brand, var(--seal));
+}
 
 /* =========================================================
    KHỐI THÔNG TIN
@@ -522,30 +825,35 @@ html, body {
    Nội dung không bị filter để chữ sắc nét. */
 .info-block {
   position: relative;
-  isolation: isolate;        /* để pseudo z-index:-1 chỉ lùi sau nội dung block, không lùi khỏi card */
+  isolation: isolate;
+  /* để pseudo z-index:-1 chỉ lùi sau nội dung block, không lùi khỏi card */
   padding: 16px 20px 18px;
   background: transparent;
 }
+
 .info-block::before {
   content: "";
   position: absolute;
   inset: -3px -5px;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.5), rgba(239,232,216,0.28));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(239, 232, 216, 0.28));
   /* mép giấy rách */
   filter: url(#paperEdge);
   border-radius: 3px;
-  box-shadow: 0 6px 22px rgba(28,26,23,0.07);
+  box-shadow: 0 6px 22px rgba(28, 26, 23, 0.07);
 }
+
 /* vệt mực mờ rất nhạt ở một góc cho có "hồn giấy" */
 .info-block::after {
   content: "";
   position: absolute;
   z-index: -1;
-  width: 40%; height: 50%;
-  right: 4%; bottom: 0;
-  background: radial-gradient(ellipse at 70% 80%, rgba(28,26,23,0.05), transparent 70%);
+  width: 40%;
+  height: 50%;
+  right: 4%;
+  bottom: 0;
+  background: radial-gradient(ellipse at 70% 80%, rgba(28, 26, 23, 0.05), transparent 70%);
   filter: url(#paperEdgeSoft);
   pointer-events: none;
 }
@@ -558,24 +866,31 @@ html, body {
   font-size: 11px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(28,26,23,0.62);
+  color: rgba(28, 26, 23, 0.62);
   margin-bottom: 13px;
   padding-bottom: 9px;
   position: relative;
 }
-.sect-label::before { content: "◆"; font-size: 8px; color: var(--seal); }
+
+.sect-label::before {
+  content: "◆";
+  font-size: 8px;
+  color: var(--seal);
+}
+
 /* nét mực mảnh dần dưới tiêu đề — như nét bút lông nhấc lên */
 .sect-label::after {
   content: "";
   position: absolute;
-  left: 0; bottom: 0;
+  left: 0;
+  bottom: 0;
   width: 100%;
   height: 1.5px;
   background: linear-gradient(90deg,
-    rgba(28,26,23,0.45) 0%,
-    rgba(28,26,23,0.22) 35%,
-    rgba(28,26,23,0.06) 70%,
-    transparent 100%);
+      rgba(28, 26, 23, 0.45) 0%,
+      rgba(28, 26, 23, 0.22) 35%,
+      rgba(28, 26, 23, 0.06) 70%,
+      transparent 100%);
   filter: url(#paperEdgeSoft);
 }
 
@@ -583,9 +898,9 @@ html, body {
   font-size: 11px;
   padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(181,54,42,0.4);
+  border: 1px solid rgba(181, 54, 42, 0.4);
   color: var(--seal);
-  background: rgba(181,54,42,0.05);
+  background: rgba(181, 54, 42, 0.05);
 }
 
 .quote-line {
@@ -593,50 +908,59 @@ html, body {
   font-style: italic;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(28,26,23,0.65);
+  color: rgba(28, 26, 23, 0.65);
   padding-left: 14px;
-  border-left: 2px solid rgba(181,54,42,0.5);
+  border-left: 2px solid rgba(181, 54, 42, 0.5);
 }
+
 .quote-line::before {
   content: "❝";
   position: absolute;
-  left: 4px; top: -6px;
+  left: 4px;
+  top: -6px;
   font-size: 18px;
   font-family: 'Cinzel', serif;
-  color: rgba(181,54,42,0.45);
+  color: rgba(181, 54, 42, 0.45);
 }
 
 /* =========================================================
    NAV DOTS
 ========================================================= */
 .nav-dot {
-  width: 10px; height: 10px;
+  width: 10px;
+  height: 10px;
   border: 1px solid var(--seal);
   border-radius: 50%;
   transition: all 0.4s ease;
   cursor: pointer;
   position: relative;
 }
+
 .nav-dot.active {
   background: var(--seal);
-  box-shadow: 0 0 14px rgba(181,54,42,0.6);
+  box-shadow: 0 0 14px rgba(181, 54, 42, 0.6);
   transform: scale(1.25);
 }
+
 .nav-dot::before {
   content: attr(data-name);
   position: absolute;
-  right: 24px; top: 50%;
+  right: 24px;
+  top: 50%;
   transform: translateY(-50%);
   white-space: nowrap;
   font-size: 11px;
   letter-spacing: 0.1em;
-  color: rgba(28,26,23,0.75);
+  color: rgba(28, 26, 23, 0.75);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
   font-family: 'Be Vietnam Pro', sans-serif;
 }
-.nav-dot:hover::before { opacity: 0.95; }
+
+.nav-dot:hover::before {
+  opacity: 0.95;
+}
 
 /* =========================================================
    SỐ THỨ TỰ MỜ PHÍA SAU
@@ -645,34 +969,76 @@ html, body {
   font-family: 'Cinzel', serif;
   font-weight: 900;
   line-height: 0.8;
-  color: rgba(28,26,23,0.045);
+  color: rgba(28, 26, 23, 0.045);
   user-select: none;
 }
 
 /* =========================================================
    SCROLL HINT + CÁNH HOA RƠI
 ========================================================= */
-@keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(8px);} }
-.bob { animation: bob 2s ease-in-out infinite; }
+@keyframes bob {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.bob {
+  animation: bob 2s ease-in-out infinite;
+}
 
 /* Con chuột máy tính: con lăn đỏ trượt xuống rồi mờ dần (gợi ý cuộn) */
-.mouse-hint { display: block; }
+.mouse-hint {
+  display: block;
+}
+
 .mouse-wheel {
   animation: mouseWheel 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
+
 @keyframes mouseWheel {
-  0%   { transform: translateY(0);    opacity: 0; }
-  20%  { opacity: 1; }
-  70%  { transform: translateY(8px);  opacity: 0; }
-  100% { transform: translateY(8px);  opacity: 0; }
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  70% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .mouse-wheel { animation: none; opacity: 1; }
+  .mouse-wheel {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 /* ===== Vệt gió bám con trỏ: 1 trail liền kiểu nét bút thủy mặc ===== */
-#windFx #windTrail { transition: none; }
-@media (prefers-reduced-motion: reduce) { #windFx { display: none; } }
+#windFx #windTrail {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #windFx {
+    display: none;
+  }
+}
 
 /* Lớp NGOÀI: nhận offset "gió" theo con trỏ (mượt, không phá animation rơi) */
 .petal {
@@ -681,31 +1047,57 @@ html, body {
   transform: translate(var(--wind-x, 0px), var(--wind-y, 0px));
   will-change: transform;
 }
+
 /* Lớp TRONG: giữ animation rơi (translateY/X + xoay) */
 .petal-fall {
   display: block;
   opacity: 0;
   animation: fall linear infinite;
 }
+
 @keyframes fall {
-  0%   { transform: translateY(0) translateX(0) rotate(0deg);   opacity: 0; }
-  10%  { opacity: 0.7; }
-  90%  { opacity: 0.6; }
-  100% { transform: translateY(108vh) translateX(var(--drift, 40px)) rotate(360deg); opacity: 0; }
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.7;
+  }
+
+  90% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateY(108vh) translateX(var(--drift, 40px)) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 /* =========================================================
    LOADING CURTAIN
 ========================================================= */
 #curtain {
-  position: fixed; inset: 0; z-index: 100;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   background: var(--paper);
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: opacity 0.8s ease, visibility 0.8s ease;
 }
-#curtain.gone { opacity: 0; visibility: hidden; }
 
-.no-select { user-select: none; -webkit-user-select: none; }
+#curtain.gone {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
 
 /* Số tiến trình dạng dọc (02 / 05) bên trái */
 .progress-num {
@@ -713,4 +1105,1175 @@ html, body {
   text-orientation: mixed;
   letter-spacing: 0.25em;
   line-height: 1.4;
+}
+
+/* =========================================================
+   CỘT MỐC — dải ngang, đường mực mảnh + triện son
+   Không đóng khung (.info-block) để cảm giác "đường mực xuyên qua giấy".
+========================================================= */
+.ms-block {
+  padding: 4px 6px 0;
+}
+
+.ms-strip {
+  position: relative;
+  padding: 22px 4px 6px;
+}
+
+/* Đường mực ngang chạy qua tâm các triện */
+.ms-rail {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: calc(22px + 7px);
+  /* khớp tâm dot (padding-top + dot-radius) */
+  height: 1px;
+  background:
+    linear-gradient(90deg,
+      transparent 0%,
+      rgba(28, 26, 23, 0.30) 8%,
+      rgba(28, 26, 23, 0.42) 50%,
+      rgba(28, 26, 23, 0.30) 92%,
+      transparent 100%);
+  filter: url(#paperEdgeSoft);
+}
+
+.ms-list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 8px;
+}
+
+.ms-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+
+/* Triện son — nút bấm hình tròn */
+.ms-dot {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--seal);
+  background: var(--paper);
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  z-index: 2;
+}
+
+.ms-dot::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--seal);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.ms-dot:hover,
+.ms-dot:focus-visible {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 4px rgba(181, 54, 42, 0.12), 0 4px 12px rgba(28, 26, 23, 0.12);
+  outline: none;
+}
+
+.ms-dot:hover::after,
+.ms-dot:focus-visible::after {
+  opacity: 1;
+}
+
+/* Mốc gần nhất (cuối list) — luôn highlight nhẹ */
+.ms-item:last-child .ms-dot::after {
+  opacity: 0.6;
+}
+
+.ms-item:last-child .ms-dot {
+  box-shadow: 0 0 0 3px rgba(181, 54, 42, 0.10);
+}
+
+.ms-year {
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(28, 26, 23, 0.78);
+  font-variant-numeric: tabular-nums;
+}
+
+.ms-event {
+  margin-top: 2px;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: rgba(28, 26, 23, 0.55);
+  /* truncate 2 dòng để dải không vỡ khi tên sự kiện dài */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 14ch;
+}
+
+/* Tooltip giấy nhỏ khi hover triện */
+.ms-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translate(-50%, 6px);
+  min-width: 180px;
+  max-width: 240px;
+  padding: 10px 12px 9px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(239, 232, 216, 0.78));
+  border: 1px solid rgba(28, 26, 23, 0.18);
+  border-radius: 4px;
+  box-shadow: 0 8px 22px rgba(28, 26, 23, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 30;
+  text-align: left;
+  white-space: normal;
+}
+
+.ms-tooltip::after {
+  /* mũi tên nhỏ chỉ xuống dot */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(28, 26, 23, 0.18);
+  filter: drop-shadow(0 1px 0 rgba(244, 239, 228, 0.9));
+}
+
+.ms-dot:hover .ms-tooltip,
+.ms-dot:focus-visible .ms-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.ms-tooltip__year {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--seal);
+  margin-bottom: 4px;
+}
+
+.ms-tooltip__event {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: rgba(28, 26, 23, 0.88);
+}
+
+.ms-tooltip__hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(181, 54, 42, 0.7);
+}
+
+/* Responsive: màn hẹp → cho phép cuộn ngang dải */
+@media (max-width: 700px) {
+  .ms-list {
+    grid-auto-columns: minmax(110px, 1fr);
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .ms-item {
+    scroll-snap-align: center;
+  }
+
+  .ms-rail {
+    left: 22px;
+    right: 22px;
+  }
+}
+
+/* =========================================================
+   MODAL CỘT MỐC — tờ giấy dó nổi giữa màn, ấn triện góc
+========================================================= */
+.ms-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.ms-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ms-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(28, 26, 23, 0.42), rgba(28, 26, 23, 0.62) 70%);
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+}
+
+.ms-modal__paper {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 90vw);
+  max-height: 82vh;
+  padding: 36px 40px 34px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(239, 232, 216, 0.4)),
+    var(--paper);
+  border-radius: 4px;
+  box-shadow:
+    0 30px 80px rgba(28, 26, 23, 0.45),
+    inset 0 0 40px rgba(255, 255, 255, 0.35);
+  transform: translateY(18px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s ease;
+  overflow-y: auto;
+  isolation: isolate;
+}
+
+.ms-modal__paper::before {
+  /* mép giấy gợn — dùng filter có sẵn */
+  content: "";
+  position: absolute;
+  inset: -3px -5px;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(239, 232, 216, 0.42));
+  filter: url(#paperEdge);
+  border-radius: 4px;
+}
+
+.ms-modal__paper::after {
+  /* vệt mực mờ góc dưới-phải cho có hồn */
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 45%;
+  height: 55%;
+  right: 4%;
+  bottom: 0;
+  background: radial-gradient(ellipse at 70% 80%, rgba(28, 26, 23, 0.07), transparent 70%);
+  filter: url(#paperEdgeSoft);
+  pointer-events: none;
+}
+
+.ms-modal.is-open .ms-modal__paper {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.ms-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  color: rgba(28, 26, 23, 0.55);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.ms-modal__close:hover,
+.ms-modal__close:focus-visible {
+  background: rgba(181, 54, 42, 0.08);
+  color: var(--seal);
+  transform: rotate(90deg);
+  outline: none;
+}
+
+.ms-modal__year {
+  font-size: 38px;
+  letter-spacing: 0.12em;
+  color: var(--seal);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ms-modal__rule {
+  margin: 12px 0 14px;
+  height: 1.5px;
+  width: 64px;
+  background: linear-gradient(90deg,
+      rgba(28, 26, 23, 0.55) 0%,
+      rgba(28, 26, 23, 0.25) 60%,
+      transparent 100%);
+  filter: url(#paperEdgeSoft);
+}
+
+.ms-modal__title {
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+.ms-modal__detail {
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(28, 26, 23, 0.82);
+  margin: 0;
+}
+
+.ms-modal__seal {
+  position: absolute;
+  right: 26px;
+  bottom: 22px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seal);
+  color: var(--paper);
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(143, 42, 32, 0.4);
+  transform: rotate(-6deg);
+  opacity: 0.92;
+}
+
+@media (max-width: 640px) {
+  .ms-modal__paper {
+    padding: 28px 24px 28px;
+    width: 92vw;
+  }
+
+  .ms-modal__year {
+    font-size: 32px;
+  }
+
+  .ms-modal__title {
+    font-size: 19px;
+  }
+}
+
+/* =========================================================
+   LAYOUT v2 — "BỨC HỌA TAM ĐOẠN"
+   3 phần dọc, vệt mực loang phân cách, sản phẩm là hero.
+   Cả khối nằm trên 1 TỜ GIẤY DÓ lớn (như cuộn tranh treo)
+   để nổi rõ trên nền tranh nền sau.
+========================================================= */
+.card-v2-right {
+  position: relative;
+  isolation: isolate;
+  padding: 24px 30px 28px;
+  gap: 6px;
+}
+
+/* Tờ giấy dó nền cho cả v2 — dùng filter paperEdge có sẵn */
+.card-v2-right::before {
+  content: "";
+  position: absolute;
+  inset: -4px -8px;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 247, 0.92) 0%, rgba(246, 238, 221, 0.86) 60%, rgba(240, 230, 209, 0.82) 100%);
+  filter: url(#paperEdge);
+  border-radius: 3px;
+  box-shadow:
+    0 16px 40px rgba(28, 26, 23, 0.18),
+    0 2px 6px rgba(28, 26, 23, 0.08),
+    inset 0 0 50px rgba(255, 255, 255, 0.4);
+}
+
+/* Vệt mực loang nhạt góc dưới-phải cho có "hồn giấy" */
+.card-v2-right::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 45%;
+  height: 55%;
+  right: 4%;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 70% 80%, rgba(28, 26, 23, 0.08), transparent 70%),
+    radial-gradient(ellipse at 30% 30%, rgba(181, 54, 42, 0.05), transparent 60%);
+  filter: url(#paperEdgeSoft);
+  pointer-events: none;
+}
+
+/* Triện đỏ nhỏ góc trên-trái như con dấu "khai bút" */
+.card-v2-right>.v2-seal {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seal);
+  color: var(--paper);
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  border-radius: 3px;
+  box-shadow: 0 3px 10px rgba(143, 42, 32, 0.35);
+  transform: rotate(-4deg);
+  opacity: 0.92;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.v2-sect {
+  position: relative;
+}
+
+/* Vệt mực loang ngang — separator không phải gạch */
+.v2-divider {
+  height: 22px;
+  margin: 6px 0;
+  background:
+    radial-gradient(ellipse 65% 60% at 30% 50%, rgba(28, 26, 23, 0.18), transparent 70%),
+    radial-gradient(ellipse 50% 55% at 72% 50%, rgba(28, 26, 23, 0.10), transparent 75%);
+  filter: url(#paperEdgeSoft);
+  opacity: 0.85;
+}
+
+/* ===== ĐOẠN 1 — "Câu Đối" (Chuyên Môn / Chất Riêng) ===== */
+.couplet {
+  padding: 2px 4px 0;
+}
+
+.couplet__intro {
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(28, 26, 23, 0.72);
+  font-style: italic;
+  margin-bottom: 10px;
+  max-width: 56ch;
+}
+
+.couplet__rows {
+  display: grid;
+  gap: 4px;
+}
+
+.couplet__row {
+  display: grid;
+  grid-template-columns: 110px 14px 1fr;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.couplet__k {
+  font-family: 'Cinzel', serif;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(28, 26, 23, 0.55);
+  text-align: right;
+  padding-right: 6px;
+  border-right: 1px solid rgba(28, 26, 23, 0.18);
+}
+
+.couplet__sep {
+  color: var(--seal);
+  text-align: center;
+  font-weight: 600;
+}
+
+.couplet__v {
+  color: rgba(28, 26, 23, 0.88);
+  font-weight: 500;
+}
+
+/* ===== ĐOẠN 2 — Cột Mốc trong layout v2 ===== */
+.v2-sect--milestones .ms-strip {
+  padding-top: 18px;
+}
+
+.v2-sect--milestones .ms-block {
+  padding: 0;
+}
+
+/* ===== ĐOẠN 3 — SẢN PHẨM (HERO) ===== */
+.prod-stage {
+  position: relative;
+  margin-top: 4px;
+  isolation: isolate;
+}
+
+.prod-slides {
+  position: relative;
+  min-height: 240px;
+}
+
+.prod-slide {
+  display: none;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  animation: prodFadeIn 0.42s ease both;
+}
+
+.prod-slide.is-active,
+.prod-slide:first-child:not([aria-hidden="true"]) {
+  display: grid;
+}
+
+@keyframes prodFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Khung tranh treo: nền giấy + 4 triện góc */
+.prod-frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--paper);
+  border: 1px solid rgba(28, 26, 23, 0.35);
+  box-shadow:
+    0 12px 30px rgba(28, 26, 23, 0.18),
+    inset 0 0 0 6px rgba(244, 239, 228, 0.8),
+    inset 0 0 0 7px rgba(28, 26, 23, 0.15);
+  overflow: hidden;
+}
+
+.prod-cover-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.prod-frame__corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--seal);
+  background: rgba(244, 239, 228, 0.85);
+  z-index: 3;
+}
+
+.prod-frame__corner.tl {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.prod-frame__corner.tr {
+  top: 6px;
+  right: 6px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.prod-frame__corner.bl {
+  bottom: 6px;
+  left: 6px;
+  border-right: none;
+  border-top: none;
+}
+
+.prod-frame__corner.br {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Thông tin sản phẩm */
+.prod-info {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0 0;
+  min-width: 0;
+}
+
+.prod-info__head {
+  margin-bottom: 8px;
+}
+
+.prod-info__title {
+  font-family: 'Lobster', cursive;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin: 0 0 4px;
+  letter-spacing: 0.015em;
+  text-shadow: 0 1px 0 rgba(244, 239, 228, 0.6);
+}
+
+.prod-info__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(28, 26, 23, 0.62);
+}
+
+.prod-info__role {
+  color: rgba(28, 26, 23, 0.78);
+}
+
+.prod-info__sep {
+  color: var(--seal);
+}
+
+.prod-info__year {
+  letter-spacing: 0.12em;
+}
+
+.prod-info__contrib {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(28, 26, 23, 0.82);
+  margin: 6px 0 10px;
+}
+
+.prod-info__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.prod-tag {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 2px 8px 3px;
+  color: rgba(28, 26, 23, 0.7);
+  border: 1px solid rgba(28, 26, 23, 0.28);
+  background: rgba(244, 239, 228, 0.4);
+  border-radius: 2px;
+}
+
+.prod-info__metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--seal-dark);
+  letter-spacing: 0.04em;
+  font-style: italic;
+}
+
+.prod-info__metric-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--seal);
+  color: var(--paper);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  border-radius: 2px;
+  font-style: normal;
+}
+
+/* Pager — số Hán 一二三 */
+.prod-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.prod-pager__arrow {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(28, 26, 23, 0.25);
+  background: transparent;
+  border-radius: 50%;
+  color: rgba(28, 26, 23, 0.6);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 2px;
+}
+
+.prod-pager__arrow:hover,
+.prod-pager__arrow:focus-visible {
+  border-color: var(--seal);
+  color: var(--seal);
+  background: rgba(181, 54, 42, 0.06);
+  outline: none;
+}
+
+.prod-pager__dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prod-pager__dot {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.prod-pager__han {
+  font-size: 18px;
+  color: rgba(28, 26, 23, 0.4);
+  transition: color 0.25s ease;
+  line-height: 1;
+}
+
+.prod-pager__dot:hover .prod-pager__han {
+  color: var(--ink);
+}
+
+.prod-pager__dot.is-active {
+  background: var(--seal);
+  box-shadow: 0 4px 12px rgba(143, 42, 32, 0.35);
+  transform: rotate(-3deg);
+}
+
+.prod-pager__dot.is-active .prod-pager__han {
+  color: var(--paper);
+}
+
+/* Vệt bút lông quét khi đổi sản phẩm */
+.prod-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background:
+    linear-gradient(90deg,
+      rgba(28, 26, 23, 0) 0%,
+      rgba(28, 26, 23, 0.20) 38%,
+      rgba(28, 26, 23, 0.25) 50%,
+      rgba(28, 26, 23, 0.20) 62%,
+      rgba(28, 26, 23, 0) 100%);
+  transform: translateX(-110%);
+  opacity: 0;
+  filter: url(#paperEdgeSoft);
+}
+
+.prod-stage.is-switching::after {
+  animation: brushSwipe 0.42s ease forwards;
+}
+
+@keyframes brushSwipe {
+  0% {
+    transform: translateX(-110%);
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+/* ===== CỘT CÔNG CỤ — overlay dọc mép phải (chỉ Artist) =====
+   Icon xếp dọc như dải triện, đi sau dấu 印 góc trên-phải.
+   Có sợi mực mảnh chạy dọc kết nối các icon (cảm giác xâu chuỗi). */
+.card-v2-right.has-tools-rail {
+  padding-right: 60px;
+}
+
+.v2-tools-rail {
+  position: absolute;
+  top: 58px;
+  right: 12px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.v2-tools-rail::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(28, 26, 23, 0.16) 10%,
+      rgba(28, 26, 23, 0.30) 50%,
+      rgba(28, 26, 23, 0.16) 90%,
+      transparent 100%);
+  transform: translateX(-50%);
+  z-index: -1;
+  filter: url(#paperEdgeSoft);
+}
+
+.v2-tools-rail .skill-chip {
+  width: 34px;
+  height: 34px;
+  background: rgba(244, 239, 228, 0.85);
+  border-color: rgba(28, 26, 23, 0.35);
+  flex: 0 0 auto;
+}
+
+.v2-tools-rail .skill-chip:hover {
+  transform: scale(1.18);
+  box-shadow: 0 4px 12px rgba(28, 26, 23, 0.18);
+}
+
+/* Responsive: dưới md, stack cover / info dọc */
+@media (max-width: 900px) {
+
+  .prod-slide.is-active,
+  .prod-slide:first-child:not([aria-hidden="true"]) {
+    grid-template-columns: 1fr;
+  }
+
+  .couplet__row {
+    grid-template-columns: 96px 12px 1fr;
+  }
+
+  .card-v2-right.has-tools-rail {
+    padding-right: 50px;
+  }
+
+  .v2-tools-rail {
+    right: 8px;
+    gap: 7px;
+  }
+
+  .v2-tools-rail .skill-chip {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* =========================================================
+   SLIDE INTRO — trang mở đầu giới thiệu team
+   Bố cục:
+     · Lớp 1 (back) : "Portfolio" siêu to + drum toàn cục
+     · Lớp 2 (mid)  : 6 khung nhỏ moodboard scatter xung quanh
+     · Lớp 3 (front): KHUNG VIDEO LỚN ở giữa, đè lên cả 2 lớp trên
+========================================================= */
+.member-card--intro {
+  position: relative;
+}
+.intro-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chữ "Portfolio" siêu to làm nền cho khung video */
+.intro-portfolio {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  font-family: 'Lobster', cursive;
+  font-weight: 400;
+  font-size: clamp(160px, 24vw, 380px);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+  color: rgba(28, 26, 23, 0.10);
+  text-shadow: 0 4px 0 rgba(244, 239, 228, 0.45);
+  z-index: 1;
+  pointer-events: none;
+  margin: 0;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Meta hàng nhỏ phía trên: 印 · YEAR · BRAND */
+.intro-meta {
+  position: absolute;
+  top: 14vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(28, 26, 23, 0.62);
+  z-index: 4;
+}
+.intro-meta__seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--seal);
+  color: var(--paper);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  border-radius: 3px;
+  letter-spacing: 0;
+}
+.intro-meta__year {
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+}
+.intro-meta__sep { color: var(--seal); }
+
+/* Container moodboard — chứa video frame ở giữa & 6 thumbs xung quanh */
+.intro-frames {
+  position: relative;
+  width: min(1100px, 88vw);
+  height: min(580px, 64vh);
+  z-index: 2;
+}
+
+/* Khung gốc — paper + bóng đổ + xoay nhẹ "ghim bảng" */
+.intro-frame {
+  position: absolute;
+  background: var(--paper);
+  border: 1px solid rgba(28, 26, 23, 0.32);
+  box-shadow: 0 12px 32px rgba(28, 26, 23, 0.22);
+  padding: 5px;
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+              box-shadow 0.45s ease;
+}
+.intro-frame:hover {
+  transform: rotate(0deg) scale(1.04);
+  box-shadow: 0 20px 50px rgba(28, 26, 23, 0.32);
+  z-index: 5;
+}
+
+/* KHUNG VIDEO LỚN — trung tâm, đè lên Portfolio + drum */
+.intro-frame--video {
+  top: 50%;
+  left: 50%;
+  width: min(580px, 50vw);
+  aspect-ratio: 16 / 10;
+  transform: translate(-50%, -50%) rotate(-1deg);
+  z-index: 3;
+  padding: 6px;
+}
+.intro-frame--video:hover {
+  transform: translate(-50%, -50%) rotate(0deg) scale(1.02);
+}
+
+.intro-frame__media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.intro-frame__media--video {
+  background: linear-gradient(135deg, #2c2722 0%, #1c1a17 100%);
+}
+.intro-video-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 35%, rgba(181, 54, 42, 0.20), transparent 60%),
+    radial-gradient(ellipse at 75% 70%, rgba(64, 60, 55, 0.45), transparent 70%);
+}
+
+.intro-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: rgba(244, 239, 228, 0.93);
+  color: var(--seal);
+  border: 2px solid rgba(28, 26, 23, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 10px 28px rgba(28, 26, 23, 0.55),
+    inset 0 0 18px rgba(255, 255, 255, 0.4);
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+  z-index: 3;
+}
+.intro-play svg {
+  width: 36px;
+  height: 36px;
+  margin-left: 4px;
+}
+.intro-play:hover,
+.intro-play:focus-visible {
+  background: var(--seal);
+  color: var(--paper);
+  transform: translate(-50%, -50%) scale(1.10);
+  outline: none;
+}
+
+.intro-frame__overlay {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  z-index: 2;
+  color: var(--paper);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+}
+.intro-frame__title {
+  font-family: 'Lobster', cursive;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.1;
+  margin: 0 0 2px;
+}
+.intro-frame__sub {
+  font-size: 10.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.88;
+}
+
+/* KHUNG THUMB nhỏ — sản phẩm + team scatter quanh video */
+.intro-frame--thumb {
+  width: 158px;
+  aspect-ratio: 4 / 3;
+}
+.intro-frame--thumb .intro-frame__media {
+  background: var(--paper-2);
+}
+.intro-frame--thumb .prod-cover-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Vị trí 6 thumbs — moodboard scatter quanh video frame */
+.intro-frame--p1 { top: -8px;    left: 1%;    --rot: -4deg; }
+.intro-frame--p2 { top: 6px;     right: 3%;   --rot:  3deg; }
+.intro-frame--p3 { top: 230px;   left: -3%;   --rot: -2deg; }
+.intro-frame--p4 { top: 256px;   right: -2%;  --rot:  4deg; }
+.intro-frame--p5 { bottom: 8px;  left: 12%;   --rot:  2deg; }
+.intro-frame--p6 { bottom: -6px; right: 10%;  --rot: -3deg; }
+
+/* Caption nhỏ dưới mỗi khung */
+.intro-frame__caption {
+  position: absolute;
+  left: 50%;
+  bottom: -22px;
+  transform: translateX(-50%) rotate(calc(-1 * var(--rot, 0deg)));
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(28, 26, 23, 0.62);
+  white-space: nowrap;
+}
+
+/* Tagline cuối */
+.intro-tagline {
+  position: absolute;
+  bottom: 9vh;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 600px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(28, 26, 23, 0.72);
+  font-style: italic;
+  z-index: 4;
+  margin: 0;
+}
+
+/* nav-dot riêng cho intro: viền nét, không tô đỏ — phân biệt rõ với members */
+.nav-dot--intro {
+  border-style: dashed;
+}
+.nav-dot--intro.active {
+  background: var(--ink);
+  box-shadow: 0 0 12px rgba(28, 26, 23, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .intro-frame--p1 { top: -4px;   left: 2%;    width: 130px; }
+  .intro-frame--p2 { top: 8px;    right: 2%;   width: 130px; }
+  .intro-frame--p3 { top: 200px;  left: 0%;    width: 120px; }
+  .intro-frame--p4 { top: 220px;  right: 0%;   width: 120px; }
+  .intro-frame--p5 { bottom: 6px; left: 8%;    width: 130px; }
+  .intro-frame--p6 { bottom: -4px;right: 8%;   width: 130px; }
+}
+@media (max-width: 720px) {
+  .intro-portfolio { font-size: clamp(80px, 20vw, 200px); }
+  .intro-frames {
+    width: 95vw;
+    height: 75vh;
+  }
+  .intro-frame--video {
+    width: 78vw;
+  }
+  .intro-frame--thumb { width: 96px; }
+  .intro-tagline {
+    bottom: 4vh;
+    font-size: 12px;
+  }
+  .intro-meta { top: 11vh; font-size: 10px; }
 }

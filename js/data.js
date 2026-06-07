@@ -1,95 +1,25 @@
 /* =========================================================
-   DỮ LIỆU NỘI DUNG — sửa thông tin thành viên TẠI ĐÂY
-   (placeholder — thay nội dung thật sau)
+   DỮ LIỆU NỘI DUNG — clean placeholder (Lorem Ipsum)
 
-   Mỗi thành viên có:
-   - Thông tin chung: name, alias, role, roleVi, tagline, accent, skills
-   - quote   : triết lý / phương châm làm nghề
-   - projects: dự án tiêu biểu [{ name, role, year }]
-   - meta    : 3 chỉ số tóm tắt nhanh [{ label, value }]
-   - lore    : khối theo VAI TRÒ
-       · Dev/Designer -> { kind:"craft", ... } (chuyên môn — lý trí)
-       · Artist        -> { kind:"soul",  ... } (chất riêng — cảm xúc)
+   MEMBERS là nguồn dữ liệu cho từng slide thành viên.
+   render.js (memberCardHTMLv2) đọc các trường dưới đây để dựng:
+     · Header                : name, roleVi
+     · Avatar (pose + glow)  : role, accent
+     · Đoạn 1 (Chuyên/Chất)  : lore { kind, title, intro, focus[] / signature, inspiration[], mood[] }
+     · Đoạn 2 (Cột Mốc)      : milestones [{ year, event, detail }]
+     · Đoạn 3 (Kinh nghiệm)  : projects   [{ name, role, year, cover, tags[], contribution, metric }]
+     · Cột Công Cụ (Artist)  : skills     (chỉ render khi lore.kind === "soul")
 
-   GHI CHÚ: role hợp lệ để chọn pose = "Game Developer" | "Game Designer" | "Game Artist"
+   GHI CHÚ:
+   - role hợp lệ để chọn pose = "Game Developer" | "Game Designer" | "Game Artist"
+   - lore.kind = "craft" cho Dev/Designer, "soul" cho Artist
+   - projects: name + contribution là nội dung; role/year/cover/tags/metric là thuộc tính cấu trúc
 ========================================================= */
 const MEMBERS = [
   {
-    name: "Lê Minh Quân",
-    alias: "The Architect",
-    role: "Game Developer",
-    roleVi: "Lập Trình Game",
-    tagline: "Kiến tạo cỗ máy vận hành thế giới ảo từ những dòng code mạch lạc.",
-    accent: "#c0392b",
-    skills: [
-      { name: "Unity", slug: "unity", color: "000000" },
-      { name: "C#", slug: "csharp", color: "512BD4" },
-      { name: "Rider", slug: "rider", color: "000000" },
-      { name: "Git", slug: "git", color: "F05032" },
-    ],
-    quote: "Code tốt là code mà người sau đọc không cần hỏi tôi một câu.",
-    meta: [
-      { label: "Kinh nghiệm", value: "7 năm" },
-      { label: "Chuyên sâu", value: "Gameplay" },
-      { label: "Cấp bậc", value: "Lead Dev" },
-    ],
-    lore: {
-      kind: "craft",
-      title: "Chuyên Môn",
-      intro: "Người dựng nền móng kỹ thuật — biến thiết kế thành hệ thống chạy được, ổn định, mở rộng.",
-      focus: [
-        { k: "Kiến trúc", v: "ECS · State Machine · Networking" },
-        { k: "Sở trường", v: "Tối ưu hiệu năng, gameplay nhiều người chơi" },
-        { k: "Triết lý code", v: "Đơn giản hoá thay vì thông minh hoá" },
-      ],
-    },
-    projects: [
-      { name: "Huyền Sử Đại Việt", role: "Lead Developer", year: "2024" },
-      { name: "Cờ Tướng Online", role: "Backend & Netcode", year: "2022" },
-      { name: "Phá Trận", role: "Gameplay Programmer", year: "2020" },
-    ],
-  },
-  {
-    name: "Trần Hải Đăng",
-    alias: "The Engineer",
-    role: "Game Developer",
-    roleVi: "Lập Trình Game",
-    tagline: "Biến cơ chế phức tạp thành trải nghiệm mượt mà trong từng khung hình.",
-    accent: "#9c6f15",
-    skills: [
-      { name: "Unreal Engine", slug: "unrealengine", color: "0E1128" },
-      { name: "C++", slug: "cplusplus", color: "00599C" },
-      { name: "Visual Studio", slug: "visualstudio", color: "5C2D91" },
-      { name: "Git", slug: "git", color: "F05032" },
-    ],
-    quote: "Mỗi mili-giây trễ là một người chơi rời đi. Tôi săn từng mili-giây ấy.",
-    meta: [
-      { label: "Kinh nghiệm", value: "5 năm" },
-      { label: "Chuyên sâu", value: "Engine/Tools" },
-      { label: "Cấp bậc", value: "Senior Dev" },
-    ],
-    lore: {
-      kind: "craft",
-      title: "Chuyên Môn",
-      intro: "Kỹ sư engine — làm công cụ cho cả team và mài giũa hiệu năng đến giới hạn phần cứng.",
-      focus: [
-        { k: "Kiến trúc", v: "Render pipeline · Tooling · Build system" },
-        { k: "Sở trường", v: "Shader, profiling, tối ưu bộ nhớ" },
-        { k: "Triết lý code", v: "Đo trước, đoán sau" },
-      ],
-    },
-    projects: [
-      { name: "Long Thần Tướng RPG", role: "Engine Programmer", year: "2025" },
-      { name: "Bộ công cụ Pipeline nội bộ", role: "Tools Lead", year: "2023" },
-      { name: "Đua Thuyền Rồng", role: "Graphics Programmer", year: "2021" },
-    ],
-  },
-  {
-    name: "Phạm Thu Hương",
-    alias: "The Dreamweaver",
+    name: "Phạm Hùng Thiên",
     role: "Game Designer",
     roleVi: "Thiết Kế Game",
-    tagline: "Dệt nên luật chơi và cảm xúc, nơi mỗi quyết định đều có ý nghĩa.",
     accent: "#0f7a52",
     skills: [
       { name: "Figma", slug: "figma", color: "F24E1E" },
@@ -97,34 +27,233 @@ const MEMBERS = [
       { name: "Notion", slug: "notion", color: "000000" },
       { name: "Unity", slug: "unity", color: "000000" },
     ],
-    quote: "Người chơi sẽ quên cơ chế, nhưng nhớ mãi cảm giác bạn tạo ra cho họ.",
-    meta: [
-      { label: "Kinh nghiệm", value: "6 năm" },
-      { label: "Chuyên sâu", value: "Systems" },
-      { label: "Cấp bậc", value: "Lead Designer" },
+    lore: {
+      kind: "craft",
+      title: "Chuyên Môn",
+      intro: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis.",
+      focus: [
+        { k: "Thiết kế", v: "Amet consectetur · Adipiscing elit · Sed do" },
+        { k: "Sở trường", v: "Eiusmod tempor incididunt ut labore et dolore" },
+        { k: "Triết lý", v: "Magna aliqua veniam quis nostrud" },
+      ],
+    },
+    projects: [
+      {
+        name: "Aliquip Commodo",
+        role: "Lead Game Designer",
+        year: "2024",
+        cover: "scene:mountain",
+        tags: ["RPG", "Narrative", "PC/Mobile"],
+        contribution: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur.",
+        metric: "Đang phát triển · Mở beta Q4/2024",
+      },
+      {
+        name: "Duis Aute",
+        role: "Systems Designer",
+        year: "2022",
+        cover: "scene:river",
+        tags: ["Strategy", "PvP", "Mobile"],
+        contribution: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        metric: "300K MAU · giữ retention D30 ở 28%",
+      },
+      {
+        name: "Voluptate Velit",
+        role: "Game Designer",
+        year: "2021",
+        cover: "scene:bamboo",
+        tags: ["Casual", "Online", "Mobile"],
+        contribution: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore.",
+        metric: "1M+ lượt tải · vinh danh Bộ VHTT&DL",
+      },
+    ],
+    milestones: [
+      {
+        year: "2018",
+        event: "Lorem ipsum dolor sit",
+        detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      },
+      {
+        year: "2021",
+        event: "Consectetur adipiscing",
+        detail: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute.",
+      },
+      {
+        year: "2022",
+        event: "Sed do eiusmod tempor",
+        detail: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint.",
+      },
+      {
+        year: "2023",
+        event: "Incididunt ut labore",
+        detail: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum lorem.",
+      },
+      {
+        year: "2024",
+        event: "Magna aliqua veniam",
+        detail: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna.",
+      },
+    ],
+  },
+  {
+    name: "Đoàn Gia Bảo",
+    role: "Game Developer",
+    roleVi: "Lập Trình Game",
+    accent: "#c0392b",
+    skills: [
+      { name: "Unity", slug: "unity", color: "000000" },
+      { name: "C#", slug: "csharp", color: "512BD4" },
+      { name: "Rider", slug: "rider", color: "000000" },
+      { name: "Git", slug: "git", color: "F05032" },
     ],
     lore: {
       kind: "craft",
       title: "Chuyên Môn",
-      intro: "Người dệt luật chơi — cân bằng giữa thử thách và phần thưởng để giữ người chơi ở lại.",
+      intro: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       focus: [
-        { k: "Thiết kế", v: "Game loop · Progression · Economy" },
-        { k: "Sở trường", v: "Cân bằng hệ thống, kể chuyện qua màn chơi" },
-        { k: "Triết lý", v: "Vui trước, đẹp sau, đủ thì dừng" },
+        { k: "Kiến trúc", v: "Lorem ipsum · Dolor sit · Amet consectetur" },
+        { k: "Sở trường", v: "Adipiscing elit sed do eiusmod tempor incididunt" },
+        { k: "Triết lý code", v: "Lorem ipsum dolor sit amet" },
       ],
     },
     projects: [
-      { name: "Huyền Sử Đại Việt", role: "Lead Game Designer", year: "2024" },
-      { name: "Truyền Thuyết Âu Lạc", role: "Systems Designer", year: "2022" },
-      { name: "Ô Ăn Quan Mobile", role: "Game Designer", year: "2021" },
+      {
+        name: "Lorem Ipsum Alpha",
+        role: "Lead Developer",
+        year: "2024",
+        cover: "scene:mountain",
+        tags: ["RPG", "Multiplayer", "PC/Mobile"],
+        contribution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        metric: "Đang phát triển · Mở beta Q4/2024",
+      },
+      {
+        name: "Dolor Sit Amet",
+        role: "Backend & Netcode",
+        year: "2022",
+        cover: "scene:river",
+        tags: ["Strategy", "Realtime", "Mobile"],
+        contribution: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam quis nostrud.",
+        metric: "50K CCU · giảm 40% độ trễ cảm nhận",
+      },
+      {
+        name: "Consectetur Elit",
+        role: "Gameplay Programmer",
+        year: "2020",
+        cover: "scene:bamboo",
+        tags: ["Tactics", "Single Player", "PC"],
+        contribution: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        metric: "200K lượt tải · Top 10 game Việt 2020",
+      },
+    ],
+    milestones: [
+      {
+        year: "2017",
+        event: "Lorem ipsum dolor sit",
+        detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris.",
+      },
+      {
+        year: "2020",
+        event: "Consectetur adipiscing elit",
+        detail: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      },
+      {
+        year: "2022",
+        event: "Sed do eiusmod tempor",
+        detail: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
+      },
+      {
+        year: "2023",
+        event: "Ut labore et dolore",
+        detail: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident sunt in culpa.",
+      },
+      {
+        year: "2024",
+        event: "Magna aliqua veniam",
+        detail: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet consectetur.",
+      },
     ],
   },
   {
-    name: "Vũ Anh Khoa",
-    alias: "The Illustrator",
+    name: "Vũ Đình Khoa",
+    role: "Game Developer",
+    roleVi: "Lập Trình Game",
+    accent: "#9c6f15",
+    skills: [
+      { name: "Unreal Engine", slug: "unrealengine", color: "0E1128" },
+      { name: "C++", slug: "cplusplus", color: "00599C" },
+      { name: "Visual Studio", slug: "visualstudio", color: "5C2D91" },
+      { name: "Git", slug: "git", color: "F05032" },
+    ],
+    lore: {
+      kind: "craft",
+      title: "Chuyên Môn",
+      intro: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam quis nostrud exercitation.",
+      focus: [
+        { k: "Kiến trúc", v: "Dolor sit · Amet consectetur · Adipiscing elit" },
+        { k: "Sở trường", v: "Sed do eiusmod tempor incididunt ut labore" },
+        { k: "Triết lý code", v: "Consectetur adipiscing sed do eiusmod" },
+      ],
+    },
+    projects: [
+      {
+        name: "Veniam Nostrud",
+        role: "Engine Programmer",
+        year: "2025",
+        cover: "scene:river",
+        tags: ["RPG", "Open World", "PC/Console"],
+        contribution: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        metric: "Đang phát triển · Reveal trailer Q2/2025",
+      },
+      {
+        name: "Exercitation Ullamco",
+        role: "Tools Lead",
+        year: "2023",
+        cover: "scene:bamboo",
+        tags: ["Internal", "Tooling", "Multi-platform"],
+        contribution: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        metric: "Giảm 60% thời gian export · sử dụng nội bộ toàn studio",
+      },
+      {
+        name: "Laboris Nisi",
+        role: "Graphics Programmer",
+        year: "2021",
+        cover: "scene:mountain",
+        tags: ["Racing", "Mobile", "Stylized"],
+        contribution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore.",
+        metric: "Chạy 60fps trên Snapdragon 660 · Top 5 Indie Casual VN",
+      },
+    ],
+    milestones: [
+      {
+        year: "2019",
+        event: "Adipiscing elit consectetur",
+        detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua veniam quis nostrud.",
+      },
+      {
+        year: "2021",
+        event: "Sed do eiusmod tempor",
+        detail: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure.",
+      },
+      {
+        year: "2023",
+        event: "Incididunt ut labore",
+        detail: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.",
+      },
+      {
+        year: "2024",
+        event: "Dolore magna aliqua",
+        detail: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum.",
+      },
+      {
+        year: "2025",
+        event: "Veniam quis nostrud",
+        detail: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      },
+    ],
+  },
+  {
+    name: "Nguyễn Trần Thanh Hằng",
     role: "Game Artist",
     roleVi: "Họa Sĩ Game",
-    tagline: "Thổi hồn Á Đông vào từng nét vẽ, dựng nên thế giới sống động.",
     accent: "#d4684a",
     skills: [
       { name: "Photoshop", icon: "ps", color: "31A8FF" },
@@ -135,32 +264,75 @@ const MEMBERS = [
       { name: "Blender", slug: "blender", color: "F5792A" },
       { name: "Premiere", icon: "pr", color: "9999FF" },
     ],
-    quote: "Tôi không vẽ nhân vật. Tôi vẽ câu chuyện mà nhân vật đó mang theo.",
-    meta: [
-      { label: "Kinh nghiệm", value: "6 năm" },
-      { label: "Phong cách", value: "Tranh dân gian" },
-      { label: "Cấp bậc", value: "Lead Artist" },
-    ],
     lore: {
       kind: "soul",
       title: "Chất Riêng",
-      intro: "Người kể chuyện bằng hình — pha nét tranh Hàng Trống vào tạo hình hiện đại.",
-      signature: "Đường nét mềm mại Á Đông, bảng màu son – chàm – kim nhũ.",
-      inspiration: ["Tranh Đông Hồ", "Điêu khắc đình làng", "Truyện cổ tích Việt"],
-      mood: ["Hoài niệm", "Sử thi", "Trữ tình"],
+      intro: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      signature: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.",
+      inspiration: ["Lorem ipsum", "Dolor sit amet", "Consectetur elit"],
+      mood: ["Adipiscing", "Tempor", "Veniam"],
     },
     projects: [
-      { name: "Huyền Sử Đại Việt", role: "Key Visual & Concept", year: "2024" },
-      { name: "Artbook 'Cõi Việt'", role: "Lead Illustrator", year: "2023" },
-      { name: "Thần Thoại Việt", role: "Character Artist", year: "2021" },
+      {
+        name: "Cillum Dolore",
+        role: "Key Visual & Concept",
+        year: "2024",
+        cover: "scene:bamboo",
+        tags: ["Concept Art", "Key Visual", "Art Bible"],
+        contribution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore.",
+        metric: "Đang phát triển · Reveal artwork đạt 50K share",
+      },
+      {
+        name: "Excepteur Sint",
+        role: "Lead Illustrator",
+        year: "2023",
+        cover: "scene:river",
+        tags: ["Artbook", "In Ấn", "Cá Nhân"],
+        contribution: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        metric: "1000 bản giới hạn · Tái bản 2 lần · NXB Kim Đồng",
+      },
+      {
+        name: "Occaecat Cupidatat",
+        role: "Character Artist",
+        year: "2021",
+        cover: "scene:mountain",
+        tags: ["Adventure", "2D", "Mobile"],
+        contribution: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur.",
+        metric: "Best Art Direction · GameAwards VN 2021",
+      },
+    ],
+    milestones: [
+      {
+        year: "2018",
+        event: "Lorem ipsum dolor",
+        detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna.",
+      },
+      {
+        year: "2020",
+        event: "Sit amet consectetur",
+        detail: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation.",
+      },
+      {
+        year: "2021",
+        event: "Adipiscing elit sed",
+        detail: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis.",
+      },
+      {
+        year: "2023",
+        event: "Do eiusmod tempor",
+        detail: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint.",
+      },
+      {
+        year: "2024",
+        event: "Incididunt ut labore",
+        detail: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      },
     ],
   },
   {
-    name: "Đỗ Ngọc Lan",
-    alias: "The Sculptor",
+    name: "Lê Trúc Giang",
     role: "Game Artist",
     roleVi: "Họa Sĩ Game",
-    tagline: "Khắc họa chiều sâu 3D, biến ý tưởng thành hình hài chạm được.",
     accent: "#b8902a",
     skills: [
       { name: "Photoshop", icon: "ps", color: "31A8FF" },
@@ -171,24 +343,69 @@ const MEMBERS = [
       { name: "Blender", slug: "blender", color: "F5792A" },
       { name: "Premiere", icon: "pr", color: "9999FF" },
     ],
-    quote: "Một mô hình đẹp là khi ánh sáng chạm vào, nó tự kể câu chuyện của mình.",
-    meta: [
-      { label: "Kinh nghiệm", value: "5 năm" },
-      { label: "Phong cách", value: "Stylized 3D" },
-      { label: "Cấp bậc", value: "Senior Artist" },
-    ],
     lore: {
       kind: "soul",
       title: "Chất Riêng",
-      intro: "Nhà điêu khắc số — nắn từng khối hình để chất liệu Việt sống dậy trong không gian 3D.",
-      signature: "Khối hình cách điệu, bề mặt sơn mài, chi tiết chạm trổ thủ công.",
-      inspiration: ["Tượng chùa cổ", "Gốm Bát Tràng", "Hoa văn trống đồng"],
-      mood: ["Tĩnh tại", "Tinh xảo", "Linh thiêng"],
+      intro: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      signature: "Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+      inspiration: ["Sed do eiusmod", "Tempor incididunt", "Ut labore dolore"],
+      mood: ["Magna", "Aliqua", "Veniam"],
     },
     projects: [
-      { name: "Huyền Sử Đại Việt", role: "Lead 3D Artist", year: "2024" },
-      { name: "Bảo Vật Quốc Gia (AR)", role: "3D Modeler", year: "2023" },
-      { name: "Kinh Thành Thăng Long", role: "Environment Artist", year: "2022" },
+      {
+        name: "Proident Mollit",
+        role: "Lead 3D Artist",
+        year: "2024",
+        cover: "scene:mountain",
+        tags: ["RPG", "Stylized 3D", "PC/Mobile"],
+        contribution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore.",
+        metric: "Đang phát triển · 80+ asset nhân vật & môi trường",
+      },
+      {
+        name: "Anim Laborum",
+        role: "3D Modeler",
+        year: "2023",
+        cover: "scene:bamboo",
+        tags: ["AR", "Văn hoá", "Mobile"],
+        contribution: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis.",
+        metric: "Hợp tác Bảo tàng Lịch sử · 200K lượt trải nghiệm",
+      },
+      {
+        name: "Officia Deserunt",
+        role: "Environment Artist",
+        year: "2022",
+        cover: "scene:river",
+        tags: ["Lịch sử", "Khám phá", "PC"],
+        contribution: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.",
+        metric: "Giải Khuyến khích Nhân tài Đất Việt 2022",
+      },
+    ],
+    milestones: [
+      {
+        year: "2019",
+        event: "Lorem ipsum dolor",
+        detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore.",
+      },
+      {
+        year: "2021",
+        event: "Sit amet consectetur",
+        detail: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud.",
+      },
+      {
+        year: "2022",
+        event: "Adipiscing elit sed",
+        detail: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      },
+      {
+        year: "2023",
+        event: "Do eiusmod tempor",
+        detail: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      },
+      {
+        year: "2024",
+        event: "Incididunt ut labore",
+        detail: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.",
+      },
     ],
   },
 ];
