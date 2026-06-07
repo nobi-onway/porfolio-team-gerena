@@ -1,0 +1,716 @@
+/* =========================================================
+   ĐẠI VIỆT STUDIO — Team Portfolio
+   THEME: THỦY MẶC MINIMAL (Ink Wash)
+   Nền giấy dó sáng · mực đen ngả nâu · nhấn đỏ son
+========================================================= */
+
+:root {
+  --ink: #1c1a17;          /* mực đen ngả nâu */
+  --ink-soft: #4a4640;     /* mực nhạt */
+  --paper: #f4efe4;        /* giấy dó */
+  --paper-2: #efe8d8;
+  --seal: #b5362a;         /* đỏ son (ấn triện) */
+  --seal-dark: #8f2a20;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;            /* KHÓA scroll x & y */
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  overscroll-behavior: none;
+}
+
+/* ===== Nền giấy dó ===== */
+.bg-paper {
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(181,54,42,0.05), transparent 45%),
+    radial-gradient(ellipse at 85% 88%, rgba(28,26,23,0.05), transparent 50%),
+    #f4efe4;
+}
+/* Vân giấy nổi nhẹ (multiply để ăn vào nền sáng) */
+.bg-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* ===== Khung viền mực ở 4 góc ===== */
+.frame-corner {
+  position: absolute;
+  z-index: 20;
+  width: 56px;
+  height: 56px;
+  border-color: rgba(28,26,23,0.45);
+  border-width: 1px;
+  opacity: 0.8;
+}
+
+/* ===== Con dấu triện nhỏ ===== */
+.seal-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--paper);
+  background: var(--seal);
+  border-radius: 3px;
+}
+
+/* ===== Tiện ích màu ===== */
+.text-ink { color: var(--ink); }
+.text-seal { color: var(--seal); }
+
+/* =========================================================
+   VẾT MỰC LOANG TĨNH (nền)
+========================================================= */
+.ink-wash {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+.ink-wash-1 {
+  top: -130px; left: -110px;
+  width: 480px; height: 420px;
+  background: radial-gradient(circle at 40% 40%, rgba(28,26,23,0.20), transparent 65%);
+}
+.ink-wash-2 {
+  bottom: -150px; right: -90px;
+  width: 520px; height: 460px;
+  background: radial-gradient(circle at 60% 60%, rgba(181,54,42,0.12), transparent 65%);
+}
+
+/* =========================================================
+   CUỘN TRANH DỌC LIỀN MẠCH (#sceneLayer > #scroll)
+   1 bức tranh cao (số-thành-viên × 100vh), camera trượt dọc.
+   Chính chuyển động của tranh tạo ra transition.
+========================================================= */
+#sceneScroll {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  /* height set inline theo số đoạn */
+  transform: translateY(0);
+  transition: transform 1.25s cubic-bezier(0.7, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* ---- 1 BỨC TRANH DỌC DÀI làm nền cuộn ----
+   Ảnh cao = toàn bộ #sceneScroll (N×100vh), rộng auto theo tỉ lệ,
+   NEO PHẢI để tránh trống đồng bên trái. Camera trượt #sceneScroll
+   → cuộn dọc qua tranh. */
+/* Wrap cố định 1 viewport (100vh), nằm trên cùng #sceneScroll.
+   Vì #sceneScroll bị main.js trượt -current×100vh, ta BÙ LẠI để wrap luôn
+   dán đáy màn (sticky-like), rồi tự cuộn ẢNH bên trong wrap. */
+.scene-longwrap {
+  position: absolute;
+  top: 0; right: 0;
+  width: 60vw;                     /* vùng phải dành cho tranh */
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+}
+.scene-long {
+  position: absolute;
+  top: 0; right: 0;                /* neo mép phải */
+  width: 100%;                     /* khớp chiều rộng vùng phải */
+  height: auto;                    /* cao theo tỉ lệ ảnh (không méo) */
+  display: block;
+  transform: translateY(var(--bg-shift, 0px));   /* JS cuộn ảnh dọc tại đây */
+  transition: transform 1.25s cubic-bezier(0.7, 0, 0.2, 1);
+  will-change: transform;
+  filter: grayscale(0.12) contrast(0.96) brightness(1.04);
+  opacity: 0.92;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 26%, rgba(0,0,0,1) 100%);
+          mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,1) 26%, rgba(0,0,0,1) 100%);
+}
+
+/* màng giấy dó phủ lên ảnh: làm dịu, thống nhất tông; đậm bên trái (dưới trống) */
+.scene-veil {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.scene-veil--long {
+  background:
+    linear-gradient(to right, #f4efe4 20%, rgba(244,239,228,0.25) 46%, rgba(244,239,228,0) 70%),
+    radial-gradient(140% 60% at 75% 50%, rgba(244,239,228,0) 45%, rgba(244,239,228,0.4) 100%);
+}
+
+/* lớp hiệu ứng SVG (nếu dùng) chồng lên ảnh */
+.seg-fx {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* Nét mực dùng chung cho mọi họa tiết SVG — mực PHA CHÀM (xanh xám lạnh)
+   như tranh thủy mặc đương đại, ấm hơn đen tuyền.
+   vector-effect giữ độ dày nét đều dù SVG bị kéo (preserveAspectRatio=none). */
+.ink-stroke {
+  fill: none;
+  stroke: rgba(38, 48, 58, 0.52);   /* #26303a pha chàm */
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.ink-stroke.faint { stroke: rgba(46, 58, 70, 0.24); stroke-width: 1.8; }
+.ink-stroke.bold  { stroke: rgba(30, 40, 50, 0.7);  stroke-width: 2.8; }
+.ink-fill-soft { fill: rgba(40, 52, 64, 0.055); stroke: none; }
+.seal-fill { fill: var(--seal); stroke: none; }
+
+/* Mảng tô "wash" thủy mặc — KHỐI mực gradient + mép loang */
+.ink-wash       { stroke: none; }
+.ink-wash.w1    { fill: url(#washInk1); }
+.ink-wash.w2    { fill: url(#washInk2); }
+.ink-wash.w3    { fill: url(#washFaint); }
+.ink-top        { fill: url(#washTop); stroke: none; }   /* đỉnh sáng */
+/* mép mực loang (turbulence) — gọi qua filter, áp cho mảng wash & nét nhấn */
+.bleed          { filter: url(#inkBleed); }
+.bleed-soft     { filter: url(#inkBleedSoft); }
+.far-haze       { filter: url(#farHaze); }               /* vật xa: blur tầng không khí */
+.dry            { filter: url(#dryBrush); }              /* vệt bút khô */
+
+/* Nét bút lông tô-fill (hình nêm) — đậm ở thân, thon ở đuôi */
+.brush-fill     { fill: rgba(30,40,50,0.62); stroke: none; }
+.brush-fill.soft{ fill: rgba(38,48,58,0.34); }
+
+/* ---- Draw-on: nét được "vẽ ra" khi tải tranh ---- */
+.draw {
+  stroke-dasharray: var(--len, 1200);
+  stroke-dashoffset: var(--len, 1200);
+  animation: drawIn 2.6s ease forwards;
+}
+@keyframes drawIn { to { stroke-dashoffset: 0; } }
+
+/* ---- Trôi nổi nhẹ (parallax/float) cho vật trang trí ---- */
+.float-slow { animation: floatY 9s ease-in-out infinite; }
+.float-mid  { animation: floatY 6.5s ease-in-out infinite; }
+.float-x    { animation: floatX 14s ease-in-out infinite; }
+@keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes floatX { 0%,100% { transform: translateX(0); } 50% { transform: translateX(22px); } }
+
+/* ---- SỐNG ĐỘNG: cảnh vật "thở" ---- */
+/* Hạc vỗ cánh chậm (scale dọc nhẹ quanh thân) */
+.flap { transform-box: fill-box; transform-origin: 50% 60%; animation: flap 3.4s ease-in-out infinite; }
+@keyframes flap { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.82) translateY(-2px); } }
+
+/* Sương trôi ngang chậm, mờ dần hai đầu */
+.mist { animation: mistDrift 22s ease-in-out infinite; }
+@keyframes mistDrift {
+  0%,100% { transform: translateX(0);   opacity: .5; }
+  50%     { transform: translateX(46px); opacity: .8; }
+}
+
+/* Gợn nước lăn tăn (dịch ngang nhỏ, đổi nhịp) */
+.ripple-go { animation: rippleGo 6s ease-in-out infinite; }
+@keyframes rippleGo { 0%,100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+
+/* Cánh đào rơi — xoay + bay xuống (đặt trên .petal-fall, mỗi cái lệch pha) */
+.petal-fall { transform-box: fill-box; transform-origin: center;
+  animation: petalFall var(--pf-dur, 9s) linear infinite;
+  animation-delay: var(--pf-delay, 0s); }
+@keyframes petalFall {
+  0%   { transform: translate(0,0) rotate(0deg);            opacity: 0; }
+  10%  { opacity: .8; }
+  90%  { opacity: .8; }
+  100% { transform: translate(var(--pf-dx,-30px), var(--pf-dy,120px)) rotate(var(--pf-rot,300deg)); opacity: 0; }
+}
+
+/* =========================================================
+   CARD TRANSITION — MORPH kiểu băng phim (track trượt liền mạch)
+   Tất cả card xếp dọc trong #cardTrack; khi chuyển, dịch cả track
+   translateY(-current×100vh). KHÔNG fade — chỉ trượt liên tục.
+========================================================= */
+#stage { overflow: hidden; }
+#cardTrack {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  /* chiều cao = số card × 100vh (tự tính qua các .member-card height:100vh) */
+  transform: translateY(0);
+  /* khớp đúng transition của #sceneScroll → cảnh + nội dung trượt như một khối */
+  transition: transform 1.25s cubic-bezier(0.7, 0, 0.2, 1);
+  will-change: transform;
+}
+.member-card {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Các mục bên trong (avatar / tên-role / khối info):
+   - Card KHÔNG active: ẩn nhẹ, dịch lên + co nhẹ (trạng thái chờ).
+   - Card active: lần lượt trượt vào (stagger) — như nội dung "đáp xuống" sau khi track morph tới.
+   Mỗi lần card quay lại active, animation chạy lại từ đầu. */
+.member-card .reveal {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  filter: blur(2px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.7s ease;
+}
+.member-card.active .reveal {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* Stagger: avatar → tên/role → 3 khối thông tin, chỉ tính từ khi card active */
+.member-card.active .reveal.d1 { transition-delay: 0.10s; }
+.member-card.active .reveal.d2 { transition-delay: 0.26s; }
+.member-card.active .reveal.d3 { transition-delay: 0.42s; }
+.member-card.active .reveal.d4 { transition-delay: 0.56s; }
+.member-card.active .reveal.d5 { transition-delay: 0.70s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .member-card .reveal,
+  .member-card.active .reveal {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* =========================================================
+   TRỐNG ĐỒNG LỚN — nền toàn cục, tâm GIỮA CẠNH TRÁI
+   Nửa trống (cung 1/2) xòe sang phải, ôm lấy avatar.
+   Xoay +1 góc cố định mỗi lần transition (JS set --drum-rot).
+========================================================= */
+#drumLayer { z-index: 5; }
+.dongson-drum {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  /* đường kính ~ 1.4× chiều cao màn để nửa trống phủ rộng */
+  width: 140vh;
+  height: 140vh;
+  /* tâm trống nằm đúng giữa cạnh trái màn hình */
+  transform: translate(-50%, -50%) rotate(var(--drum-rot, 0deg));
+  transition: transform 1.25s cubic-bezier(0.34, 1.2, 0.4, 1);
+  opacity: 0.4;
+  will-change: transform;
+}
+.dongson-drum .ds-line {
+  fill: none;
+  stroke: rgba(28,26,23,0.5);
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+}
+.dongson-drum .ds-line.faint { stroke: rgba(28,26,23,0.26); }
+.dongson-drum .ds-fill { fill: rgba(28,26,23,0.55); stroke: none; }
+.dongson-drum .ds-dot  { fill: rgba(28,26,23,0.42); stroke: none; }
+
+/* =========================================================
+   AVATAR — khung nét đứt mực + pose nét mực + dấu triện
+   (đặt nằm gần tâm trống đồng — canh ở render layout)
+========================================================= */
+.avatar-frame {
+  position: relative;
+  z-index: 1;
+  max-height: 50vh;
+  border-radius: 10px;
+  border: 2px dashed rgba(28,26,23,0.4);
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(28,26,23,0.025) 0px, rgba(28,26,23,0.025) 10px,
+      transparent 10px, transparent 20px),
+    radial-gradient(circle at 50% 30%, rgba(181,54,42,0.05), transparent 70%),
+    rgba(244,239,228,0.78);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 10px 45px rgba(28,26,23,0.16), inset 0 0 30px rgba(255,255,255,0.45);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.avatar-frame::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px dashed rgba(28,26,23,0.18);
+  border-radius: 6px;
+  pointer-events: none;
+}
+/* Con dấu triện đỏ góc dưới-phải */
+.avatar-frame::after {
+  content: "印";
+  position: absolute;
+  right: 10px; bottom: 10px;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  color: var(--paper);
+  background: var(--seal);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(181,54,42,0.4);
+  opacity: 0.92;
+}
+.avatar-frame .frame-label {
+  position: absolute;
+  top: 10px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: rgba(28,26,23,0.45);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  white-space: nowrap;
+}
+.pose-svg { width: 78%; height: 88%; display: block; }
+.pose-svg path,
+.pose-svg circle,
+.pose-svg line,
+.pose-svg polyline {
+  fill: none;
+  stroke: rgba(28,26,23,0.7);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 5 5;
+}
+.pose-svg path,
+.pose-svg circle,
+.pose-svg polyline {
+  animation: dashflow 18s linear infinite;
+}
+@keyframes dashflow { to { stroke-dashoffset: -200; } }
+
+/* =========================================================
+   CHỮ / NHÃN
+========================================================= */
+.name-ink {
+  color: var(--ink);
+}
+.role-badge { letter-spacing: 0.35em; }
+
+/* ===== Cụm TÊN trên header — điểm nhấn ===== */
+.member-name-wrap { position: relative; }
+
+/* tên: font serif khắc bia (Cormorant Garamond) — có dấu tiếng Việt,
+   giữ chất thư pháp/La Mã giống Cinzel; thêm chiều sâu mực */
+#memberName {
+  font-family: 'Lobster', cursive;
+  font-weight: 400;           /* Lobster chỉ có 1 weight */
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 0 rgba(244, 239, 228, 0.6);
+  min-height: 1em;            /* giữ chiều cao khi rỗng (lúc xóa để gõ lại) */
+}
+/* MẤT: fade out thuần */
+#memberName {
+  transition: opacity 0.35s ease;
+}
+#memberName.is-switching { opacity: 0; }
+
+/* HIỆN: mỗi ký tự "chảy ra" mềm mại như nét bút thư pháp
+   (bắt đầu mờ + nhòe + dịch lên nhẹ → mượt về rõ; delay tăng dần do JS đặt) */
+.name-char {
+  display: inline-block;
+  white-space: pre;                 /* giữ khoảng trắng */
+  opacity: 0;
+  transform: translateY(0.22em) scale(0.96);
+  filter: blur(4px);
+  animation: nameStroke 0.42s cubic-bezier(0.22, 0.7, 0.25, 1) forwards;
+}
+@keyframes nameStroke {
+  0%   { opacity: 0;   transform: translateY(0.22em) scale(0.96); filter: blur(4px); }
+  60%  { opacity: 0.85; filter: blur(1px); }
+  100% { opacity: 1;   transform: translateY(0) scale(1);        filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-char { animation: none; opacity: 1; transform: none; filter: none; }
+}
+
+/* hai nét mực mảnh hai bên tên (kiểu khắc bia), thuôn dần về đuôi */
+.name-rule {
+  display: inline-block;
+  width: clamp(26px, 5vw, 72px);
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(28, 26, 23, 0.45));
+}
+.name-rule:last-of-type {
+  background: linear-gradient(to left, transparent, rgba(28, 26, 23, 0.45));
+}
+
+
+/* =========================================================
+   CÔNG CỤ — logo đơn sắc mực, hover hiện màu; TẤT CẢ ĐÓNG KHUNG
+========================================================= */
+.skill-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  transition: transform 0.25s ease;
+}
+.skill-chip:hover { transform: translateY(-3px) scale(1.06); }
+
+/* KHUNG CHUNG (đồng nhất mọi loại icon) — bo góc, viền mực mảnh, nền giấy */
+.skill-chip--framed {
+  border: 1.5px solid rgba(28,26,23,0.55);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.28);
+  box-shadow: 0 2px 8px rgba(28,26,23,0.06);
+  transition: transform 0.25s ease, border-color 0.3s ease, background 0.3s ease;
+}
+.skill-chip--framed:hover {
+  border-color: var(--brand, var(--seal));
+  background: rgba(255,255,255,0.5);
+}
+
+/* hai lớp icon chồng (CDN): mực mặc định + màu gốc khi hover */
+.skill-chip .ic {
+  position: absolute;
+  width: 64%;
+  height: 64%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+.skill-chip .ic-ink   { opacity: 0.78; }
+.skill-chip .ic-color { opacity: 0; }
+.skill-chip:hover .ic-ink   { opacity: 0; }
+.skill-chip:hover .ic-color { opacity: 1; }
+
+/* icon tự vẽ (SVG currentColor): mực mặc định → màu brand khi hover */
+.skill-chip--svg {
+  color: rgba(28,26,23,0.78);
+  transition: transform 0.25s ease, color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+.skill-chip--svg .ic-svg { width: 76%; height: 76%; display: block; }
+.skill-chip--svg:hover { color: var(--brand, var(--seal)); }
+
+/* chữ fallback — cùng khung, chữ căn giữa */
+.skill-chip--text {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(28,26,23,0.78);
+}
+.skill-chip--text:hover { color: var(--brand, var(--seal)); }
+
+/* =========================================================
+   KHỐI THÔNG TIN
+========================================================= */
+/* Khối thông tin = MẢNH GIẤY DÓ với MÉP CỌ BỤT PHÁ (không viền thẳng).
+   Nền giấy do ::before tạo + filter url(#paperEdge) làm gợn mép.
+   Nội dung không bị filter để chữ sắc nét. */
+.info-block {
+  position: relative;
+  isolation: isolate;        /* để pseudo z-index:-1 chỉ lùi sau nội dung block, không lùi khỏi card */
+  padding: 16px 20px 18px;
+  background: transparent;
+}
+.info-block::before {
+  content: "";
+  position: absolute;
+  inset: -3px -5px;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.5), rgba(239,232,216,0.28));
+  /* mép giấy rách */
+  filter: url(#paperEdge);
+  border-radius: 3px;
+  box-shadow: 0 6px 22px rgba(28,26,23,0.07);
+}
+/* vệt mực mờ rất nhạt ở một góc cho có "hồn giấy" */
+.info-block::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 40%; height: 50%;
+  right: 4%; bottom: 0;
+  background: radial-gradient(ellipse at 70% 80%, rgba(28,26,23,0.05), transparent 70%);
+  filter: url(#paperEdgeSoft);
+  pointer-events: none;
+}
+
+/* Nhãn mục: tiêu đề + HAIRLINE mực mảnh dần phía dưới */
+.sect-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(28,26,23,0.62);
+  margin-bottom: 13px;
+  padding-bottom: 9px;
+  position: relative;
+}
+.sect-label::before { content: "◆"; font-size: 8px; color: var(--seal); }
+/* nét mực mảnh dần dưới tiêu đề — như nét bút lông nhấc lên */
+.sect-label::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%;
+  height: 1.5px;
+  background: linear-gradient(90deg,
+    rgba(28,26,23,0.45) 0%,
+    rgba(28,26,23,0.22) 35%,
+    rgba(28,26,23,0.06) 70%,
+    transparent 100%);
+  filter: url(#paperEdgeSoft);
+}
+
+.mood-chip {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(181,54,42,0.4);
+  color: var(--seal);
+  background: rgba(181,54,42,0.05);
+}
+
+.quote-line {
+  position: relative;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(28,26,23,0.65);
+  padding-left: 14px;
+  border-left: 2px solid rgba(181,54,42,0.5);
+}
+.quote-line::before {
+  content: "❝";
+  position: absolute;
+  left: 4px; top: -6px;
+  font-size: 18px;
+  font-family: 'Cinzel', serif;
+  color: rgba(181,54,42,0.45);
+}
+
+/* =========================================================
+   NAV DOTS
+========================================================= */
+.nav-dot {
+  width: 10px; height: 10px;
+  border: 1px solid var(--seal);
+  border-radius: 50%;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  position: relative;
+}
+.nav-dot.active {
+  background: var(--seal);
+  box-shadow: 0 0 14px rgba(181,54,42,0.6);
+  transform: scale(1.25);
+}
+.nav-dot::before {
+  content: attr(data-name);
+  position: absolute;
+  right: 24px; top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(28,26,23,0.75);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+.nav-dot:hover::before { opacity: 0.95; }
+
+/* =========================================================
+   SỐ THỨ TỰ MỜ PHÍA SAU
+========================================================= */
+.ghost-index {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  line-height: 0.8;
+  color: rgba(28,26,23,0.045);
+  user-select: none;
+}
+
+/* =========================================================
+   SCROLL HINT + CÁNH HOA RƠI
+========================================================= */
+@keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(8px);} }
+.bob { animation: bob 2s ease-in-out infinite; }
+
+/* Con chuột máy tính: con lăn đỏ trượt xuống rồi mờ dần (gợi ý cuộn) */
+.mouse-hint { display: block; }
+.mouse-wheel {
+  animation: mouseWheel 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+@keyframes mouseWheel {
+  0%   { transform: translateY(0);    opacity: 0; }
+  20%  { opacity: 1; }
+  70%  { transform: translateY(8px);  opacity: 0; }
+  100% { transform: translateY(8px);  opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mouse-wheel { animation: none; opacity: 1; }
+}
+
+/* ===== Vệt gió bám con trỏ: 1 trail liền kiểu nét bút thủy mặc ===== */
+#windFx #windTrail { transition: none; }
+@media (prefers-reduced-motion: reduce) { #windFx { display: none; } }
+
+/* Lớp NGOÀI: nhận offset "gió" theo con trỏ (mượt, không phá animation rơi) */
+.petal {
+  position: absolute;
+  top: -20px;
+  transform: translate(var(--wind-x, 0px), var(--wind-y, 0px));
+  will-change: transform;
+}
+/* Lớp TRONG: giữ animation rơi (translateY/X + xoay) */
+.petal-fall {
+  display: block;
+  opacity: 0;
+  animation: fall linear infinite;
+}
+@keyframes fall {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(108vh) translateX(var(--drift, 40px)) rotate(360deg); opacity: 0; }
+}
+
+/* =========================================================
+   LOADING CURTAIN
+========================================================= */
+#curtain {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#curtain.gone { opacity: 0; visibility: hidden; }
+
+.no-select { user-select: none; -webkit-user-select: none; }
+
+/* Số tiến trình dạng dọc (02 / 05) bên trái */
+.progress-num {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.25em;
+  line-height: 1.4;
+}
