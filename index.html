@@ -14,10 +14,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Lobster&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Patrick+Hand&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
 
-  <!-- Custom styles (Thủy Mặc) -->
+  <!-- Custom styles (Arcane Neon × Doodle) -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
@@ -53,35 +53,58 @@
   <!-- ===== Vệt mực bám theo con trỏ (1 trail liền, vẽ động) ===== -->
   <svg id="windFx" class="fixed inset-0 z-[14] overflow-visible pointer-events-none" aria-hidden="true">
     <defs>
-      <!-- mực loãng: đậm không đều dọc nét, đuôi nhạt nhưng KHÔNG về 0 hẳn -->
+      <!-- ink trail: gold → teal gradient -->
       <linearGradient id="windFade" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stop-color="#1c1a17" stop-opacity="0.08" />
-        <stop offset="0.22" stop-color="#1c1a17" stop-opacity="0.5" />
-        <stop offset="0.45" stop-color="#2a2620" stop-opacity="0.34" />
-        <stop offset="0.68" stop-color="#1c1a17" stop-opacity="0.62" />
-        <stop offset="1" stop-color="#1c1a17" stop-opacity="0.78" />
+        <stop offset="0" stop-color="#C8AA6E" stop-opacity="0.0" />
+        <stop offset="0.25" stop-color="#C8AA6E" stop-opacity="0.40" />
+        <stop offset="0.55" stop-color="#0BC4C2" stop-opacity="0.30" />
+        <stop offset="0.78" stop-color="#C8AA6E" stop-opacity="0.55" />
+        <stop offset="1" stop-color="#C8AA6E" stop-opacity="0.75" />
       </linearGradient>
-      <!-- mép mực thấm giấy: nhiễu + xô lệch nhẹ -->
+      <!-- mép doodle: nhiễu + xô lệch nhẹ -->
       <filter id="inkBleed" x="-20%" y="-20%" width="140%" height="140%">
         <feTurbulence type="fractalNoise" baseFrequency="0.09 0.11" numOctaves="2" seed="11" result="n" />
         <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+      <!-- ink splash: turbulence displacement (hand-drawn, không bloom) -->
+      <filter id="inkSplash" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.065" numOctaves="2" seed="5" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" result="disp"/>
+        <feGaussianBlur in="disp" stdDeviation="0.8" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="disp"/></feMerge>
+      </filter>
+      <!-- ink edge: nhẹ hơn cho viền UI -->
+      <filter id="inkEdge" x="-15%" y="-15%" width="130%" height="130%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="9" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <!-- backward-compat aliases (nếu còn ref trong code cũ) -->
+      <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.065" numOctaves="2" seed="5" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" result="disp"/>
+        <feGaussianBlur in="disp" stdDeviation="0.8" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="disp"/></feMerge>
+      </filter>
+      <filter id="neonGlowSoft" x="-15%" y="-15%" width="130%" height="130%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="9" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
     </defs>
     <path id="windTrail" fill="url(#windFade)" stroke="none" filter="url(#inkBleed)" />
   </svg>
 
-  <!-- ===== Khung viền mực ===== -->
-  <div class="frame-corner top-6 left-6 border-t border-l"></div>
-  <div class="frame-corner top-6 right-6 border-t border-r"></div>
-  <div class="frame-corner bottom-6 left-6 border-b border-l"></div>
-  <div class="frame-corner bottom-6 right-6 border-b border-r"></div>
+  <!-- ===== Khung viền hextech (góc bracket neon) ===== -->
+  <div class="frame-corner frame-corner--neon top-6 left-6 border-t border-l"></div>
+  <div class="frame-corner frame-corner--neon top-6 right-6 border-t border-r"></div>
+  <div class="frame-corner frame-corner--neon bottom-6 left-6 border-b border-l"></div>
+  <div class="frame-corner frame-corner--neon bottom-6 right-6 border-b border-r"></div>
 
   <!-- ===== Header thương hiệu ===== -->
   <header class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-10 md:px-16 py-7 no-select">
     <div class="flex items-center gap-3">
-      <svg width="34" height="34" viewBox="0 0 40 40" class="opacity-90">
-        <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="#1c1a17" stroke-width="1.5" />
-        <polygon points="20,11 29,20 20,29 11,20" fill="#b5362a" stroke="#1c1a17" stroke-width="1" />
+      <svg width="34" height="34" viewBox="0 0 40 40" class="opacity-90" style="filter:url(#inkEdge)">
+        <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="#C8AA6E" stroke-width="1.5" />
+        <polygon points="20,11 29,20 20,29 11,20" fill="#8B6914" stroke="#C8AA6E" stroke-width="1" />
       </svg>
       <div class="leading-tight">
         <div class="font-display text-ink text-lg md:text-xl font-bold tracking-widest">THIÊN DI</div>
@@ -132,9 +155,9 @@
     class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 no-select transition-opacity duration-500">
     <span class="text-[11px] tracking-[0.3em] text-ink/50">CUỘN ĐỂ KHÁM PHÁ</span>
     <!-- Con chuột máy tính: thân mực, con lăn (scroll) tô đỏ chạy lên xuống -->
-    <svg class="mouse-hint" width="22" height="34" viewBox="0 0 24 38" fill="none" aria-hidden="true">
-      <rect x="1" y="1" width="22" height="36" rx="11" fill="none" stroke="#1c1a17" stroke-width="1.6" />
-      <rect class="mouse-wheel" x="10.5" y="7" width="3" height="7" rx="1.5" fill="#b5362a" />
+    <svg class="mouse-hint" width="22" height="34" viewBox="0 0 24 38" fill="none" aria-hidden="true" style="filter:url(#inkEdge)">
+      <rect x="1" y="1" width="22" height="36" rx="11" fill="none" stroke="#C8AA6E" stroke-width="1.6" />
+      <rect class="mouse-wheel" x="10.5" y="7" width="3" height="7" rx="1.5" fill="#8B6914" />
     </svg>
   </div>
 
@@ -154,11 +177,11 @@
   <!-- ===== Loading curtain ===== -->
   <div id="curtain">
     <div class="text-center">
-      <svg width="60" height="60" viewBox="0 0 40 40" class="mx-auto mb-4 animate-pulse">
-        <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="#1c1a17" stroke-width="1.5" />
-        <polygon points="20,11 29,20 20,29 11,20" fill="#b5362a" stroke="#1c1a17" stroke-width="1" />
+      <svg width="60" height="60" viewBox="0 0 40 40" class="mx-auto mb-4 animate-pulse" style="filter:url(#inkSplash)">
+        <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="#C8AA6E" stroke-width="1.5" />
+        <polygon points="20,11 29,20 20,29 11,20" fill="#8B6914" stroke="#C8AA6E" stroke-width="1" />
       </svg>
-      <div class="font-display text-ink tracking-[0.4em] text-sm">ĐANG MÀI MỰC...</div>
+      <div class="font-display text-gold tracking-[0.4em] text-sm">ĐANG KHỞI ĐỘNG...</div>
     </div>
   </div>
 

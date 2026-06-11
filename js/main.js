@@ -102,16 +102,18 @@
 
   let current = 0;
   let animating = false;
+  document.body.classList.add("is-intro");
 
   const TURN = 1250;      // thời gian một lần chuyển (khớp transition #cardTrack & #sceneScroll)
   const REVEAL_AT = 620;  // khi track đã trượt ~1/2 thì nội dung card mới bắt đầu hiện ra (stagger)
 
   function updateIndicators() {
-    applyBgShift(current);                 // cuộn ảnh nền dọc theo slide
-    setHeaderMember(current);              // tên + vai trò lên header
+    applyBgShift(current);
+    setHeaderMember(current);
     dots.forEach((d, i) => d.classList.toggle("active", i === current));
     curIdx.textContent = String(current + 1).padStart(2, "0");
     progressBar.style.height = ((current + 1) / SLIDES_COUNT) * 100 + "%";
+    document.body.classList.toggle("is-intro", current === 0);
   }
 
   function goTo(idx) {
@@ -226,15 +228,102 @@
     setTimeout(() => stage.classList.remove("is-switching"), 420);
   }
 
+  /* ---- Particles vàng bay lên từ chữ highlight ở intro ---- */
+  (function initIntroParticles() {
+    const introCard = cards[0];
+    const canvas = introCard.querySelector(".intro-particles");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const GOLD = [236, 197, 151];
+    let particles = [];
+    let raf = null;
+    let running = false;
+
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+    function getRects() {
+      const cardRect = canvas.getBoundingClientRect();
+      return [...introCard.querySelectorAll(".tagline-em")].map(el => {
+        const r = el.getBoundingClientRect();
+        return { x: r.left - cardRect.left, y: r.top - cardRect.top, w: r.width, h: r.height };
+      });
+    }
+
+    function spawn(rects) {
+      if (!rects.length) return;
+      const rect = rects[Math.floor(Math.random() * rects.length)];
+      particles.push({
+        x: rect.x + Math.random() * rect.w,
+        y: rect.y + rect.h * 0.4 + Math.random() * rect.h * 0.4,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: -(Math.random() * 1.8 + 0.4),
+        life: 1,
+        size: Math.random() * 2.5 + 0.8,
+      });
+    }
+
+    let frame = 0;
+    function loop() {
+      if (!running) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (frame % 4 === 0) {
+        const rects = getRects();
+        spawn(rects);
+        if (Math.random() < 0.4) spawn(rects); // burst thêm
+      }
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.vy -= 0.02; // gia tốc nhẹ lên trên
+        p.life -= 0.018;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        const alpha = p.life * 0.85;
+        ctx.save();
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = `rgba(${GOLD},${alpha * 0.7})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${GOLD},${alpha})`;
+        ctx.fill();
+        ctx.restore();
+      }
+      frame++;
+      raf = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      if (running) return;
+      resize();
+      particles = [];
+      running = true;
+      loop();
+    }
+    function stop() {
+      running = false;
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Quan sát body.is-intro để start/stop
+    const observer = new MutationObserver(() => {
+      document.body.classList.contains("is-intro") ? start() : stop();
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+    window.addEventListener("resize", () => { if (running) resize(); });
+  })();
+
   /* ---- Khởi tạo (track đã ở vị trí 0 = INTRO) ---- */
   function init() {
     dots[0].classList.add("active");
     memberRole.textContent = "TEAM PORTFOLIO";
-    typeName("Thiên Di Studio");                          // header intro
+    typeName("Thiên Di Studio");
     curIdx.textContent = "01";
     progressBar.style.height = (1 / SLIDES_COUNT) * 100 + "%";
     document.getElementById("curtain").classList.add("gone");
-    // kích hoạt card đầu sau khi màn mở → chạy animation xuất hiện lần đầu
     requestAnimationFrame(() => cards[0].classList.add("active"));
   }
 
@@ -288,12 +377,22 @@
   ========================================================= */
   const petalLayer = document.getElementById("petals");
   const PETAL_SHAPES = [
-    // cánh hoa đào (ellipse khuyết)
-    '<svg viewBox="0 0 20 20"><path d="M10 2 C 14 4, 16 9, 10 18 C 4 9, 6 4, 10 2 Z" fill="rgba(181,54,42,0.45)"/></svg>',
-    // lá tre
-    '<svg viewBox="0 0 24 12"><path d="M1 6 Q 12 -2, 23 6 Q 12 10, 1 6 Z" fill="rgba(28,26,23,0.30)"/></svg>',
-    // cánh sen nhạt
-    '<svg viewBox="0 0 20 20"><path d="M10 2 C 15 5, 16 12, 10 18 C 4 12, 5 5, 10 2 Z" fill="rgba(181,54,42,0.28)"/></svg>',
+    // Mèo chibi (vàng)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M6 18 Q6 10 14 9 Q22 10 22 18 Q22 23 14 25 Q6 23 6 18Z" stroke="#C8AA6E" stroke-width="1.4"/><path d="M8 12 L6 5 L12 10" stroke="#C8AA6E" stroke-width="1.2"/><path d="M20 12 L22 5 L16 10" stroke="#C8AA6E" stroke-width="1.2"/><circle cx="11" cy="16" r="1.5" fill="#C8AA6E"/><circle cx="17" cy="16" r="1.5" fill="#C8AA6E"/><path d="M12 20 L14 21.5 L16 20" stroke="#C8AA6E" stroke-width="1"/><line x1="6" y1="18" x2="11" y2="17.5" stroke="#C8AA6E" stroke-width="0.8" opacity="0.7"/><line x1="17" y1="17.5" x2="22" y2="18" stroke="#C8AA6E" stroke-width="0.8" opacity="0.7"/></svg>`,
+    // Thỏ chibi (teal)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M8 13 Q6 4 8 2 Q10 1 11 13" stroke="#0BC4C2" stroke-width="1.3"/><path d="M20 13 Q22 4 20 2 Q18 1 17 13" stroke="#0BC4C2" stroke-width="1.3"/><circle cx="14" cy="19" r="7" stroke="#0BC4C2" stroke-width="1.4"/><circle cx="11" cy="17.5" r="1.3" fill="#0BC4C2"/><circle cx="17" cy="17.5" r="1.3" fill="#0BC4C2"/><circle cx="14" cy="21" r="1.1" fill="#BE1E37"/><circle cx="22" cy="22" r="2.2" stroke="#0BC4C2" stroke-width="1"/></svg>`,
+    // Rồng chibi (đỏ)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M5 16 Q4 8 14 7 Q24 8 24 15 Q24 20 18 22 L14 27 L10 22 Q5 20 5 16Z" stroke="#BE1E37" stroke-width="1.4"/><path d="M7 12 Q2 8 4 5 Q7 10 9 11" stroke="#BE1E37" stroke-width="1.2"/><path d="M21 12 Q26 8 24 5 Q21 10 19 11" stroke="#BE1E37" stroke-width="1.2"/><circle cx="18" cy="12" r="1.6" fill="#C8AA6E"/><path d="M5 18 Q2 16 1 18 Q3 20.5 5 18Z" stroke="#C8AA6E" stroke-width="1"/><circle cx="11" cy="4" r="1" fill="#BE1E37"/><circle cx="17" cy="4" r="1" fill="#BE1E37"/></svg>`,
+    // Nấm chibi (đỏ + vàng)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M3 15 Q2 4 14 3 Q26 4 25 15 Z" stroke="#BE1E37" stroke-width="1.4"/><rect x="8" y="15" width="12" height="10" rx="3" stroke="#C8AA6E" stroke-width="1.3"/><circle cx="10" cy="10" r="1.6" fill="#C8AA6E" opacity="0.9"/><circle cx="17" cy="8" r="1.8" fill="#C8AA6E" opacity="0.9"/><circle cx="13" cy="13" r="1.2" fill="#C8AA6E" opacity="0.8"/><path d="M10 20 Q14 22 18 20" stroke="#C8AA6E" stroke-width="0.9"/></svg>`,
+    // Pháp sư chibi (vàng + teal)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M9 14 L14 2 L19 14 Z" stroke="#C8AA6E" stroke-width="1.3"/><path d="M5 14 Q14 17 23 14" stroke="#C8AA6E" stroke-width="1.3"/><circle cx="14" cy="19" r="4.5" stroke="#C8AA6E" stroke-width="1.2"/><circle cx="12" cy="18" r="1" fill="#C8AA6E"/><circle cx="16" cy="18" r="1" fill="#C8AA6E"/><path d="M8 24 L6 28" stroke="#0BC4C2" stroke-width="1.3"/><path d="M20 24 L22 28" stroke="#0BC4C2" stroke-width="1.3"/><path d="M8 24 Q14 27 20 24" stroke="#0BC4C2" stroke-width="1.3"/><line x1="22" y1="16" x2="26" y2="26" stroke="#BE1E37" stroke-width="1.4" stroke-linecap="round"/><circle cx="22" cy="14" r="2.2" stroke="#BE1E37" stroke-width="1.1"/></svg>`,
+    // Chiến binh chibi (vàng + đỏ)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M9 11 Q9 4 14 3 Q19 4 19 11 Q19 14 14 15 Q9 14 9 11Z" stroke="#C8AA6E" stroke-width="1.3"/><path d="M6 15 L5 24 L23 24 L22 15 Z" stroke="#C8AA6E" stroke-width="1.2"/><path d="M5 17 Q2 15 2 19 Q2 23 6 23" stroke="#BE1E37" stroke-width="1.2"/><line x1="22" y1="13" x2="27" y2="22" stroke="#C8AA6E" stroke-width="1.6" stroke-linecap="round"/><line x1="20.5" y1="14.5" x2="24.5" y2="12" stroke="#C8AA6E" stroke-width="1.2"/><line x1="7" y1="24" x2="6" y2="28" stroke="#C8AA6E" stroke-width="1.2"/><line x1="21" y1="24" x2="22" y2="28" stroke="#C8AA6E" stroke-width="1.2"/></svg>`,
+    // Ngôi sao (vàng)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M14 2 L17 10 L26 10 L19 15.5 L22 24 L14 18.5 L6 24 L9 15.5 L2 10 L11 10 Z" stroke="#C8AA6E" stroke-width="1.4"/></svg>`,
+    // Chim Lạc chibi (teal)
+    `<svg viewBox="0 0 28 28" width="28" fill="none"><ellipse cx="14" cy="18" rx="7" ry="5" stroke="#0BC4C2" stroke-width="1.4"/><circle cx="14" cy="10" r="4" stroke="#0BC4C2" stroke-width="1.3"/><path d="M7 15 Q1 12 3 9 Q5 13 8 14" stroke="#0BC4C2" stroke-width="1.2"/><path d="M21 15 Q27 12 25 9 Q23 13 20 14" stroke="#0BC4C2" stroke-width="1.2"/><circle cx="15.5" cy="9" r="1.2" fill="#0BC4C2"/><path d="M16.5 10 L20 11" stroke="#C8AA6E" stroke-width="1.1" stroke-linecap="round"/><line x1="10" y1="23" x2="8" y2="27" stroke="#0BC4C2" stroke-width="1.2"/><line x1="18" y1="23" x2="20" y2="27" stroke="#0BC4C2" stroke-width="1.2"/></svg>`,
   ];
   const petals = [];   // {el, wx, wy} — el là .petal (lớp ngoài nhận gió)
   for (let i = 0; i < 18; i++) {
@@ -309,9 +408,10 @@
     inner.style.animationDuration = dur + "s";
     inner.style.animationDelay = -(Math.random() * dur) + "s";
     inner.style.setProperty("--drift", (Math.random() * 120 - 30) + "px");
-    const size = 10 + Math.random() * 12;
+    const size = 20 + Math.random() * 16;
     p.style.width = size + "px";
     inner.firstChild.setAttribute("width", size);
+    inner.firstChild.setAttribute("height", size);
     petalLayer.appendChild(p);
     // el = lớp ngoài (áp gió); fall = lớp trong (vị trí RƠI thật để đo)
     petals.push({ el: p, fall: inner, wx: 0, wy: 0 });

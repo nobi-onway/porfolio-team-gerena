@@ -17,7 +17,7 @@ const MEMBERS = [
     name: "Phạm Hùng Thiên",
     role: "Game Designer",
     roleVi: "Thiết Kế Game",
-    accent: "#0f7a52",
+    accent: "#C8AA6E",  // Riot gold
     layout: "manifesto",
     passion: {
       headline: "Lorem Ipsum Dolor",
@@ -33,7 +33,7 @@ const MEMBERS = [
     name: "Đoàn Gia Bảo",
     role: "Game Developer",
     roleVi: "Lập Trình Game",
-    accent: "#c0392b",
+    accent: "#0BC4C2",  // teal
     layout: "overprint",
     passion: {
       headline: "Adipiscing Elit",
@@ -49,7 +49,7 @@ const MEMBERS = [
     name: "Vũ Đình Khoa",
     role: "Game Developer",
     roleVi: "Lập Trình Game",
-    accent: "#9c6f15",
+    accent: "#C8AA6E",  // Riot gold
     layout: "vertical",
     passion: {
       headline: "Incididunt Ut Labore",
@@ -65,7 +65,7 @@ const MEMBERS = [
     name: "Nguyễn Trần Thanh Hằng",
     role: "Game Artist",
     roleVi: "Họa Sĩ Game",
-    accent: "#d4684a",
+    accent: "#C8AA6E",  // Riot gold
     layout: "halo",
     skills: [
       { name: "Photoshop",     icon: "ps",      color: "31A8FF" },
@@ -90,7 +90,7 @@ const MEMBERS = [
     name: "Lê Trúc Giang",
     role: "Game Artist",
     roleVi: "Họa Sĩ Game",
-    accent: "#b8902a",
+    accent: "#0BC4C2",  // teal
     layout: "folio",
     skills: [
       { name: "Photoshop",     icon: "ps",      color: "31A8FF" },

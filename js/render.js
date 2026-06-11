@@ -6,15 +6,15 @@
 ========================================================= */
 
 /* =========================================================
-   CÔNG CỤ — icon SVG đơn sắc mực, hover hiện màu thương hiệu
+   CÔNG CỤ — icon SVG hextech neon, hover glow
    (chỉ dùng cho Artist khi có m.skills)
 ========================================================= */
-const INK_HEX = "1c1a17";
+const INK_HEX = "ffffff";  /* neon cyan (xưa: ink black) */
 
 function adobeBadge(letters) {
-  return `<svg viewBox="0 0 48 48" class="ic-svg" xmlns="http://www.w3.org/2000/svg">
+  return `<svg viewBox="0 0 48 48" class="ic-svg" xmlns="http://www.w3.org/2000/svg" style="filter:url(#neonGlowSoft)">
     <text x="24" y="32" text-anchor="middle"
-          font-family="'Cinzel', Georgia, serif" font-weight="700"
+          font-family="'Oswald', sans-serif" font-weight="700"
           font-size="22" fill="currentColor">${letters}</text>
   </svg>`;
 }
@@ -63,73 +63,53 @@ function poseFor(role) {
   return POSES.developer;
 }
 
-/* ---- Chim Lạc + Trống Đông Sơn (nền toàn cục) ---- */
+/* ---- Chim Lạc doodle ink (hand-drawn, Arcane style) ---- */
 function lacBird() {
-  const w = 36, h = 36 * 284 / 650;
-  return `<image href="img/lac-bird.jpg" x="${(-w/2).toFixed(1)}" y="${(-h/2).toFixed(1)}"
-    width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="xMidYMid meet"
-    filter="url(#lacKey)" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"/>`;
+  return `<g style="filter:url(#inkEdge)">
+    <!-- cánh trái -->
+    <path d="M -8 0 Q -15 -5 -20 -2" stroke="#C8AA6E" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <!-- cánh phải -->
+    <path d="M 8 0 Q 15 -5 20 -2" stroke="#C8AA6E" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <!-- thân + cổ -->
+    <path d="M 0 2 Q 0 8 2 12" stroke="#C8AA6E" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <!-- đầu -->
+    <circle cx="3" cy="14" r="2" fill="#8B6914" stroke="#C8AA6E" stroke-width="0.8"/>
+  </g>`;
 }
 
 function dongSonDrum() {
   const C = 100;
-  let rays = "";
-  const RAYS = 14, rIn = 13, rOut = 26;
-  for (let i = 0; i < RAYS; i++) {
-    const a = (i / RAYS) * Math.PI * 2 - Math.PI / 2;
-    const w = 0.10;
-    const x1 = C + Math.cos(a - w) * rIn,  y1 = C + Math.sin(a - w) * rIn;
-    const x2 = C + Math.cos(a + w) * rIn,  y2 = C + Math.sin(a + w) * rIn;
-    const xt = C + Math.cos(a) * rOut,     yt = C + Math.sin(a) * rOut;
-    rays += `<path class="ds-fill" d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${xt.toFixed(1)} ${yt.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)} Z"/>`;
-  }
-  let dots = "";
-  const NDOTS = 36, rDots = 78;
-  for (let i = 0; i < NDOTS; i++) {
-    const a = (i / NDOTS) * Math.PI * 2;
-    const x = C + Math.cos(a) * rDots, y = C + Math.sin(a) * rDots;
-    dots += `<circle class="ds-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.5"/>`;
-  }
-  let saw = "";
-  const NSAW = 28, rSawIn = 88, rSawOut = 94;
-  for (let i = 0; i < NSAW; i++) {
-    const a = (i / NSAW) * Math.PI * 2;
-    const a2 = ((i + 0.5) / NSAW) * Math.PI * 2;
-    const x1 = C + Math.cos(a) * rSawIn,  y1 = C + Math.sin(a) * rSawIn;
-    const xt = C + Math.cos(a2) * rSawOut, yt = C + Math.sin(a2) * rSawOut;
-    const x2 = C + Math.cos((i + 1) / NSAW * Math.PI * 2) * rSawIn;
-    const y2 = C + Math.sin((i + 1) / NSAW * Math.PI * 2) * rSawIn;
-    saw += `<path class="ds-line faint" d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${xt.toFixed(1)} ${yt.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}"/>`;
-  }
-  let birds = "";
-  const NB = 6, rBird = 54;
-  for (let i = 0; i < NB; i++) {
-    const a = (i / NB) * Math.PI * 2 + 0.5;
-    const x = C + Math.cos(a) * rBird, y = C + Math.sin(a) * rBird;
-    const rot = (a * 180 / Math.PI) + 90;
-    birds += `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(0.8 -0.8)">${lacBird()}</g>`;
-  }
+
+  // Neon hextech concentric circles + center glow (thay thế toàn bộ ray/dot/saw/bird logic)
   return `
-    <svg class="dongson-drum" viewBox="0 0 200 200" aria-hidden="true">
-      <defs>
-        <filter id="lacKey" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
-          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 1" result="aRaw"/>
-          <feComponentTransfer in="aRaw" result="aSharp">
-            <feFuncA type="table" tableValues="0 0 0 0.85 1 1 1 1"/>
-          </feComponentTransfer>
-          <feFlood flood-color="#1c1a17" result="ink"/>
-          <feComposite in="ink" in2="aSharp" operator="in"/>
-        </filter>
-      </defs>
-      <circle class="ds-line" cx="100" cy="100" r="97"/>
-      <circle class="ds-line faint" cx="100" cy="100" r="84"/>
-      <g class="ds-saw">${saw}</g>
-      <g class="ds-dots">${dots}</g>
-      <circle class="ds-line faint" cx="100" cy="100" r="70"/>
-      <g class="ds-birds">${birds}</g>
-      <circle class="ds-line" cx="100" cy="100" r="30"/>
-      <g class="ds-rays">${rays}</g>
-      <circle class="ds-fill" cx="100" cy="100" r="6"/>
+    <svg class="dongson-drum" viewBox="0 0 200 200" aria-hidden="true" style="filter:url(#inkSplash)">
+      <!-- Outer circle (gold) -->
+      <circle class="neon-circle" cx="100" cy="100" r="95"
+              fill="none" stroke="#C8AA6E" stroke-width="2" opacity="0.6"/>
+
+      <!-- Mid circle (teal) -->
+      <circle class="neon-circle" cx="100" cy="100" r="68"
+              fill="none" stroke="#0BC4C2" stroke-width="1.8" opacity="0.4"/>
+
+      <!-- Inner circle (gold) -->
+      <circle class="neon-circle" cx="100" cy="100" r="45"
+              fill="none" stroke="#C8AA6E" stroke-width="1.5" opacity="0.5"/>
+
+      <!-- Center core (gold ink) -->
+      <circle class="neon-core" cx="100" cy="100" r="12"
+              fill="#8B6914" opacity="0.7"/>
+      <circle class="neon-core" cx="100" cy="100" r="7"
+              fill="#C8AA6E" opacity="0.85"/>
+
+      <!-- Ink accent lines (6 rays, teal) -->
+      <g stroke="#0BC4C2" stroke-width="1.2" opacity="0.3">
+        <line x1="100" y1="100" x2="100" y2="20" />
+        <line x1="100" y1="100" x2="160" y2="40" />
+        <line x1="100" y1="100" x2="160" y2="160" />
+        <line x1="100" y1="100" x2="100" y2="180" />
+        <line x1="100" y1="100" x2="40" y2="160" />
+        <line x1="100" y1="100" x2="40" y2="40" />
+      </g>
     </svg>
   `;
 }
@@ -233,8 +213,8 @@ function coverSVG(sceneKey, title, accent) {
          xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"  stop-color="#f7f1e3"/>
-          <stop offset="100%" stop-color="#ebe1cb"/>
+          <stop offset="0%"  stop-color="#0a0a0a"/>
+          <stop offset="100%" stop-color="#050505"/>
         </linearGradient>
         <radialGradient id="mistGrad" cx="50%" cy="35%" r="60%">
           <stop offset="0%"  stop-color="rgba(255,255,255,0.55)"/>
@@ -245,10 +225,10 @@ function coverSVG(sceneKey, title, accent) {
       ${scene}
       <rect width="${W}" height="${H}" fill="url(#mistGrad)"/>
       <rect x="${W-44}" y="${H-44}" width="28" height="28" rx="2"
-            fill="${accent || "#b5362a"}" opacity="0.92"/>
+            fill="${accent || "#C8AA6E"}" opacity="0.92"/>
       <text x="${W-30}" y="${H-25}" text-anchor="middle"
-            font-family="'Cinzel', serif" font-weight="700"
-            font-size="14" fill="#f4efe4">印</text>
+            font-family="'Oswald', sans-serif" font-weight="700"
+            font-size="14" fill="#ffffff">印</text>
     </svg>
   `;
 }
@@ -272,44 +252,40 @@ function inkBloom(cls, style) {
   return `<span class="ink-bloom ${cls || ""}" aria-hidden="true" style="${style || ""}"></span>`;
 }
 
-/* Nét bút lông NGANG — SVG path mảnh-vuốt, mép loang */
+/* Nét doodle scribble NGANG — wavy underline neon */
 function brushStrokeH(opts) {
   const w = (opts && opts.width)  || 220;
   const h = (opts && opts.height) || 18;
-  const color = (opts && opts.color) || "#1c1a17";
-  const op = (opts && opts.opacity) != null ? opts.opacity : 0.62;
+  const color = (opts && opts.color) || "var(--seal)";
+  const op = (opts && opts.opacity) != null ? opts.opacity : 0.7;
   const cls = (opts && opts.cls) || "";
   return `
     <svg class="brush-stroke brush-stroke-h ${cls}"
-         viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M 2 ${h*0.55} Q ${w*0.25} ${h*0.18}, ${w*0.55} ${h*0.5}
-               T ${w-3} ${h*0.62}"
-            stroke="${color}" stroke-width="${Math.max(2, h*0.18)}"
+         viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true" style="filter:url(#neonGlowSoft)">
+      <!-- wavy doodle scribble -->
+      <path d="M 2 ${h*0.5} Q ${w*0.15} ${h*0.2}, ${w*0.3} ${h*0.5} T ${w*0.6} ${h*0.5} T ${w*0.9} ${h*0.5}"
+            stroke="${color}" stroke-width="2"
             fill="none" stroke-linecap="round"
-            opacity="${op}" filter="url(#paperEdgeSoft)"/>
-      <path d="M ${w*0.62} ${h*0.55} Q ${w*0.82} ${h*0.4}, ${w-6} ${h*0.5}"
-            stroke="${color}" stroke-width="${Math.max(1, h*0.08)}"
-            fill="none" stroke-linecap="round"
-            opacity="${op*0.5}"/>
+            opacity="${op}"/>
     </svg>
   `;
 }
 
-/* Nét bút lông DỌC */
+/* Nét doodle scribble DỌC */
 function brushStrokeV(opts) {
   const w = (opts && opts.width)  || 14;
   const h = (opts && opts.height) || 140;
-  const color = (opts && opts.color) || "#1c1a17";
-  const op = (opts && opts.opacity) != null ? opts.opacity : 0.55;
+  const color = (opts && opts.color) || "var(--seal)";
+  const op = (opts && opts.opacity) != null ? opts.opacity : 0.7;
   const cls = (opts && opts.cls) || "";
   return `
     <svg class="brush-stroke brush-stroke-v ${cls}"
-         viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M ${w*0.5} 2 Q ${w*0.34} ${h*0.35}, ${w*0.5} ${h*0.55}
-               T ${w*0.5} ${h-3}"
-            stroke="${color}" stroke-width="${Math.max(2, w*0.32)}"
+         viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true" style="filter:url(#neonGlowSoft)">
+      <!-- zigzag doodle vertical -->
+      <path d="M ${w*0.5} 2 L ${w*0.3} ${h*0.2} L ${w*0.7} ${h*0.35} L ${w*0.3} ${h*0.5} L ${w*0.7} ${h*0.65} L ${w*0.3} ${h*0.8} L ${w*0.5} ${h-3}"
+            stroke="${color}" stroke-width="1.5"
             fill="none" stroke-linecap="round"
-            opacity="${op}" filter="url(#paperEdgeSoft)"/>
+            opacity="${op}"/>
     </svg>
   `;
 }
@@ -560,8 +536,8 @@ function foldingFanSVG(accent) {
       ${handleL}
       ${handleR}
       <!-- pivot đinh: 1 vòng đậm + 1 chấm sáng -->
-      <circle cx="${cx}" cy="${cy}" r="2" fill="#8f2a20" opacity="0.95"/>
-      <circle cx="${cx}" cy="${cy}" r="0.9" fill="#f4efe4"/>
+      <circle cx="${cx}" cy="${cy}" r="2" fill="#A01530" opacity="0.95"/>
+      <circle cx="${cx}" cy="${cy}" r="0.9" fill="#ffffff"/>
     </svg>
   `;
 }
@@ -776,7 +752,7 @@ function introThumbHTML(scene, label, pos, rot) {
   return `
     <article class="intro-frame intro-frame--thumb intro-frame--${pos}" style="--rot:${rot}deg">
       <div class="intro-frame__media">
-        ${coverSVG(scene, "", "#b5362a")}
+        ${coverSVG(scene, "", "#C8AA6E")}
       </div>
       <span class="prod-frame__corner tl"></span>
       <span class="prod-frame__corner tr"></span>
@@ -828,9 +804,12 @@ function introCardHTML() {
         ${introThumbHTML("scene:river",    "Sản Phẩm IV", "p6", -3)}
       </div>
 
+      <canvas class="intro-particles" aria-hidden="true"></canvas>
+
       <p class="intro-tagline">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor —
-        team game studio dệt cảm hứng Việt vào từng dự án.
+        Một <em class="tagline-em" style="--em-delay:0.3s">team sáng tạo</em> thuần Việt —
+        nơi <em class="tagline-em" style="--em-delay:0.8s">nghệ thuật</em>
+        gặp <em class="tagline-em" style="--em-delay:1.3s">công nghệ game</em>.
       </p>
     </div>
   `;

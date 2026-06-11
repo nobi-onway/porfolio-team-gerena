@@ -1,20 +1,24 @@
 /* =========================================================
-   Cấu hình Tailwind (CDN) — bảng màu & font Thủy Mặc
+   Cấu hình Tailwind (CDN) — bảng màu & font ARCANE NEON × DOODLE
    Nạp SAU thẻ <script src="cdn.tailwindcss.com"> và TRƯỚC render.
 ========================================================= */
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        ink: "#1c1a17",          // mực đen ngả nâu
-        inksoft: "#4a4640",      // mực nhạt
-        paper: "#f4efe4",        // giấy dó
-        paper2: "#efe8d8",
-        seal: "#b5362a",         // đỏ son
-        "seal-dark": "#8f2a20",
+        ink: "#F0E6D3",          // text: warm parchment
+        inksoft: "#C8AA6E",      // text secondary: Riot gold
+        paper: "#0a0a14",        // bg: navy-black
+        paper2: "#12121e",
+        seal: "#BE1E37",         // Arcane crimson
+        "seal-dark": "#8C1528",
+        red: "#BE1E37",          // Arcane crimson
+        orange: "#0BC4C2",       // teal (was neon orange)
+        gold: "#C8AA6E",         // Riot gold
       },
       fontFamily: {
-        display: ['Cinzel', 'serif'],
+        display: ['Oswald', 'sans-serif'],
+        doodle: ['"Patrick Hand"', 'cursive'],
         body: ['"Be Vietnam Pro"', 'sans-serif'],
       },
     },

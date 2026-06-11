@@ -1,20 +1,29 @@
 /* =========================================================
-   ĐẠI VIỆT STUDIO — Team Portfolio
-   THEME: THỦY MẶC MINIMAL (Ink Wash)
-   Nền giấy dó sáng · mực đen ngả nâu · nhấn đỏ son
+   THIÊN DI STUDIO — Team Portfolio
+   THEME: HAND-DRAW × ARCADE FILM RIOT (Arcane/Riot Games)
+   Nền navy-đen · Riot gold + teal · ink texture · film grain
 ========================================================= */
 
 :root {
-  --ink: #1c1a17;
-  /* mực đen ngả nâu */
-  --ink-soft: #4a4640;
-  /* mực nhạt */
-  --paper: #f4efe4;
-  /* giấy dó */
-  --paper-2: #efe8d8;
-  --seal: #b5362a;
-  /* đỏ son (ấn triện) */
-  --seal-dark: #8f2a20;
+  --ink: #F0E6D3;           /* text: warm parchment */
+  --ink-soft: #C8AA6E;      /* text secondary: Riot gold */
+  --paper: #0a0a14;         /* bg: navy-black */
+  --paper-2: #12121e;
+  --seal: #BE1E37;          /* Arcane crimson */
+  --seal-dark: #8C1528;
+  --red: #BE1E37;           /* Arcane crimson */
+  --orange: #0BC4C2;        /* teal (was neon orange) */
+  --gold: #C8AA6E;          /* Riot gold */
+  --teal: #0BC4C2;
+}
+
+/* ===== Tiện ích ink dùng chung ===== */
+.ink-gold {
+  color: var(--gold);
+}
+
+.ink-teal {
+  color: var(--teal);
 }
 
 * {
@@ -35,15 +44,26 @@ body {
   overscroll-behavior: none;
 }
 
-/* ===== Nền giấy dó ===== */
+/* ===== Nền navy-đen: quầng gold + teal rất mờ (Arcane/Riot) ===== */
 .bg-paper {
   background:
-    radial-gradient(ellipse at 18% 12%, rgba(181, 54, 42, 0.05), transparent 45%),
-    radial-gradient(ellipse at 85% 88%, rgba(28, 26, 23, 0.05), transparent 50%),
-    #f4efe4;
+    radial-gradient(ellipse 70% 55% at 18% 10%, rgba(200, 170, 110, 0.06), transparent 55%),
+    radial-gradient(ellipse 75% 60% at 86% 86%, rgba(11, 196, 194, 0.05), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 60% 40%, rgba(200, 170, 110, 0.03), transparent 60%),
+    linear-gradient(180deg, #0e0e1a 0%, #0a0a14 55%, #070710 100%);
 }
 
-/* Vân giấy nổi nhẹ (multiply để ăn vào nền sáng) */
+/* Vignette tối 4 mép — chất điện ảnh */
+.bg-paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 105% at 50% 48%, transparent 58%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* Hạt nhiễu phim (screen để sáng nhẹ trên nền tối) */
 .bg-grain::before {
   content: "";
   position: absolute;
@@ -51,19 +71,21 @@ body {
   z-index: 1;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   pointer-events: none;
-  mix-blend-mode: multiply;
+  mix-blend-mode: screen;
   opacity: 0.55;
 }
 
-/* ===== Khung viền mực ở 4 góc ===== */
+/* ===== Khung viền ink bracket (Riot gold, hand-drawn edge) ===== */
 .frame-corner {
   position: absolute;
   z-index: 20;
   width: 56px;
   height: 56px;
-  border-color: rgba(28, 26, 23, 0.45);
-  border-width: 1px;
-  opacity: 0.8;
+  border-color: rgba(200, 170, 110, 0.60);
+  border-width: 2px;
+  opacity: 0.85;
+  box-shadow: 0 0 6px rgba(200, 170, 110, 0.20);
+  filter: url(#inkEdge);
 }
 
 /* ===== Con dấu triện nhỏ ===== */
@@ -73,7 +95,7 @@ body {
   justify-content: center;
   width: 18px;
   height: 18px;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 11px;
   color: var(--paper);
   background: var(--seal);
@@ -90,14 +112,13 @@ body {
 }
 
 /* =========================================================
-   VẾT MỰC LOANG TĨNH (nền)
+   QUẦNG INK LOANG — gold góc trên trái, teal góc dưới phải (Arcane)
 ========================================================= */
 .ink-wash {
   position: absolute;
   z-index: 1;
   border-radius: 50%;
   filter: blur(40px);
-  opacity: 0.45;
   pointer-events: none;
 }
 
@@ -106,7 +127,8 @@ body {
   left: -110px;
   width: 480px;
   height: 420px;
-  background: radial-gradient(circle at 40% 40%, rgba(28, 26, 23, 0.20), transparent 65%);
+  opacity: 0.30;
+  background: radial-gradient(circle at 40% 40%, rgba(200, 170, 110, 0.22), transparent 65%);
 }
 
 .ink-wash-2 {
@@ -114,7 +136,8 @@ body {
   right: -90px;
   width: 520px;
   height: 460px;
-  background: radial-gradient(circle at 60% 60%, rgba(181, 54, 42, 0.12), transparent 65%);
+  opacity: 0.25;
+  background: radial-gradient(circle at 60% 60%, rgba(11, 196, 194, 0.18), transparent 65%);
 }
 
 /* =========================================================
@@ -180,8 +203,8 @@ body {
 
 .scene-veil--long {
   background:
-    linear-gradient(to right, #f4efe4 20%, rgba(244, 239, 228, 0.25) 46%, rgba(244, 239, 228, 0) 70%),
-    radial-gradient(140% 60% at 75% 50%, rgba(244, 239, 228, 0) 45%, rgba(244, 239, 228, 0.4) 100%);
+    linear-gradient(to right, #0e1116 20%, rgba(14, 17, 22, 0.25) 46%, rgba(14, 17, 22, 0) 70%),
+    radial-gradient(140% 60% at 75% 50%, rgba(14, 17, 22, 0) 45%, rgba(14, 17, 22, 0.4) 100%);
 }
 
 /* lớp hiệu ứng SVG (nếu dùng) chồng lên ảnh */
@@ -198,7 +221,7 @@ body {
    vector-effect giữ độ dày nét đều dù SVG bị kéo (preserveAspectRatio=none). */
 .ink-stroke {
   fill: none;
-  stroke: rgba(38, 48, 58, 0.52);
+  stroke: rgba(150, 222, 224, 0.52);
   /* #26303a pha chàm */
   stroke-width: 2.2;
   stroke-linecap: round;
@@ -207,17 +230,17 @@ body {
 }
 
 .ink-stroke.faint {
-  stroke: rgba(46, 58, 70, 0.24);
+  stroke: rgba(150, 222, 224, 0.24);
   stroke-width: 1.8;
 }
 
 .ink-stroke.bold {
-  stroke: rgba(30, 40, 50, 0.7);
+  stroke: rgba(170, 230, 232, 0.7);
   stroke-width: 2.8;
 }
 
 .ink-fill-soft {
-  fill: rgba(40, 52, 64, 0.055);
+  fill: rgba(150, 222, 224, 0.055);
   stroke: none;
 }
 
@@ -271,12 +294,12 @@ body {
 
 /* Nét bút lông tô-fill (hình nêm) — đậm ở thân, thon ở đuôi */
 .brush-fill {
-  fill: rgba(30, 40, 50, 0.62);
+  fill: rgba(170, 230, 232, 0.62);
   stroke: none;
 }
 
 .brush-fill.soft {
-  fill: rgba(38, 48, 58, 0.34);
+  fill: rgba(150, 222, 224, 0.34);
 }
 
 /* ---- Draw-on: nét được "vẽ ra" khi tải tranh ---- */
@@ -532,22 +555,22 @@ body {
 
 .dongson-drum .ds-line {
   fill: none;
-  stroke: rgba(28, 26, 23, 0.5);
+  stroke: (255, 255, 255, 0.5);
   stroke-width: 1.1;
   vector-effect: non-scaling-stroke;
 }
 
 .dongson-drum .ds-line.faint {
-  stroke: rgba(28, 26, 23, 0.26);
+  stroke: (255, 255, 255, 0.26);
 }
 
 .dongson-drum .ds-fill {
-  fill: rgba(28, 26, 23, 0.55);
+  fill: (255, 255, 255, 0.55);
   stroke: none;
 }
 
 .dongson-drum .ds-dot {
-  fill: rgba(28, 26, 23, 0.42);
+  fill: (255, 255, 255, 0.42);
   stroke: none;
 }
 
@@ -560,15 +583,15 @@ body {
   z-index: 1;
   max-height: 50vh;
   border-radius: 10px;
-  border: 2px dashed rgba(28, 26, 23, 0.4);
+  border: 2px dashed rgba(200, 170, 110, 0.55);
   background:
     repeating-linear-gradient(45deg,
-      rgba(28, 26, 23, 0.025) 0px, rgba(28, 26, 23, 0.025) 10px,
+      rgba(200, 170, 110, 0.03) 0px, rgba(200, 170, 110, 0.03) 10px,
       transparent 10px, transparent 20px),
-    radial-gradient(circle at 50% 30%, rgba(181, 54, 42, 0.05), transparent 70%),
-    rgba(244, 239, 228, 0.78);
-  backdrop-filter: blur(2px);
-  box-shadow: 0 10px 45px rgba(28, 26, 23, 0.16), inset 0 0 30px rgba(255, 255, 255, 0.45);
+    radial-gradient(circle at 50% 30%, rgba(200, 170, 110, 0.08), transparent 70%),
+    rgba(14, 17, 22, 0.85);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 24px rgba(200, 170, 110, 0.18), inset 0 0 20px rgba(200, 170, 110, 0.06);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
@@ -579,7 +602,7 @@ body {
   content: "";
   position: absolute;
   inset: 7px;
-  border: 1px dashed rgba(28, 26, 23, 0.18);
+  border: 1px dashed rgba(200, 170, 110, 0.25);
   border-radius: 6px;
   pointer-events: none;
 }
@@ -595,12 +618,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 15px;
   color: var(--paper);
   background: var(--seal);
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(181, 54, 42, 0.4);
+  box-shadow: 0 2px 8px rgba(200, 170, 110, 0.4);
   opacity: 0.92;
 }
 
@@ -611,7 +634,7 @@ body {
   transform: translateX(-50%);
   font-size: 9px;
   letter-spacing: 0.25em;
-  color: rgba(28, 26, 23, 0.45);
+  color: (255, 255, 255, 0.45);
   font-family: 'Be Vietnam Pro', sans-serif;
   white-space: nowrap;
 }
@@ -627,7 +650,7 @@ body {
 .pose-svg line,
 .pose-svg polyline {
   fill: none;
-  stroke: rgba(28, 26, 23, 0.7);
+  stroke: (255, 255, 255, 0.7);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -662,16 +685,14 @@ body {
   position: relative;
 }
 
-/* tên: font serif khắc bia (Cormorant Garamond) — có dấu tiếng Việt,
-   giữ chất thư pháp/La Mã giống Cinzel; thêm chiều sâu mực */
+/* tên thành viên: display condensed + neon glow */
 #memberName {
-  font-family: 'Lobster', cursive;
-  font-weight: 400;
-  /* Lobster chỉ có 1 weight */
-  letter-spacing: 0.02em;
-  text-shadow: 0 1px 0 rgba(244, 239, 228, 0.6);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-shadow: none;
   min-height: 1em;
-  /* giữ chiều cao khi rỗng (lúc xóa để gõ lại) */
+  color: var(--seal);
 }
 
 /* MẤT: fade out thuần */
@@ -728,11 +749,11 @@ body {
   display: inline-block;
   width: clamp(26px, 5vw, 72px);
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(28, 26, 23, 0.45));
+  background: linear-gradient(to right, transparent, (255, 255, 255, 0.45));
 }
 
 .name-rule:last-of-type {
-  background: linear-gradient(to left, transparent, rgba(28, 26, 23, 0.45));
+  background: linear-gradient(to left, transparent, (255, 255, 255, 0.45));
 }
 
 
@@ -753,18 +774,19 @@ body {
   transform: translateY(-3px) scale(1.06);
 }
 
-/* KHUNG CHUNG (đồng nhất mọi loại icon) — bo góc, viền mực mảnh, nền giấy */
+/* KHUNG chip neon — viền teal mờ, nền tối, hover glow neon */
 .skill-chip--framed {
-  border: 1.5px solid rgba(28, 26, 23, 0.55);
+  border: 1.5px solid rgba(200, 170, 110, 0.35);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 2px 8px rgba(28, 26, 23, 0.06);
-  transition: transform 0.25s ease, border-color 0.3s ease, background 0.3s ease;
+  background: rgba(14, 17, 22, 0.7);
+  box-shadow: 0 0 6px rgba(200, 170, 110, 0.1);
+  transition: transform 0.25s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .skill-chip--framed:hover {
   border-color: var(--brand, var(--seal));
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(200, 170, 110, 0.08);
+  box-shadow: 0 0 12px rgba(200, 170, 110, 0.3);
 }
 
 /* hai lớp icon chồng (CDN): mực mặc định + màu gốc khi hover */
@@ -794,7 +816,7 @@ body {
 
 /* icon tự vẽ (SVG currentColor): mực mặc định → màu brand khi hover */
 .skill-chip--svg {
-  color: rgba(28, 26, 23, 0.78);
+  color: (255, 255, 255, 0.78);
   transition: transform 0.25s ease, color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
 
@@ -814,7 +836,7 @@ body {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: rgba(28, 26, 23, 0.78);
+  color: (255, 255, 255, 0.78);
 }
 
 .skill-chip--text:hover {
@@ -841,11 +863,11 @@ body {
   inset: -3px -5px;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(239, 232, 216, 0.28));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(26, 32, 40, 0.28));
   /* mép giấy rách */
   filter: url(#paperEdge);
   border-radius: 3px;
-  box-shadow: 0 6px 22px rgba(28, 26, 23, 0.07);
+  box-shadow: 0 6px 22px (255, 255, 255, 0.07);
 }
 
 /* vệt mực mờ rất nhạt ở một góc cho có "hồn giấy" */
@@ -857,7 +879,7 @@ body {
   height: 50%;
   right: 4%;
   bottom: 0;
-  background: radial-gradient(ellipse at 70% 80%, rgba(28, 26, 23, 0.05), transparent 70%);
+  background: radial-gradient(ellipse at 70% 80%, (255, 255, 255, 0.05), transparent 70%);
   filter: url(#paperEdgeSoft);
   pointer-events: none;
 }
@@ -870,7 +892,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.62);
+  color: (255, 255, 255, 0.62);
   margin-bottom: 13px;
   padding-bottom: 9px;
   position: relative;
@@ -891,9 +913,9 @@ body {
   width: 100%;
   height: 1.5px;
   background: linear-gradient(90deg,
-      rgba(28, 26, 23, 0.45) 0%,
-      rgba(28, 26, 23, 0.22) 35%,
-      rgba(28, 26, 23, 0.06) 70%,
+      (255, 255, 255, 0.45) 0%,
+      (255, 255, 255, 0.22) 35%,
+      (255, 255, 255, 0.06) 70%,
       transparent 100%);
   filter: url(#paperEdgeSoft);
 }
@@ -902,9 +924,9 @@ body {
   font-size: 11px;
   padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(181, 54, 42, 0.4);
+  border: 1px solid rgba(200, 170, 110, 0.4);
   color: var(--seal);
-  background: rgba(181, 54, 42, 0.05);
+  background: rgba(200, 170, 110, 0.05);
 }
 
 .quote-line {
@@ -912,9 +934,9 @@ body {
   font-style: italic;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(28, 26, 23, 0.65);
+  color: (255, 255, 255, 0.65);
   padding-left: 14px;
-  border-left: 2px solid rgba(181, 54, 42, 0.5);
+  border-left: 2px solid rgba(200, 170, 110, 0.5);
 }
 
 .quote-line::before {
@@ -923,8 +945,8 @@ body {
   left: 4px;
   top: -6px;
   font-size: 18px;
-  font-family: 'Cinzel', serif;
-  color: rgba(181, 54, 42, 0.45);
+  font-family: 'Oswald', serif;
+  color: rgba(200, 170, 110, 0.45);
 }
 
 /* =========================================================
@@ -942,7 +964,7 @@ body {
 
 .nav-dot.active {
   background: var(--seal);
-  box-shadow: 0 0 14px rgba(181, 54, 42, 0.6);
+  box-shadow: 0 0 14px rgba(200, 170, 110, 0.6);
   transform: scale(1.25);
 }
 
@@ -955,7 +977,7 @@ body {
   white-space: nowrap;
   font-size: 11px;
   letter-spacing: 0.1em;
-  color: rgba(28, 26, 23, 0.75);
+  color: (255, 255, 255, 0.75);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -970,10 +992,10 @@ body {
    SỐ THỨ TỰ MỜ PHÍA SAU
 ========================================================= */
 .ghost-index {
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-weight: 900;
   line-height: 0.8;
-  color: rgba(28, 26, 23, 0.045);
+  color: (255, 255, 255, 0.045);
   user-select: none;
 }
 
@@ -1135,9 +1157,9 @@ body {
   background:
     linear-gradient(90deg,
       transparent 0%,
-      rgba(28, 26, 23, 0.30) 8%,
-      rgba(28, 26, 23, 0.42) 50%,
-      rgba(28, 26, 23, 0.30) 92%,
+      (255, 255, 255, 0.30) 8%,
+      (255, 255, 255, 0.42) 50%,
+      (255, 255, 255, 0.30) 92%,
       transparent 100%);
   filter: url(#paperEdgeSoft);
 }
@@ -1189,7 +1211,7 @@ body {
 .ms-dot:hover,
 .ms-dot:focus-visible {
   transform: scale(1.25);
-  box-shadow: 0 0 0 4px rgba(181, 54, 42, 0.12), 0 4px 12px rgba(28, 26, 23, 0.12);
+  box-shadow: 0 0 0 4px rgba(200, 170, 110, 0.12), 0 4px 12px (255, 255, 255, 0.12);
   outline: none;
 }
 
@@ -1204,14 +1226,14 @@ body {
 }
 
 .ms-item:last-child .ms-dot {
-  box-shadow: 0 0 0 3px rgba(181, 54, 42, 0.10);
+  box-shadow: 0 0 0 3px rgba(200, 170, 110, 0.10);
 }
 
 .ms-year {
   margin-top: 8px;
   font-size: 12px;
   letter-spacing: 0.06em;
-  color: rgba(28, 26, 23, 0.78);
+  color: (255, 255, 255, 0.78);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1219,7 +1241,7 @@ body {
   margin-top: 2px;
   font-size: 10.5px;
   line-height: 1.35;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   /* truncate 2 dòng để dải không vỡ khi tên sự kiện dài */
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1239,10 +1261,10 @@ body {
   max-width: 240px;
   padding: 10px 12px 9px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(239, 232, 216, 0.78));
-  border: 1px solid rgba(28, 26, 23, 0.18);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(26, 32, 40, 0.78));
+  border: 1px solid (255, 255, 255, 0.18);
   border-radius: 4px;
-  box-shadow: 0 8px 22px rgba(28, 26, 23, 0.16);
+  box-shadow: 0 8px 22px (255, 255, 255, 0.16);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.22s ease, transform 0.22s ease;
@@ -1259,8 +1281,8 @@ body {
   top: 100%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: rgba(28, 26, 23, 0.18);
-  filter: drop-shadow(0 1px 0 rgba(244, 239, 228, 0.9));
+  border-top-color: (255, 255, 255, 0.18);
+  filter: drop-shadow(0 1px 0 rgba(14, 17, 22, 0.9));
 }
 
 .ms-dot:hover .ms-tooltip,
@@ -1271,7 +1293,7 @@ body {
 
 .ms-tooltip__year {
   display: block;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--seal);
@@ -1282,7 +1304,7 @@ body {
   display: block;
   font-size: 12.5px;
   line-height: 1.4;
-  color: rgba(28, 26, 23, 0.88);
+  color: (255, 255, 255, 0.88);
 }
 
 .ms-tooltip__hint {
@@ -1291,7 +1313,7 @@ body {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(181, 54, 42, 0.7);
+  color: rgba(200, 170, 110, 0.7);
 }
 
 /* Responsive: màn hẹp → cho phép cuộn ngang dải */
@@ -1337,7 +1359,7 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(28, 26, 23, 0.42), rgba(28, 26, 23, 0.62) 70%);
+    radial-gradient(ellipse at 50% 50%, (255, 255, 255, 0.42), (255, 255, 255, 0.62) 70%);
   backdrop-filter: blur(3px);
   cursor: pointer;
 }
@@ -1349,11 +1371,11 @@ body {
   max-height: 82vh;
   padding: 36px 40px 34px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(239, 232, 216, 0.4)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(26, 32, 40, 0.4)),
     var(--paper);
   border-radius: 4px;
   box-shadow:
-    0 30px 80px rgba(28, 26, 23, 0.45),
+    0 30px 80px (255, 255, 255, 0.45),
     inset 0 0 40px rgba(255, 255, 255, 0.35);
   transform: translateY(18px) scale(0.97);
   opacity: 0;
@@ -1369,7 +1391,7 @@ body {
   inset: -3px -5px;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(239, 232, 216, 0.42));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(26, 32, 40, 0.42));
   filter: url(#paperEdge);
   border-radius: 4px;
 }
@@ -1383,7 +1405,7 @@ body {
   height: 55%;
   right: 4%;
   bottom: 0;
-  background: radial-gradient(ellipse at 70% 80%, rgba(28, 26, 23, 0.07), transparent 70%);
+  background: radial-gradient(ellipse at 70% 80%, (255, 255, 255, 0.07), transparent 70%);
   filter: url(#paperEdgeSoft);
   pointer-events: none;
 }
@@ -1403,7 +1425,7 @@ body {
   background: transparent;
   font-size: 26px;
   line-height: 1;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   cursor: pointer;
   border-radius: 50%;
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
@@ -1411,7 +1433,7 @@ body {
 
 .ms-modal__close:hover,
 .ms-modal__close:focus-visible {
-  background: rgba(181, 54, 42, 0.08);
+  background: rgba(200, 170, 110, 0.08);
   color: var(--seal);
   transform: rotate(90deg);
   outline: none;
@@ -1430,8 +1452,8 @@ body {
   height: 1.5px;
   width: 64px;
   background: linear-gradient(90deg,
-      rgba(28, 26, 23, 0.55) 0%,
-      rgba(28, 26, 23, 0.25) 60%,
+      (255, 255, 255, 0.55) 0%,
+      (255, 255, 255, 0.25) 60%,
       transparent 100%);
   filter: url(#paperEdgeSoft);
 }
@@ -1447,7 +1469,7 @@ body {
 .ms-modal__detail {
   font-size: 14px;
   line-height: 1.75;
-  color: rgba(28, 26, 23, 0.82);
+  color: (255, 255, 255, 0.82);
   margin: 0;
 }
 
@@ -1462,10 +1484,10 @@ body {
   justify-content: center;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 18px;
   border-radius: 4px;
-  box-shadow: 0 4px 14px rgba(143, 42, 32, 0.4);
+  box-shadow: 0 4px 14px rgba(192, 30, 99, 0.4);
   transform: rotate(-6deg);
   opacity: 0.92;
 }
@@ -1505,12 +1527,12 @@ body {
   inset: -4px -8px;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(255, 253, 247, 0.92) 0%, rgba(246, 238, 221, 0.86) 60%, rgba(240, 230, 209, 0.82) 100%);
+    linear-gradient(180deg, rgba(24, 30, 38, 0.92) 0%, rgba(22, 27, 34, 0.86) 60%, rgba(26, 32, 40, 0.82) 100%);
   filter: url(#paperEdge);
   border-radius: 3px;
   box-shadow:
-    0 16px 40px rgba(28, 26, 23, 0.18),
-    0 2px 6px rgba(28, 26, 23, 0.08),
+    0 16px 40px (255, 255, 255, 0.18),
+    0 2px 6px (255, 255, 255, 0.08),
     inset 0 0 50px rgba(255, 255, 255, 0.4);
 }
 
@@ -1524,8 +1546,8 @@ body {
   right: 4%;
   bottom: 0;
   background:
-    radial-gradient(ellipse at 70% 80%, rgba(28, 26, 23, 0.08), transparent 70%),
-    radial-gradient(ellipse at 30% 30%, rgba(181, 54, 42, 0.05), transparent 60%);
+    radial-gradient(ellipse at 70% 80%, (255, 255, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse at 30% 30%, rgba(200, 170, 110, 0.05), transparent 60%);
   filter: url(#paperEdgeSoft);
   pointer-events: none;
 }
@@ -1542,10 +1564,10 @@ body {
   justify-content: center;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 14px;
   border-radius: 3px;
-  box-shadow: 0 3px 10px rgba(143, 42, 32, 0.35);
+  box-shadow: 0 3px 10px rgba(192, 30, 99, 0.35);
   transform: rotate(-4deg);
   opacity: 0.92;
   z-index: 2;
@@ -1561,8 +1583,8 @@ body {
   height: 22px;
   margin: 6px 0;
   background:
-    radial-gradient(ellipse 65% 60% at 30% 50%, rgba(28, 26, 23, 0.18), transparent 70%),
-    radial-gradient(ellipse 50% 55% at 72% 50%, rgba(28, 26, 23, 0.10), transparent 75%);
+    radial-gradient(ellipse 65% 60% at 30% 50%, (255, 255, 255, 0.18), transparent 70%),
+    radial-gradient(ellipse 50% 55% at 72% 50%, (255, 255, 255, 0.10), transparent 75%);
   filter: url(#paperEdgeSoft);
   opacity: 0.85;
 }
@@ -1575,7 +1597,7 @@ body {
 .couplet__intro {
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   font-style: italic;
   margin-bottom: 10px;
   max-width: 56ch;
@@ -1596,14 +1618,14 @@ body {
 }
 
 .couplet__k {
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   text-align: right;
   padding-right: 6px;
-  border-right: 1px solid rgba(28, 26, 23, 0.18);
+  border-right: 1px solid (255, 255, 255, 0.18);
 }
 
 .couplet__sep {
@@ -1613,7 +1635,7 @@ body {
 }
 
 .couplet__v {
-  color: rgba(28, 26, 23, 0.88);
+  color: (255, 255, 255, 0.88);
   font-weight: 500;
 }
 
@@ -1670,11 +1692,11 @@ body {
   position: relative;
   aspect-ratio: 16 / 10;
   background: var(--paper);
-  border: 1px solid rgba(28, 26, 23, 0.35);
+  border: 1px solid (255, 255, 255, 0.35);
   box-shadow:
-    0 12px 30px rgba(28, 26, 23, 0.18),
-    inset 0 0 0 6px rgba(244, 239, 228, 0.8),
-    inset 0 0 0 7px rgba(28, 26, 23, 0.15);
+    0 12px 30px (255, 255, 255, 0.18),
+    inset 0 0 0 6px rgba(14, 17, 22, 0.8),
+    inset 0 0 0 7px (255, 255, 255, 0.15);
   overflow: hidden;
 }
 
@@ -1689,7 +1711,7 @@ body {
   width: 14px;
   height: 14px;
   border: 1.5px solid var(--seal);
-  background: rgba(244, 239, 228, 0.85);
+  background: rgba(14, 17, 22, 0.85);
   z-index: 3;
 }
 
@@ -1734,14 +1756,14 @@ body {
 }
 
 .prod-info__title {
-  font-family: 'Lobster', cursive;
+  font-family: 'Patrick Hand', cursive;
   font-weight: 400;
   font-size: 26px;
   line-height: 1.2;
   color: var(--ink);
   margin: 0 0 4px;
   letter-spacing: 0.015em;
-  text-shadow: 0 1px 0 rgba(244, 239, 228, 0.6);
+  text-shadow: 0 1px 0 rgba(14, 17, 22, 0.6);
 }
 
 .prod-info__meta {
@@ -1751,11 +1773,11 @@ body {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.62);
+  color: (255, 255, 255, 0.62);
 }
 
 .prod-info__role {
-  color: rgba(28, 26, 23, 0.78);
+  color: (255, 255, 255, 0.78);
 }
 
 .prod-info__sep {
@@ -1769,7 +1791,7 @@ body {
 .prod-info__contrib {
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(28, 26, 23, 0.82);
+  color: (255, 255, 255, 0.82);
   margin: 6px 0 10px;
 }
 
@@ -1785,9 +1807,9 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 2px 8px 3px;
-  color: rgba(28, 26, 23, 0.7);
-  border: 1px solid rgba(28, 26, 23, 0.28);
-  background: rgba(244, 239, 228, 0.4);
+  color: (255, 255, 255, 0.7);
+  border: 1px solid (255, 255, 255, 0.28);
+  background: rgba(14, 17, 22, 0.4);
   border-radius: 2px;
 }
 
@@ -1810,7 +1832,7 @@ body {
   height: 18px;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 11px;
   border-radius: 2px;
   font-style: normal;
@@ -1828,10 +1850,10 @@ body {
 .prod-pager__arrow {
   width: 28px;
   height: 28px;
-  border: 1px solid rgba(28, 26, 23, 0.25);
+  border: 1px solid (255, 255, 255, 0.25);
   background: transparent;
   border-radius: 50%;
-  color: rgba(28, 26, 23, 0.6);
+  color: (255, 255, 255, 0.6);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
@@ -1846,7 +1868,7 @@ body {
 .prod-pager__arrow:focus-visible {
   border-color: var(--seal);
   color: var(--seal);
-  background: rgba(181, 54, 42, 0.06);
+  background: rgba(200, 170, 110, 0.06);
   outline: none;
 }
 
@@ -1872,7 +1894,7 @@ body {
 
 .prod-pager__han {
   font-size: 18px;
-  color: rgba(28, 26, 23, 0.4);
+  color: (255, 255, 255, 0.4);
   transition: color 0.25s ease;
   line-height: 1;
 }
@@ -1883,7 +1905,7 @@ body {
 
 .prod-pager__dot.is-active {
   background: var(--seal);
-  box-shadow: 0 4px 12px rgba(143, 42, 32, 0.35);
+  box-shadow: 0 4px 12px rgba(192, 30, 99, 0.35);
   transform: rotate(-3deg);
 }
 
@@ -1900,11 +1922,11 @@ body {
   z-index: 4;
   background:
     linear-gradient(90deg,
-      rgba(28, 26, 23, 0) 0%,
-      rgba(28, 26, 23, 0.20) 38%,
-      rgba(28, 26, 23, 0.25) 50%,
-      rgba(28, 26, 23, 0.20) 62%,
-      rgba(28, 26, 23, 0) 100%);
+      (255, 255, 255, 0) 0%,
+      (255, 255, 255, 0.20) 38%,
+      (255, 255, 255, 0.25) 50%,
+      (255, 255, 255, 0.20) 62%,
+      (255, 255, 255, 0) 100%);
   transform: translateX(-110%);
   opacity: 0;
   filter: url(#paperEdgeSoft);
@@ -1960,9 +1982,9 @@ body {
   width: 1px;
   background: linear-gradient(180deg,
       transparent 0%,
-      rgba(28, 26, 23, 0.16) 10%,
-      rgba(28, 26, 23, 0.30) 50%,
-      rgba(28, 26, 23, 0.16) 90%,
+      (255, 255, 255, 0.16) 10%,
+      (255, 255, 255, 0.30) 50%,
+      (255, 255, 255, 0.16) 90%,
       transparent 100%);
   transform: translateX(-50%);
   z-index: -1;
@@ -1972,14 +1994,14 @@ body {
 .v2-tools-rail .skill-chip {
   width: 34px;
   height: 34px;
-  background: rgba(244, 239, 228, 0.85);
-  border-color: rgba(28, 26, 23, 0.35);
+  background: rgba(14, 17, 22, 0.85);
+  border-color: (255, 255, 255, 0.35);
   flex: 0 0 auto;
 }
 
 .v2-tools-rail .skill-chip:hover {
   transform: scale(1.18);
-  box-shadow: 0 4px 12px rgba(28, 26, 23, 0.18);
+  box-shadow: 0 4px 12px (255, 255, 255, 0.18);
 }
 
 /* Responsive: dưới md, stack cover / info dọc */
@@ -2034,13 +2056,13 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -52%);
-  font-family: 'Lobster', cursive;
+  font-family: 'Patrick Hand', cursive;
   font-weight: 400;
   font-size: clamp(160px, 24vw, 380px);
   line-height: 0.85;
   letter-spacing: 0.02em;
-  color: rgba(28, 26, 23, 0.10);
-  text-shadow: 0 4px 0 rgba(244, 239, 228, 0.45);
+  color: (255, 255, 255, 0.10);
+  text-shadow: 0 4px 0 rgba(14, 17, 22, 0.45);
   z-index: 1;
   pointer-events: none;
   margin: 0;
@@ -2060,7 +2082,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.62);
+  color: (255, 255, 255, 0.62);
   z-index: 4;
 }
 .intro-meta__seal {
@@ -2071,7 +2093,7 @@ body {
   height: 24px;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 13px;
   border-radius: 3px;
   letter-spacing: 0;
@@ -2083,11 +2105,25 @@ body {
 }
 .intro-meta__sep { color: var(--seal); }
 
+/* Ẩn trống đồng khi ở intro slide */
+#drumLayer { transition: opacity 0.8s ease; }
+body.is-intro #drumLayer { opacity: 0; pointer-events: none; }
+
+/* Canvas particles vàng bay từ highlight text */
+.intro-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
 /* Container moodboard — chứa video frame ở giữa & 6 thumbs xung quanh */
 .intro-frames {
   position: relative;
-  width: min(1100px, 88vw);
-  height: min(580px, 64vh);
+  width: min(920px, 78vw);
+  height: min(520px, 58vh);
   z-index: 2;
 }
 
@@ -2095,8 +2131,8 @@ body {
 .intro-frame {
   position: absolute;
   background: var(--paper);
-  border: 1px solid rgba(28, 26, 23, 0.32);
-  box-shadow: 0 12px 32px rgba(28, 26, 23, 0.22);
+  border: 1px solid (255, 255, 255, 0.32);
+  box-shadow: 0 12px 32px (255, 255, 255, 0.22);
   padding: 5px;
   transform: rotate(var(--rot, 0deg));
   transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
@@ -2104,7 +2140,7 @@ body {
 }
 .intro-frame:hover {
   transform: rotate(0deg) scale(1.04);
-  box-shadow: 0 20px 50px rgba(28, 26, 23, 0.32);
+  box-shadow: 0 20px 50px (255, 255, 255, 0.32);
   z-index: 5;
 }
 
@@ -2112,7 +2148,7 @@ body {
 .intro-frame--video {
   top: 50%;
   left: 50%;
-  width: min(580px, 50vw);
+  width: min(480px, 42vw);
   aspect-ratio: 16 / 10;
   transform: translate(-50%, -50%) rotate(-1deg);
   z-index: 3;
@@ -2129,14 +2165,14 @@ body {
   overflow: hidden;
 }
 .intro-frame__media--video {
-  background: linear-gradient(135deg, #2c2722 0%, #1c1a17 100%);
+  background: linear-gradient(135deg, #cfe6e6 0%, #ffffff 100%);
 }
 .intro-video-bg {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 30% 35%, rgba(181, 54, 42, 0.20), transparent 60%),
-    radial-gradient(ellipse at 75% 70%, rgba(64, 60, 55, 0.45), transparent 70%);
+    radial-gradient(ellipse at 30% 35%, rgba(200, 170, 110, 0.20), transparent 60%),
+    radial-gradient(ellipse at 75% 70%, rgba(138, 160, 163, 0.45), transparent 70%);
 }
 
 .intro-play {
@@ -2147,15 +2183,15 @@ body {
   width: 78px;
   height: 78px;
   border-radius: 50%;
-  background: rgba(244, 239, 228, 0.93);
+  background: rgba(14, 17, 22, 0.93);
   color: var(--seal);
-  border: 2px solid rgba(28, 26, 23, 0.45);
+  border: 2px solid (255, 255, 255, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow:
-    0 10px 28px rgba(28, 26, 23, 0.55),
+    0 10px 28px (255, 255, 255, 0.55),
     inset 0 0 18px rgba(255, 255, 255, 0.4);
   transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
   z-index: 3;
@@ -2182,7 +2218,7 @@ body {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
 }
 .intro-frame__title {
-  font-family: 'Lobster', cursive;
+  font-family: 'Patrick Hand', cursive;
   font-weight: 400;
   font-size: 26px;
   line-height: 1.1;
@@ -2197,7 +2233,7 @@ body {
 
 /* KHUNG THUMB nhỏ — sản phẩm + team scatter quanh video */
 .intro-frame--thumb {
-  width: 158px;
+  width: 170px;
   aspect-ratio: 4 / 3;
 }
 .intro-frame--thumb .intro-frame__media {
@@ -2209,13 +2245,13 @@ body {
   display: block;
 }
 
-/* Vị trí 6 thumbs — moodboard scatter quanh video frame */
-.intro-frame--p1 { top: -8px;    left: 1%;    --rot: -4deg; }
-.intro-frame--p2 { top: 6px;     right: 3%;   --rot:  3deg; }
-.intro-frame--p3 { top: 230px;   left: -3%;   --rot: -2deg; }
-.intro-frame--p4 { top: 256px;   right: -2%;  --rot:  4deg; }
-.intro-frame--p5 { bottom: 8px;  left: 12%;   --rot:  2deg; }
-.intro-frame--p6 { bottom: -6px; right: 10%;  --rot: -3deg; }
+/* Vị trí 6 thumbs — phân bổ đối xứng quanh video frame */
+.intro-frame--p1 { top: -4px;    left: 2%;    --rot: -4deg; }
+.intro-frame--p2 { top: 4px;     right: 4%;   --rot:  3deg; }
+.intro-frame--p3 { top: 215px;   left: -1%;   --rot: -2deg; }
+.intro-frame--p4 { top: 238px;   right: -1%;  --rot:  4deg; }
+.intro-frame--p5 { bottom: 4px;  left: 13%;   --rot:  2deg; }
+.intro-frame--p6 { bottom: -4px; right: 11%;  --rot: -3deg; }
 
 /* Caption nhỏ dưới mỗi khung */
 .intro-frame__caption {
@@ -2223,11 +2259,11 @@ body {
   left: 50%;
   bottom: -22px;
   transform: translateX(-50%) rotate(calc(-1 * var(--rot, 0deg)));
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.62);
+  color: (255, 255, 255, 0.62);
   white-space: nowrap;
 }
 
@@ -2241,10 +2277,19 @@ body {
   text-align: center;
   font-size: 13px;
   line-height: 1.7;
-  color: rgba(28, 26, 23, 0.72);
+  color: rgba(255, 255, 255, 0.72);
   font-style: italic;
   z-index: 4;
   margin: 0;
+}
+
+/* Chữ highlight vàng + hiệu ứng nét vẽ */
+.tagline-em {
+  font-weight: 700;
+  color: var(--gold);
+  font-style: normal;
+  position: relative;
+  text-shadow: none;
 }
 
 /* nav-dot riêng cho intro: viền nét, không tô đỏ — phân biệt rõ với members */
@@ -2253,7 +2298,7 @@ body {
 }
 .nav-dot--intro.active {
   background: var(--ink);
-  box-shadow: 0 0 12px rgba(28, 26, 23, 0.5);
+  box-shadow: 0 0 12px (255, 255, 255, 0.5);
 }
 
 /* Responsive */
@@ -2407,7 +2452,7 @@ body {
     gap: 8px;
     margin: 10px 0 0;
     padding: 8px 0;
-    border-top: 1px dashed rgba(28, 26, 23, 0.18);
+    border-top: 1px dashed (255, 255, 255, 0.18);
   }
   .v2-tools-rail::before {
     display: none;
@@ -2422,7 +2467,7 @@ body {
     text-align: left;
     padding-right: 0;
     border-right: none;
-    border-bottom: 1px solid rgba(28, 26, 23, 0.14);
+    border-bottom: 1px solid (255, 255, 255, 0.14);
     padding-bottom: 2px;
     margin-bottom: 2px;
   }
@@ -2827,7 +2872,7 @@ body {
   gap: 0.9rem;
   margin-bottom: 0.4rem;
   padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(28, 26, 23, 0.18);
+  border-bottom: 1px solid (255, 255, 255, 0.18);
 }
 
 .mf-num {
@@ -2841,7 +2886,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 10px;
   letter-spacing: 0.4em;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   text-transform: uppercase;
 }
 
@@ -2852,7 +2897,7 @@ body {
   color: var(--ink);
   margin: 0 0 0.4rem;
   font-weight: 700;
-  font-family: 'Cormorant Garamond', 'Cinzel', serif;
+  font-family: 'Patrick Hand', 'Oswald', serif;
   font-style: italic;
 }
 
@@ -2869,7 +2914,7 @@ body {
   font-size: 13px;
   letter-spacing: 0.04em;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.65);
+  color: (255, 255, 255, 0.65);
   margin: 0;
   max-width: 36rem;
 }
@@ -2878,7 +2923,7 @@ body {
   height: 1px;
   margin: 0.3rem 0;
   background:
-    linear-gradient(90deg, rgba(28, 26, 23, 0.5) 0, rgba(28, 26, 23, 0.0) 70%);
+    linear-gradient(90deg, (255, 255, 255, 0.5) 0, (255, 255, 255, 0.0) 70%);
 }
 
 /* =========================================================
@@ -2933,7 +2978,7 @@ body {
   width: 4px;
   background: var(--ink);
   opacity: 0.85;
-  mix-blend-mode: multiply;
+  mix-blend-mode: screen;
 }
 
 .op-tag {
@@ -2941,11 +2986,11 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 10px;
   letter-spacing: 0.4em;
-  color: rgba(28, 26, 23, 0.6);
+  color: (255, 255, 255, 0.6);
   margin-bottom: 0.4rem;
   padding: 2px 8px;
-  background: rgba(255, 252, 244, 0.7);
-  border: 1px solid rgba(28, 26, 23, 0.2);
+  background: rgba(22, 27, 34, 0.7);
+  border: 1px solid (255, 255, 255, 0.2);
 }
 
 .op-head {
@@ -2954,7 +2999,7 @@ body {
   letter-spacing: -0.01em;
   color: var(--ink);
   margin: 0 0 0.5rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-weight: 700;
   display: flex;
   flex-wrap: wrap;
@@ -2977,7 +3022,7 @@ body {
   font-size: 13px;
   letter-spacing: 0.04em;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.65);
+  color: (255, 255, 255, 0.65);
   margin: 0;
   max-width: 32rem;
 }
@@ -3011,7 +3056,7 @@ body {
   line-height: 1;
   color: var(--accent, var(--seal));
   opacity: 0.13;
-  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-family: 'Oswald', 'Patrick Hand', serif;
   pointer-events: none;
   user-select: none;
 }
@@ -3023,7 +3068,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 10px;
   letter-spacing: 0.45em;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   margin-bottom: 0.6rem;
   position: relative;
   z-index: 2;
@@ -3037,7 +3082,7 @@ body {
   letter-spacing: -0.005em;
   color: var(--ink);
   margin: 0 0 0.8rem;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   font-weight: 700;
   position: relative;
   z-index: 2;
@@ -3049,7 +3094,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   margin: 0;
   position: relative;
   z-index: 2;
@@ -3079,7 +3124,7 @@ body {
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(244, 239, 228, 0.95) 38%, rgba(244, 239, 228, 0.0) 70%);
+    radial-gradient(circle at 50% 50%, rgba(14, 17, 22, 0.95) 38%, rgba(14, 17, 22, 0.0) 70%);
   filter: blur(2px);
   pointer-events: none;
 }
@@ -3101,11 +3146,11 @@ body {
   width: 36%;
   max-width: 460px;
   padding: 1.3rem 1.5rem;
-  background: color-mix(in srgb, var(--accent) 92%, #1c1a17 8%);
-  color: #f5efe2;
+  background: color-mix(in srgb, var(--accent) 92%, #ffffff 8%);
+  color: #161b22;
   box-shadow:
-    0 20px 50px -22px rgba(28, 26, 23, 0.55),
-    0 0 0 1px rgba(28, 26, 23, 0.15);
+    0 20px 50px -22px (255, 255, 255, 0.55),
+    0 0 0 1px (255, 255, 255, 0.15);
   filter: url(#paperEdgeSoft);
 }
 
@@ -3118,7 +3163,7 @@ body {
 .st-block--journey {
   bottom: 6%;
   right: 2%;
-  background: color-mix(in srgb, var(--accent) 75%, #1c1a17 25%);
+  background: color-mix(in srgb, var(--accent) 75%, #ffffff 25%);
   transform: rotate(1.8deg);
 }
 
@@ -3128,11 +3173,11 @@ body {
   right: 0.8rem;
   font-size: 32px;
   opacity: 0.4;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
 }
 
 .st-block__tag {
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 10px;
   letter-spacing: 0.5em;
   opacity: 0.7;
@@ -3145,7 +3190,7 @@ body {
   line-height: 0.95;
   letter-spacing: -0.005em;
   margin: 0 0 0.5rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -3169,7 +3214,7 @@ body {
   min-width: 240px;
   max-width: 340px;
   z-index: 4;
-  filter: drop-shadow(0 18px 30px rgba(28, 26, 23, 0.35));
+  filter: drop-shadow(0 18px 30px (255, 255, 255, 0.35));
   pointer-events: none;
 }
 
@@ -3212,15 +3257,15 @@ body {
   position: relative;
   padding: 1.2rem 2.2rem;
   background:
-    linear-gradient(180deg, rgba(255, 252, 244, 0.94), rgba(244, 236, 218, 0.9));
-  border-top: 1px solid rgba(28, 26, 23, 0.55);
-  border-bottom: 1px solid rgba(28, 26, 23, 0.55);
-  box-shadow: 0 10px 35px -22px rgba(28, 26, 23, 0.4);
+    linear-gradient(180deg, rgba(22, 27, 34, 0.94), rgba(22, 27, 34, 0.9));
+  border-top: 1px solid (255, 255, 255, 0.55);
+  border-bottom: 1px solid (255, 255, 255, 0.55);
+  box-shadow: 0 10px 35px -22px (255, 255, 255, 0.4);
 }
 
 .bn-strip--journey {
   background:
-    linear-gradient(180deg, rgba(28, 26, 23, 0.04), rgba(28, 26, 23, 0.02));
+    linear-gradient(180deg, (255, 255, 255, 0.04), (255, 255, 255, 0.02));
 }
 
 /* mũi nhọn 2 đầu băng — như cờ phướn */
@@ -3262,7 +3307,7 @@ body {
   font-size: 10px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
 }
 
 .bn-strip__head {
@@ -3271,7 +3316,7 @@ body {
   letter-spacing: 0;
   color: var(--ink);
   margin: 0 0 0.4rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-weight: 700;
   text-transform: uppercase;
   /* căng chiều ngang như chữ trên cờ phướn */
@@ -3288,7 +3333,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.7);
+  color: (255, 255, 255, 0.7);
   margin: 0;
   max-width: 38rem;
 }
@@ -3377,12 +3422,12 @@ body {
   pointer-events: none;
   background:
     radial-gradient(ellipse 60% 55% at 38% 42%,
-      rgba(28, 26, 23, 0.22) 0%,
-      rgba(28, 26, 23, 0.12) 32%,
-      rgba(28, 26, 23, 0.05) 55%,
+      (255, 255, 255, 0.22) 0%,
+      (255, 255, 255, 0.12) 32%,
+      (255, 255, 255, 0.05) 55%,
       transparent 75%);
   filter: blur(12px);
-  mix-blend-mode: multiply;
+  mix-blend-mode: screen;
   opacity: 0.9;
   border-radius: 50%;
 }
@@ -3394,7 +3439,7 @@ body {
   inset: -10% -25% -10% 35%;
   background:
     radial-gradient(ellipse 50% 40% at 50% 50%,
-      rgba(28, 26, 23, 0.16),
+      (255, 255, 255, 0.16),
       transparent 70%);
   filter: blur(8px);
   border-radius: 50%;
@@ -3442,12 +3487,12 @@ body {
   height: 100%;
   padding: 1.2rem 1rem;
   background:
-    linear-gradient(180deg, rgba(255, 252, 244, 0.92), rgba(244, 236, 218, 0.88));
-  border-left: 1px solid rgba(28, 26, 23, 0.18);
-  border-right: 1px solid rgba(28, 26, 23, 0.18);
+    linear-gradient(180deg, rgba(22, 27, 34, 0.92), rgba(22, 27, 34, 0.88));
+  border-left: 1px solid (255, 255, 255, 0.18);
+  border-right: 1px solid (255, 255, 255, 0.18);
   box-shadow:
-    inset 0 0 24px rgba(28, 26, 23, 0.04),
-    0 14px 32px -22px rgba(28, 26, 23, 0.4);
+    inset 0 0 24px (255, 255, 255, 0.04),
+    0 14px 32px -22px (255, 255, 255, 0.4);
   overflow: hidden;
 }
 
@@ -3459,13 +3504,13 @@ body {
   height: 10px;
   background:
     linear-gradient(180deg,
-      #5a4632 0%,
-      #3a2a1c 50%,
-      #5a4632 100%);
+      #155e63 0%,
+      #0c2f33 50%,
+      #155e63 100%);
   border-radius: 3px;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 230, 200, 0.18);
+    inset 0 1px 0 rgba(232, 181, 77, 0.18);
   z-index: 2;
 }
 
@@ -3480,7 +3525,7 @@ body {
   top: -3px;
   width: 12px;
   height: calc(100% + 6px);
-  background: #3a2a1c;
+  background: #0c2f33;
   border-radius: 3px;
 }
 .scroll-frame__rod::before { left: 0; }
@@ -3524,11 +3569,11 @@ body {
   justify-content: center;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 13px;
   border-radius: 3px;
   transform: rotate(-5deg);
-  box-shadow: 0 3px 10px -2px rgba(143, 42, 32, 0.5);
+  box-shadow: 0 3px 10px -2px rgba(192, 30, 99, 0.5);
   z-index: 4;
   opacity: 0.92;
 }
@@ -3536,11 +3581,11 @@ body {
 /* Tone warm = gỗ nâu (default); tone cool = gỗ mun đen */
 .scroll-frame--cool .scroll-frame__rod {
   background:
-    linear-gradient(180deg, #2a2620 0%, #14110d 50%, #2a2620 100%);
+    linear-gradient(180deg, #cfe6e6 0%, #f0fafa 50%, #cfe6e6 100%);
 }
 .scroll-frame--cool .scroll-frame__rod::before,
 .scroll-frame--cool .scroll-frame__rod::after {
-  background: #14110d;
+  background: #f0fafa;
 }
 
 /* =========================================================
@@ -3609,7 +3654,7 @@ body {
 
 /* giảm độ đậm outline word: mỏng hơn + dùng ink thay accent */
 .op-word.is-outline {
-  -webkit-text-stroke: 1px rgba(28, 26, 23, 0.7);
+  -webkit-text-stroke: 1px (255, 255, 255, 0.7);
   color: transparent;
 }
 
@@ -3658,22 +3703,22 @@ body {
 
 .st-stage > .ink-bloom {
   z-index: 1;
-  mix-blend-mode: multiply;
+  mix-blend-mode: screen;
   opacity: 0.5;
   filter: blur(40px);
   background:
     radial-gradient(ellipse 50% 45% at 50% 50%,
-      rgba(28, 26, 23, 0.3) 0%,
-      rgba(28, 26, 23, 0.12) 40%,
+      (255, 255, 255, 0.3) 0%,
+      (255, 255, 255, 0.12) 40%,
       transparent 70%);
 }
 
 /* Mute độ bão hòa block — pha nhiều ink hơn vào accent */
 .st-block--passion {
-  background: color-mix(in srgb, var(--accent) 65%, #1c1a17 35%);
+  background: color-mix(in srgb, var(--accent) 65%, #ffffff 35%);
 }
 .st-block--journey {
-  background: color-mix(in srgb, var(--accent) 48%, #1c1a17 52%);
+  background: color-mix(in srgb, var(--accent) 48%, #ffffff 52%);
 }
 
 .st-block__brush {
@@ -3689,8 +3734,8 @@ body {
   inset: -18% -25%;
   background:
     radial-gradient(ellipse 60% 55% at 50% 50%,
-      rgba(244, 239, 228, 0.95) 0%,
-      rgba(244, 239, 228, 0.5) 35%,
+      rgba(14, 17, 22, 0.95) 0%,
+      rgba(14, 17, 22, 0.5) 35%,
       transparent 65%);
   filter: blur(10px);
   z-index: -1;
@@ -3767,10 +3812,10 @@ body {
   right: 14px;
   padding: 0.6rem 0;
   background:
-    linear-gradient(180deg, rgba(244, 239, 228, 0) 0%,
-                            rgba(244, 239, 228, 0.55) 12%,
-                            rgba(244, 239, 228, 0.55) 88%,
-                            rgba(244, 239, 228, 0) 100%);
+    linear-gradient(180deg, rgba(14, 17, 22, 0) 0%,
+                            rgba(14, 17, 22, 0.55) 12%,
+                            rgba(14, 17, 22, 0.55) 88%,
+                            rgba(14, 17, 22, 0) 100%);
   border-radius: 40px;
   backdrop-filter: blur(4px);
 }
@@ -3821,8 +3866,8 @@ body {
 .st-block {
   border-radius: 1px;
   box-shadow:
-    0 18px 40px -22px rgba(28, 26, 23, 0.55),
-    0 0 0 1px rgba(28, 26, 23, 0.18),
+    0 18px 40px -22px (255, 255, 255, 0.55),
+    0 0 0 1px (255, 255, 255, 0.18),
     inset 0 -10px 24px -8px rgba(0, 0, 0, 0.18),
     inset 0 8px 18px -8px rgba(255, 255, 255, 0.12);
 }
@@ -3858,8 +3903,8 @@ body {
   inset: -12% -22%;
   background:
     radial-gradient(ellipse 65% 60% at 50% 50%,
-      rgba(244, 239, 228, 0.98) 0%,
-      rgba(244, 239, 228, 0.65) 40%,
+      rgba(14, 17, 22, 0.98) 0%,
+      rgba(14, 17, 22, 0.65) 40%,
       transparent 70%);
 }
 
@@ -3868,11 +3913,11 @@ body {
 ========================================================= */
 .bn-strip {
   padding: 1.1rem 1.8rem;
-  border-top: 1px solid rgba(28, 26, 23, 0.5);
-  border-bottom: 1px solid rgba(28, 26, 23, 0.5);
+  border-top: 1px solid (255, 255, 255, 0.5);
+  border-bottom: 1px solid (255, 255, 255, 0.5);
   /* nhẹ hơn — như mặt lụa */
   background:
-    linear-gradient(180deg, rgba(255, 252, 244, 0.92), rgba(244, 236, 218, 0.86));
+    linear-gradient(180deg, rgba(22, 27, 34, 0.92), rgba(22, 27, 34, 0.86));
   /* viền 2 đầu mảnh — fade giấy */
   -webkit-mask: linear-gradient(90deg,
     transparent 0,
@@ -3888,7 +3933,7 @@ body {
 
 .bn-strip--journey {
   background:
-    linear-gradient(180deg, rgba(28, 26, 23, 0.05), rgba(28, 26, 23, 0.02));
+    linear-gradient(180deg, (255, 255, 255, 0.05), (255, 255, 255, 0.02));
 }
 
 /* QUAN TRỌNG — chặn scaleY cũ của head */
@@ -3928,9 +3973,9 @@ body {
     flex-wrap: wrap;
     gap: 6px;
     padding: 6px 8px;
-    background: rgba(244, 239, 228, 0.85);
+    background: rgba(14, 17, 22, 0.85);
     border-radius: 999px;
-    border: 1px solid rgba(28, 26, 23, 0.12);
+    border: 1px solid (255, 255, 255, 0.12);
   }
   .layout-stamp .v2-tools-rail::before,
   .layout-banner .v2-tools-rail::before {
@@ -4016,7 +4061,7 @@ body {
   line-height: 1;
   color: var(--accent, var(--seal));
   opacity: 0.14;
-  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  font-family: 'Oswald', 'Patrick Hand', serif;
   pointer-events: none;
   user-select: none;
   z-index: 1;
@@ -4036,7 +4081,7 @@ body {
   font-size: 10px;
   letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   margin-bottom: 0.5rem;
 }
 
@@ -4045,7 +4090,7 @@ body {
 .tp-side__head {
   position: relative;
   z-index: 2;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   font-weight: 700;
   font-size: clamp(20px, 2.2vw, 30px);
   line-height: 1.05;
@@ -4070,7 +4115,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   margin: 0;
 }
 
@@ -4088,11 +4133,11 @@ body {
   left: -6px; right: -6px;
   height: 8px;
   background:
-    linear-gradient(180deg, #5a4632 0%, #2a1c10 50%, #5a4632 100%);
+    linear-gradient(180deg, #155e63 0%, #0c2f33 50%, #155e63 100%);
   border-radius: 3px;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 230, 200, 0.2);
+    inset 0 1px 0 rgba(232, 181, 77, 0.2);
   z-index: 3;
 }
 
@@ -4106,7 +4151,7 @@ body {
   top: -3px;
   width: 14px;
   height: calc(100% + 6px);
-  background: #2a1c10;
+  background: #0c2f33;
   border-radius: 3px;
 }
 .tp-rod::before { left: 0; }
@@ -4156,7 +4201,7 @@ body {
   z-index: 2;
   width: 100%;
   max-width: 320px;
-  filter: drop-shadow(0 16px 28px rgba(28, 26, 23, 0.22));
+  filter: drop-shadow(0 16px 28px (255, 255, 255, 0.22));
 }
 
 .tp-seal {
@@ -4170,11 +4215,11 @@ body {
   justify-content: center;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 14px;
   border-radius: 3px;
   transform: rotate(-6deg);
-  box-shadow: 0 3px 10px -2px rgba(143, 42, 32, 0.6);
+  box-shadow: 0 3px 10px -2px rgba(192, 30, 99, 0.6);
   z-index: 5;
 }
 
@@ -4192,13 +4237,13 @@ body {
   max-height: 84vh;
   min-height: 60vh;
   background:
-    linear-gradient(180deg, rgba(255, 252, 244, 0.95), rgba(244, 236, 218, 0.9)),
-    radial-gradient(ellipse at 50% 50%, rgba(28, 26, 23, 0.03), transparent 70%);
-  border: 1px solid rgba(28, 26, 23, 0.14);
+    linear-gradient(180deg, rgba(22, 27, 34, 0.95), rgba(22, 27, 34, 0.9)),
+    radial-gradient(ellipse at 50% 50%, (255, 255, 255, 0.03), transparent 70%);
+  border: 1px solid (255, 255, 255, 0.14);
   box-shadow:
-    inset 0 0 30px rgba(28, 26, 23, 0.05),
-    0 24px 60px -28px rgba(28, 26, 23, 0.45),
-    0 8px 22px -12px rgba(28, 26, 23, 0.3);
+    inset 0 0 30px (255, 255, 255, 0.05),
+    0 24px 60px -28px (255, 255, 255, 0.45),
+    0 8px 22px -12px (255, 255, 255, 0.3);
   overflow: hidden;
 }
 
@@ -4211,10 +4256,10 @@ body {
   height: 18px;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 18px 6px at 8% 50%, rgba(28, 26, 23, 0.08), transparent 70%),
-    radial-gradient(ellipse 24px 7px at 32% 50%, rgba(28, 26, 23, 0.06), transparent 70%),
-    radial-gradient(ellipse 20px 5px at 58% 50%, rgba(28, 26, 23, 0.07), transparent 70%),
-    radial-gradient(ellipse 22px 6px at 82% 50%, rgba(28, 26, 23, 0.06), transparent 70%);
+    radial-gradient(ellipse 18px 6px at 8% 50%, (255, 255, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse 24px 7px at 32% 50%, (255, 255, 255, 0.06), transparent 70%),
+    radial-gradient(ellipse 20px 5px at 58% 50%, (255, 255, 255, 0.07), transparent 70%),
+    radial-gradient(ellipse 22px 6px at 82% 50%, (255, 255, 255, 0.06), transparent 70%);
   filter: url(#paperEdgeSoft);
   opacity: 0.6;
 }
@@ -4233,9 +4278,9 @@ body {
   background:
     linear-gradient(90deg,
       transparent 0%,
-      rgba(28, 26, 23, 0.06) 30%,
-      rgba(28, 26, 23, 0.22) 50%,
-      rgba(28, 26, 23, 0.06) 70%,
+      (255, 255, 255, 0.06) 30%,
+      (255, 255, 255, 0.22) 50%,
+      (255, 255, 255, 0.06) 70%,
       transparent 100%);
   z-index: 4;
   pointer-events: none;
@@ -4274,14 +4319,14 @@ body {
   width: 100%;
   max-width: 280px;
   padding: 18px;
-  background: rgba(255, 252, 244, 0.7);
-  border: 1px solid rgba(28, 26, 23, 0.1);
+  background: rgba(22, 27, 34, 0.7);
+  border: 1px solid (255, 255, 255, 0.1);
   z-index: 2;
 }
 
 .fo-mount__photo {
   position: relative;
-  filter: drop-shadow(0 8px 16px rgba(28, 26, 23, 0.15));
+  filter: drop-shadow(0 8px 16px (255, 255, 255, 0.15));
 }
 
 /* Photo corners (góc tam giác để "giữ ảnh") — semi-transparent dark */
@@ -4291,8 +4336,8 @@ body {
   height: 22px;
   background:
     linear-gradient(135deg,
-      rgba(28, 26, 23, 0.5) 0%,
-      rgba(28, 26, 23, 0.35) 60%,
+      (255, 255, 255, 0.5) 0%,
+      (255, 255, 255, 0.35) 60%,
       transparent 60%);
   z-index: 3;
 }
@@ -4308,7 +4353,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   position: relative;
   z-index: 2;
 }
@@ -4316,13 +4361,13 @@ body {
 .fo-caption__line {
   flex: 1;
   height: 1px;
-  background: rgba(28, 26, 23, 0.3);
+  background: (255, 255, 255, 0.3);
 }
 
 .fo-caption__no {
   font-size: 14px;
   letter-spacing: 0.12em;
-  color: rgba(28, 26, 23, 0.6);
+  color: (255, 255, 255, 0.6);
   font-style: italic;
 }
 
@@ -4338,7 +4383,7 @@ body {
   gap: 0.7rem;
   margin-bottom: 0.35rem;
   padding-bottom: 0.35rem;
-  border-bottom: 1px solid rgba(28, 26, 23, 0.18);
+  border-bottom: 1px solid (255, 255, 255, 0.18);
 }
 
 .fo-entry__no {
@@ -4352,11 +4397,11 @@ body {
   font-size: 10px;
   letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
 }
 
 .fo-entry__title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   font-weight: 700;
   font-style: italic;
   font-size: clamp(26px, 3.2vw, 40px);
@@ -4374,7 +4419,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   margin: 0;
   max-width: 32rem;
 }
@@ -4390,11 +4435,11 @@ body {
   justify-content: center;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 14px;
   border-radius: 3px;
   transform: rotate(-5deg);
-  box-shadow: 0 3px 10px -2px rgba(143, 42, 32, 0.5);
+  box-shadow: 0 3px 10px -2px rgba(192, 30, 99, 0.5);
   z-index: 3;
 }
 
@@ -4435,9 +4480,9 @@ body {
     flex-wrap: wrap;
     gap: 6px;
     padding: 6px 8px;
-    background: rgba(244, 239, 228, 0.88);
+    background: rgba(14, 17, 22, 0.88);
     border-radius: 999px;
-    border: 1px solid rgba(28, 26, 23, 0.12);
+    border: 1px solid (255, 255, 255, 0.12);
   }
   .layout-triptych .v2-tools-rail::before,
   .layout-folio .v2-tools-rail::before { display: none; }
@@ -4489,7 +4534,7 @@ body {
   min-width: 200px;
   max-width: 260px;
   z-index: 3;
-  filter: drop-shadow(0 12px 22px rgba(28, 26, 23, 0.22));
+  filter: drop-shadow(0 12px 22px (255, 255, 255, 0.22));
 }
 
 .fn-pivot .avatar-frame {
@@ -4504,7 +4549,7 @@ body {
   z-index: 2;
   padding: 0.4rem 0.6rem;
   background:
-    linear-gradient(180deg, rgba(255, 252, 244, 0.4), rgba(255, 252, 244, 0.0));
+    linear-gradient(180deg, rgba(22, 27, 34, 0.4), rgba(22, 27, 34, 0.0));
   border-radius: 2px;
 }
 
@@ -4526,7 +4571,7 @@ body {
 
 .fn-text__no {
   display: inline-block;
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 26px;
   color: var(--accent, var(--seal));
   opacity: 0.85;
@@ -4539,12 +4584,12 @@ body {
   font-size: 10px;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
   margin: 0.3rem 0 0.4rem;
 }
 
 .fn-text__head {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   font-weight: 700;
   font-style: italic;
   font-size: clamp(24px, 3vw, 38px);
@@ -4570,7 +4615,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 12.5px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   margin: 0;
 }
 
@@ -4628,9 +4673,9 @@ body {
     flex-wrap: wrap;
     gap: 6px;
     padding: 6px 8px;
-    background: rgba(244, 239, 228, 0.88);
+    background: rgba(14, 17, 22, 0.88);
     border-radius: 999px;
-    border: 1px solid rgba(28, 26, 23, 0.12);
+    border: 1px solid (255, 255, 255, 0.12);
   }
   .layout-fan .v2-tools-rail::before { display: none; }
   .member-card--fan { padding-bottom: 52px; }
@@ -4727,7 +4772,7 @@ body {
   max-width: 220px;
   min-width: 0;
   z-index: 3;
-  filter: drop-shadow(0 12px 22px rgba(28, 26, 23, 0.22));
+  filter: drop-shadow(0 12px 22px (255, 255, 255, 0.22));
 }
 
 /* =========================================================
@@ -4809,7 +4854,7 @@ body {
 .mn-couplet--left .mn-couplet__meta { flex-direction: row-reverse; }
 
 .mn-couplet__no {
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 26px;
   color: var(--accent, var(--seal));
   opacity: 0.85;
@@ -4821,11 +4866,11 @@ body {
   font-size: 10px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
 }
 
 .mn-couplet__head {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   font-weight: 700;
   font-style: italic;
   font-size: clamp(24px, 3vw, 38px);
@@ -4852,7 +4897,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   margin: 0;
   max-width: 100%;
 }
@@ -4865,11 +4910,11 @@ body {
   justify-content: center;
   background: var(--seal);
   color: var(--paper);
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 12px;
   border-radius: 3px;
   margin-top: 0.5rem;
-  box-shadow: 0 3px 8px -2px rgba(143, 42, 32, 0.45);
+  box-shadow: 0 3px 8px -2px rgba(192, 30, 99, 0.45);
 }
 
 .mn-couplet--left .mn-couplet__seal { transform: rotate(-4deg); }
@@ -4904,14 +4949,14 @@ body {
 
 .mn-gate__ring--outer {
   inset: 0;
-  border: 2px solid rgba(28, 26, 23, 0.6);
+  border: 2px solid (255, 255, 255, 0.6);
   filter: url(#paperEdgeSoft);
   z-index: 1;
 }
 
 .mn-gate__ring--inner {
   inset: 12px;
-  border: 1px solid rgba(28, 26, 23, 0.22);
+  border: 1px solid (255, 255, 255, 0.22);
   z-index: 1;
 }
 
@@ -4920,10 +4965,10 @@ body {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: rgba(28, 26, 23, 0.55);
+  background: (255, 255, 255, 0.55);
   border-radius: 50%;
   z-index: 2;
-  box-shadow: 0 1px 2px rgba(28, 26, 23, 0.3);
+  box-shadow: 0 1px 2px (255, 255, 255, 0.3);
 }
 
 .mn-gate__stud--n { top: -4px;    left: 50%; transform: translateX(-50%); }
@@ -4936,7 +4981,7 @@ body {
   position: relative;
   width: 58%;
   z-index: 3;
-  filter: drop-shadow(0 14px 24px rgba(28, 26, 23, 0.22));
+  filter: drop-shadow(0 14px 24px (255, 255, 255, 0.22));
 }
 
 .mn-gate__avatar .avatar-frame {
@@ -4978,9 +5023,9 @@ body {
     flex-wrap: wrap;
     gap: 6px;
     padding: 6px 8px;
-    background: rgba(244, 239, 228, 0.88);
+    background: rgba(14, 17, 22, 0.88);
     border-radius: 999px;
-    border: 1px solid rgba(28, 26, 23, 0.12);
+    border: 1px solid (255, 255, 255, 0.12);
   }
   .layout-moon .v2-tools-rail::before { display: none; }
   .member-card--moon { padding-bottom: 52px; }
@@ -5033,7 +5078,7 @@ body {
   min-width: 200px;
   max-width: 240px;
   z-index: 3;
-  filter: drop-shadow(0 16px 28px rgba(28, 26, 23, 0.25));
+  filter: drop-shadow(0 16px 28px (255, 255, 255, 0.25));
 }
 
 .hl-avatar .avatar-frame {
@@ -5075,7 +5120,7 @@ body {
 }
 
 .hl-text__no {
-  font-family: 'Cinzel', serif;
+  font-family: 'Oswald', serif;
   font-size: 26px;
   color: var(--accent, var(--seal));
   opacity: 0.85;
@@ -5087,11 +5132,11 @@ body {
   font-size: 10px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(28, 26, 23, 0.55);
+  color: (255, 255, 255, 0.55);
 }
 
 .hl-text__head {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Patrick Hand', serif;
   font-weight: 700;
   font-style: italic;
   font-size: clamp(24px, 3vw, 38px);
@@ -5113,7 +5158,7 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 13px;
   line-height: 1.55;
-  color: rgba(28, 26, 23, 0.72);
+  color: (255, 255, 255, 0.72);
   margin: 0;
 }
 
@@ -5180,9 +5225,9 @@ body {
     flex-wrap: wrap;
     gap: 6px;
     padding: 6px 8px;
-    background: rgba(244, 239, 228, 0.88);
+    background: rgba(14, 17, 22, 0.88);
     border-radius: 999px;
-    border: 1px solid rgba(28, 26, 23, 0.12);
+    border: 1px solid (255, 255, 255, 0.12);
   }
   .layout-halo .v2-tools-rail::before { display: none; }
   .member-card--halo { padding-bottom: 52px; }
