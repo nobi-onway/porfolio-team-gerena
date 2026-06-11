@@ -137,7 +137,21 @@
     updateIndicators();
 
     // Card mới nhận active khi track gần tới nơi → nội dung lần lượt "đáp xuống"
-    setTimeout(() => { cards[current].classList.add("active"); }, REVEAL_AT);
+    setTimeout(() => {
+      // Với intro card: force-reset animation để phát lại từ đầu mỗi lần quay lại
+      if (current === 0) {
+        const introCard = cards[0];
+        const animated = introCard.querySelectorAll(
+          ".intro-portfolio, .intro-frame, .intro-tagline, .intro-meta"
+        );
+        animated.forEach(el => {
+          el.style.animation = "none";
+          void el.offsetWidth; // force reflow
+          el.style.animation = "";
+        });
+      }
+      cards[current].classList.add("active");
+    }, REVEAL_AT);
 
     setTimeout(() => { animating = false; }, TURN);
   }
