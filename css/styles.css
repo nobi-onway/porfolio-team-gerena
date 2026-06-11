@@ -2269,7 +2269,7 @@ body.is-intro #drumLayer { opacity: 0; pointer-events: none; }
 /* Tagline cuối */
 .intro-tagline {
   position: absolute;
-  bottom: 10vh;
+  bottom: 12vh;
   left: 50%;
   transform: translateX(-50%);
   max-width: 560px;
