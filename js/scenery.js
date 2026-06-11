@@ -32,63 +32,49 @@ function renderScenes(sceneLayer) {
           <stop offset="100%" style="stop-color:#050508;stop-opacity:1" />
         </linearGradient>
 
-        <!-- Doodle blur filter (mềm hơn neon glow của index.html) -->
-        <filter id="doodleGlow" x="-10%" y="-10%" width="120%" height="120%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
 
       <!-- Base gradient -->
       <rect width="100%" height="100%" fill="url(#arcaneGrad)" />
 
-      <!-- Ink light shafts (dải teal/gold rất mờ — Arcane atmosphere) -->
-      <g opacity="0.05">
-        <path d="M -200 0 Q 200 ${bgHeight*2} 400 ${bgHeight*4}"
-              stroke="#0BC4C2" stroke-width="120" fill="none" stroke-linecap="round" />
-        <path d="M 1200 100 Q 900 ${bgHeight*1.5} 800 ${bgHeight*3.5}"
-              stroke="#C8AA6E" stroke-width="100" fill="none" stroke-linecap="round" />
-        <path d="M 600 50 Q 700 ${bgHeight*2.2} 650 ${bgHeight*4}"
-              stroke="#0BC4C2" stroke-width="80" fill="none" stroke-linecap="round" />
+      <!-- Scan lines ngang mờ (arcade CRT feel) -->
+      <g stroke="#C8AA6E" stroke-width="1" opacity="0.04">
+        ${Array.from({length: 18}, (_, i) => `<line x1="0" y1="${i * 55 * 10}" x2="1440" y2="${i * 55 * 10}"/>`).join('')}
       </g>
 
-      <!-- Floating ink doodles (hand-drawn squiggles, Arcane style) -->
-      <!-- Doodle 1: wavy line (teal) -->
-      <g class="neon-doodle" style="animation: driftDown ${15 + 1*2}s ease-in-out infinite; animation-delay: 0s">
-        <path d="M 150 50 Q 180 70 150 90 Q 120 110 150 130"
-              stroke="#0BC4C2" stroke-width="2.5" fill="none" stroke-linecap="round"
-              filter="url(#doodleGlow)" opacity="0.45" />
+      <!-- Dot grid tĩnh (scattered X marks) -->
+      <g fill="#C8AA6E" opacity="0.12">
+        ${[[80,80],[240,200],[420,140],[600,260],[820,90],[1000,180],[1200,120],[1350,240],
+           [130,320],[350,400],[550,350],[750,420],[980,300],[1150,380],[60,500],[280,560],
+           [480,490],[700,540],[900,460],[1100,510],[1300,470]].map(([x,y]) =>
+          `<path d="M${x-6},${y} L${x+6},${y} M${x},${y-6} L${x},${y+6}" stroke="#C8AA6E" stroke-width="1.5" fill="none" opacity="0.8"/>`
+        ).join('')}
       </g>
 
-      <!-- Doodle 2: loop (gold) -->
-      <g class="neon-doodle" style="animation: driftDown ${15 + 2*2}s ease-in-out infinite; animation-delay: ${15 + 1}s">
-        <path d="M 1300 100 C 1320 80, 1350 110, 1330 140"
-              stroke="#C8AA6E" stroke-width="2" fill="none" stroke-linecap="round"
-              filter="url(#doodleGlow)" opacity="0.40" />
+      <!-- Diamond shapes trang trí tĩnh -->
+      <g fill="none" stroke-width="1.5" opacity="0.10">
+        <polygon points="160,420 175,435 160,450 145,435" stroke="#0BC4C2"/>
+        <polygon points="1280,300 1295,315 1280,330 1265,315" stroke="#C8AA6E"/>
+        <polygon points="720,180 735,195 720,210 705,195" stroke="#BE1E37"/>
+        <polygon points="400,600 420,620 400,640 380,620" stroke="#0BC4C2"/>
+        <polygon points="1050,500 1065,515 1050,530 1035,515" stroke="#C8AA6E"/>
       </g>
 
-      <!-- Doodle 3: spiral (teal) -->
-      <g class="neon-doodle" style="animation: driftDown ${15 + 3*2}s ease-in-out infinite; animation-delay: ${15 + 2}s">
-        <path d="M 700 60 Q 720 40, 740 60 Q 720 80, 700 60"
-              stroke="#0BC4C2" stroke-width="1.8" fill="none" stroke-linecap="round"
-              filter="url(#doodleGlow)" opacity="0.40" />
+      <!-- Square outlines trang trí -->
+      <g fill="none" stroke-width="1.5" opacity="0.08">
+        <rect x="50" y="150" width="30" height="30" stroke="#C8AA6E"/>
+        <rect x="1360" y="400" width="24" height="24" stroke="#0BC4C2"/>
+        <rect x="680" y="340" width="20" height="20" stroke="#BE1E37"/>
+        <rect x="200" y="480" width="26" height="26" stroke="#C8AA6E"/>
+        <rect x="1100" y="220" width="22" height="22" stroke="#0BC4C2"/>
       </g>
 
-      <!-- Doodle 4: zig-zag (gold) -->
-      <g class="neon-doodle" style="animation: driftDown ${15 + 4*2}s ease-in-out infinite; animation-delay: ${15 + 3}s">
-        <path d="M 300 120 L 330 100 L 360 120 L 390 100"
-              stroke="#C8AA6E" stroke-width="1.8" fill="none" stroke-linecap="round"
-              filter="url(#doodleGlow)" opacity="0.35" />
+      <!-- 2 geometric elements drift nhẹ -->
+      <g class="neon-doodle" style="animation: driftDown 22s ease-in-out infinite; animation-delay: 0s" opacity="0.18">
+        <polygon points="0,0 14,14 0,28 -14,14" fill="#C8AA6E" transform="translate(200, 60)"/>
       </g>
-
-      <!-- Doodle 5: arc (teal) -->
-      <g class="neon-doodle" style="animation: driftDown ${15 + 5*2}s ease-in-out infinite; animation-delay: ${15 + 4}s">
-        <path d="M 950 200 Q 980 180, 1010 200 Q 980 220, 950 200"
-              stroke="#0BC4C2" stroke-width="2" fill="none" stroke-linecap="round"
-              filter="url(#doodleGlow)" opacity="0.40" />
+      <g class="neon-doodle" style="animation: driftDown 28s ease-in-out infinite; animation-delay: 8s" opacity="0.15">
+        <rect x="-10" y="-10" width="20" height="20" fill="none" stroke="#0BC4C2" stroke-width="2" transform="translate(1200, 100) rotate(15)"/>
       </g>
     </svg>
   `;

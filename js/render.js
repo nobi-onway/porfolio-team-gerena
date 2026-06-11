@@ -65,7 +65,7 @@ function poseFor(role) {
 
 /* ---- Chim Lạc doodle ink (hand-drawn, Arcane style) ---- */
 function lacBird() {
-  return `<g style="filter:url(#inkEdge)">
+  return `<g>
     <!-- cánh trái -->
     <path d="M -8 0 Q -15 -5 -20 -2" stroke="#C8AA6E" stroke-width="1.2" fill="none" stroke-linecap="round"/>
     <!-- cánh phải -->
@@ -82,18 +82,18 @@ function dongSonDrum() {
 
   // Neon hextech concentric circles + center glow (thay thế toàn bộ ray/dot/saw/bird logic)
   return `
-    <svg class="dongson-drum" viewBox="0 0 200 200" aria-hidden="true" style="filter:url(#inkSplash)">
+    <svg class="dongson-drum" viewBox="0 0 200 200" aria-hidden="true">
       <!-- Outer circle (gold) -->
       <circle class="neon-circle" cx="100" cy="100" r="95"
-              fill="none" stroke="#C8AA6E" stroke-width="2" opacity="0.6"/>
+              fill="none" stroke="#C8AA6E" stroke-width="2.5" opacity="0.65"/>
 
       <!-- Mid circle (teal) -->
       <circle class="neon-circle" cx="100" cy="100" r="68"
-              fill="none" stroke="#0BC4C2" stroke-width="1.8" opacity="0.4"/>
+              fill="none" stroke="#0BC4C2" stroke-width="2.2" opacity="0.45"/>
 
       <!-- Inner circle (gold) -->
       <circle class="neon-circle" cx="100" cy="100" r="45"
-              fill="none" stroke="#C8AA6E" stroke-width="1.5" opacity="0.5"/>
+              fill="none" stroke="#C8AA6E" stroke-width="2" opacity="0.55"/>
 
       <!-- Center core (gold ink) -->
       <circle class="neon-core" cx="100" cy="100" r="12"
@@ -180,11 +180,11 @@ function coverSVG(sceneKey, title, accent) {
     `;
   } else if (sceneKey === "scene:river") {
     scene = `
-      <path d="M-20 200 Q 120 170 240 210 T ${W+20} 200" stroke="${ink}0.45)" stroke-width="2" fill="none"/>
-      <path d="M-20 230 Q 140 200 260 240 T ${W+20} 230" stroke="${ink}0.28)" stroke-width="1.4" fill="none"/>
-      <path d="M-20 258 Q 130 230 250 268 T ${W+20} 258" stroke="${ink}0.18)" stroke-width="1.1" fill="none"/>
+      <path d="M-20 200 Q 120 170 240 210 T ${W + 20} 200" stroke="${ink}0.45)" stroke-width="2" fill="none"/>
+      <path d="M-20 230 Q 140 200 260 240 T ${W + 20} 230" stroke="${ink}0.28)" stroke-width="1.4" fill="none"/>
+      <path d="M-20 258 Q 130 230 250 268 T ${W + 20} 258" stroke="${ink}0.18)" stroke-width="1.1" fill="none"/>
       <path d="M40 200 L 40 158 M 44 200 L 44 168 M 48 200 L 48 162" stroke="${ink}0.55)" stroke-width="1.6" fill="none"/>
-      <path d="M${W-80} 200 L ${W-80} 162 M ${W-76} 200 L ${W-76} 170 M ${W-72} 200 L ${W-72} 158"
+      <path d="M${W - 80} 200 L ${W - 80} 162 M ${W - 76} 200 L ${W - 76} 170 M ${W - 72} 200 L ${W - 72} 158"
             stroke="${ink}0.5)" stroke-width="1.6" fill="none"/>
       <path d="M120 ${H} l -6 -20 l 12 0 z" fill="${ink}0.48)"/>
     `;
@@ -203,7 +203,7 @@ function coverSVG(sceneKey, title, accent) {
         <path d="M388 90 Q 350 80 320 65" />
         <path d="M388 160 Q 340 150 305 130" />
       </g>
-      <path d="M0 ${H-30} Q ${W/2} ${H-50} ${W} ${H-30}" stroke="${ink}0.15)" stroke-width="1" fill="none"/>
+      <path d="M0 ${H - 30} Q ${W / 2} ${H - 50} ${W} ${H - 30}" stroke="${ink}0.15)" stroke-width="1" fill="none"/>
     `;
   } else {
     scene = `<rect width="${W}" height="${H}" fill="${ink}0.08)"/>`;
@@ -224,9 +224,9 @@ function coverSVG(sceneKey, title, accent) {
       <rect width="${W}" height="${H}" fill="url(#paperGrad)"/>
       ${scene}
       <rect width="${W}" height="${H}" fill="url(#mistGrad)"/>
-      <rect x="${W-44}" y="${H-44}" width="28" height="28" rx="2"
+      <rect x="${W - 44}" y="${H - 44}" width="28" height="28" rx="2"
             fill="${accent || "#C8AA6E"}" opacity="0.92"/>
-      <text x="${W-30}" y="${H-25}" text-anchor="middle"
+      <text x="${W - 30}" y="${H - 25}" text-anchor="middle"
             font-family="'Oswald', sans-serif" font-weight="700"
             font-size="14" fill="#ffffff">印</text>
     </svg>
@@ -254,7 +254,7 @@ function inkBloom(cls, style) {
 
 /* Nét doodle scribble NGANG — wavy underline neon */
 function brushStrokeH(opts) {
-  const w = (opts && opts.width)  || 220;
+  const w = (opts && opts.width) || 220;
   const h = (opts && opts.height) || 18;
   const color = (opts && opts.color) || "var(--seal)";
   const op = (opts && opts.opacity) != null ? opts.opacity : 0.7;
@@ -263,7 +263,7 @@ function brushStrokeH(opts) {
     <svg class="brush-stroke brush-stroke-h ${cls}"
          viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true" style="filter:url(#neonGlowSoft)">
       <!-- wavy doodle scribble -->
-      <path d="M 2 ${h*0.5} Q ${w*0.15} ${h*0.2}, ${w*0.3} ${h*0.5} T ${w*0.6} ${h*0.5} T ${w*0.9} ${h*0.5}"
+      <path d="M 2 ${h * 0.5} Q ${w * 0.15} ${h * 0.2}, ${w * 0.3} ${h * 0.5} T ${w * 0.6} ${h * 0.5} T ${w * 0.9} ${h * 0.5}"
             stroke="${color}" stroke-width="2"
             fill="none" stroke-linecap="round"
             opacity="${op}"/>
@@ -273,7 +273,7 @@ function brushStrokeH(opts) {
 
 /* Nét doodle scribble DỌC */
 function brushStrokeV(opts) {
-  const w = (opts && opts.width)  || 14;
+  const w = (opts && opts.width) || 14;
   const h = (opts && opts.height) || 140;
   const color = (opts && opts.color) || "var(--seal)";
   const op = (opts && opts.opacity) != null ? opts.opacity : 0.7;
@@ -282,7 +282,7 @@ function brushStrokeV(opts) {
     <svg class="brush-stroke brush-stroke-v ${cls}"
          viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true" style="filter:url(#neonGlowSoft)">
       <!-- zigzag doodle vertical -->
-      <path d="M ${w*0.5} 2 L ${w*0.3} ${h*0.2} L ${w*0.7} ${h*0.35} L ${w*0.3} ${h*0.5} L ${w*0.7} ${h*0.65} L ${w*0.3} ${h*0.8} L ${w*0.5} ${h-3}"
+      <path d="M ${w * 0.5} 2 L ${w * 0.3} ${h * 0.2} L ${w * 0.7} ${h * 0.35} L ${w * 0.3} ${h * 0.5} L ${w * 0.7} ${h * 0.65} L ${w * 0.3} ${h * 0.8} L ${w * 0.5} ${h - 3}"
             stroke="${color}" stroke-width="1.5"
             fill="none" stroke-linecap="round"
             opacity="${op}"/>
@@ -393,8 +393,8 @@ function layoutOverprint(m, i) {
             <span class="op-tag">I · ĐAM MÊ</span>
             <h2 class="op-head font-display">
               ${pWords.map((w, k) =>
-                `<span class="op-word ${k === 1 ? "is-outline" : ""}">${w}</span>`
-              ).join("")}
+    `<span class="op-word ${k === 1 ? "is-outline" : ""}">${w}</span>`
+  ).join("")}
             </h2>
             <p class="op-body">${m.passion.body}</p>
           </section>
@@ -407,8 +407,8 @@ function layoutOverprint(m, i) {
             <span class="op-tag">II · HÀNH TRÌNH</span>
             <h2 class="op-head font-display">
               ${jWords.map((w, k) =>
-                `<span class="op-word ${k === 0 ? "is-outline" : ""}">${w}</span>`
-              ).join("")}
+    `<span class="op-word ${k === 0 ? "is-outline" : ""}">${w}</span>`
+  ).join("")}
             </h2>
             <p class="op-body">${m.journey.body}</p>
           </section>
@@ -522,13 +522,13 @@ function foldingFanSVG(accent) {
   return `
     <svg class="fn-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
       <defs>
-        <radialGradient id="fanWash-${accent.replace("#","")}" cx="50%" cy="94%" r="86%">
+        <radialGradient id="fanWash-${accent.replace("#", "")}" cx="50%" cy="94%" r="86%">
           <stop offset="0%"  stop-color="${accent}" stop-opacity="0.10"/>
           <stop offset="55%" stop-color="${accent}" stop-opacity="0.05"/>
           <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
         </radialGradient>
       </defs>
-      <path d="${fanFill}" fill="url(#fanWash-${accent.replace("#","")})"/>
+      <path d="${fanFill}" fill="url(#fanWash-${accent.replace("#", "")})"/>
       ${outer}
       ${inner1}
       ${inner2}
@@ -735,9 +735,9 @@ function layoutFolio(m, i) {
 const LAYOUTS = {
   manifesto: layoutManifesto,
   overprint: layoutOverprint,
-  vertical:  layoutVertical,
-  halo:      layoutHalo,
-  folio:     layoutFolio,
+  vertical: layoutVertical,
+  halo: layoutHalo,
+  folio: layoutFolio,
 };
 
 function memberCardHTML(m, i) {
@@ -770,7 +770,7 @@ function introCardHTML() {
 
       <div class="intro-meta">
         <span class="intro-meta__seal">印</span>
-        <span class="intro-meta__year font-display">2024</span>
+        <span class="intro-meta__year font-display">2026</span>
         <span class="intro-meta__sep">·</span>
         <span class="intro-meta__brand">THIÊN DI STUDIO</span>
       </div>
@@ -797,11 +797,11 @@ function introCardHTML() {
         </article>
 
         ${introThumbHTML("scene:mountain", "Sản Phẩm I", "p1", -4)}
-        ${introThumbHTML("scene:bamboo",   "Team Off-site", "p2", 3)}
-        ${introThumbHTML("scene:river",    "Sản Phẩm II", "p3", -2)}
-        ${introThumbHTML("scene:bamboo",   "Sản Phẩm III", "p4", 4)}
+        ${introThumbHTML("scene:bamboo", "Team Off-site", "p2", 3)}
+        ${introThumbHTML("scene:river", "Sản Phẩm II", "p3", -2)}
+        ${introThumbHTML("scene:bamboo", "Sản Phẩm III", "p4", 4)}
         ${introThumbHTML("scene:mountain", "Sự Kiện 2023", "p5", 2)}
-        ${introThumbHTML("scene:river",    "Sản Phẩm IV", "p6", -3)}
+        ${introThumbHTML("scene:river", "Sản Phẩm IV", "p6", -3)}
       </div>
 
       <canvas class="intro-particles" aria-hidden="true"></canvas>

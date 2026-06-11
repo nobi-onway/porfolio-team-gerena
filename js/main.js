@@ -90,7 +90,7 @@
       if (idx === 0) {
         // Slide intro: header hiện tên team thay vì 1 thành viên
         memberRole.textContent = "TEAM PORTFOLIO";
-        typeName("Thiên Di Studio");
+        typeName("CHÚNG TÔI LÀ");
       } else {
         const m = MEMBERS[idx - 1];                  // members shift +1 do intro chiếm idx 0
         memberRole.textContent = m.roleVi.toUpperCase();
@@ -377,22 +377,22 @@
   ========================================================= */
   const petalLayer = document.getElementById("petals");
   const PETAL_SHAPES = [
-    // Mèo chibi (vàng)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M6 18 Q6 10 14 9 Q22 10 22 18 Q22 23 14 25 Q6 23 6 18Z" stroke="#C8AA6E" stroke-width="1.4"/><path d="M8 12 L6 5 L12 10" stroke="#C8AA6E" stroke-width="1.2"/><path d="M20 12 L22 5 L16 10" stroke="#C8AA6E" stroke-width="1.2"/><circle cx="11" cy="16" r="1.5" fill="#C8AA6E"/><circle cx="17" cy="16" r="1.5" fill="#C8AA6E"/><path d="M12 20 L14 21.5 L16 20" stroke="#C8AA6E" stroke-width="1"/><line x1="6" y1="18" x2="11" y2="17.5" stroke="#C8AA6E" stroke-width="0.8" opacity="0.7"/><line x1="17" y1="17.5" x2="22" y2="18" stroke="#C8AA6E" stroke-width="0.8" opacity="0.7"/></svg>`,
-    // Thỏ chibi (teal)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M8 13 Q6 4 8 2 Q10 1 11 13" stroke="#0BC4C2" stroke-width="1.3"/><path d="M20 13 Q22 4 20 2 Q18 1 17 13" stroke="#0BC4C2" stroke-width="1.3"/><circle cx="14" cy="19" r="7" stroke="#0BC4C2" stroke-width="1.4"/><circle cx="11" cy="17.5" r="1.3" fill="#0BC4C2"/><circle cx="17" cy="17.5" r="1.3" fill="#0BC4C2"/><circle cx="14" cy="21" r="1.1" fill="#BE1E37"/><circle cx="22" cy="22" r="2.2" stroke="#0BC4C2" stroke-width="1"/></svg>`,
-    // Rồng chibi (đỏ)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M5 16 Q4 8 14 7 Q24 8 24 15 Q24 20 18 22 L14 27 L10 22 Q5 20 5 16Z" stroke="#BE1E37" stroke-width="1.4"/><path d="M7 12 Q2 8 4 5 Q7 10 9 11" stroke="#BE1E37" stroke-width="1.2"/><path d="M21 12 Q26 8 24 5 Q21 10 19 11" stroke="#BE1E37" stroke-width="1.2"/><circle cx="18" cy="12" r="1.6" fill="#C8AA6E"/><path d="M5 18 Q2 16 1 18 Q3 20.5 5 18Z" stroke="#C8AA6E" stroke-width="1"/><circle cx="11" cy="4" r="1" fill="#BE1E37"/><circle cx="17" cy="4" r="1" fill="#BE1E37"/></svg>`,
-    // Nấm chibi (đỏ + vàng)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M3 15 Q2 4 14 3 Q26 4 25 15 Z" stroke="#BE1E37" stroke-width="1.4"/><rect x="8" y="15" width="12" height="10" rx="3" stroke="#C8AA6E" stroke-width="1.3"/><circle cx="10" cy="10" r="1.6" fill="#C8AA6E" opacity="0.9"/><circle cx="17" cy="8" r="1.8" fill="#C8AA6E" opacity="0.9"/><circle cx="13" cy="13" r="1.2" fill="#C8AA6E" opacity="0.8"/><path d="M10 20 Q14 22 18 20" stroke="#C8AA6E" stroke-width="0.9"/></svg>`,
-    // Pháp sư chibi (vàng + teal)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M9 14 L14 2 L19 14 Z" stroke="#C8AA6E" stroke-width="1.3"/><path d="M5 14 Q14 17 23 14" stroke="#C8AA6E" stroke-width="1.3"/><circle cx="14" cy="19" r="4.5" stroke="#C8AA6E" stroke-width="1.2"/><circle cx="12" cy="18" r="1" fill="#C8AA6E"/><circle cx="16" cy="18" r="1" fill="#C8AA6E"/><path d="M8 24 L6 28" stroke="#0BC4C2" stroke-width="1.3"/><path d="M20 24 L22 28" stroke="#0BC4C2" stroke-width="1.3"/><path d="M8 24 Q14 27 20 24" stroke="#0BC4C2" stroke-width="1.3"/><line x1="22" y1="16" x2="26" y2="26" stroke="#BE1E37" stroke-width="1.4" stroke-linecap="round"/><circle cx="22" cy="14" r="2.2" stroke="#BE1E37" stroke-width="1.1"/></svg>`,
-    // Chiến binh chibi (vàng + đỏ)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M9 11 Q9 4 14 3 Q19 4 19 11 Q19 14 14 15 Q9 14 9 11Z" stroke="#C8AA6E" stroke-width="1.3"/><path d="M6 15 L5 24 L23 24 L22 15 Z" stroke="#C8AA6E" stroke-width="1.2"/><path d="M5 17 Q2 15 2 19 Q2 23 6 23" stroke="#BE1E37" stroke-width="1.2"/><line x1="22" y1="13" x2="27" y2="22" stroke="#C8AA6E" stroke-width="1.6" stroke-linecap="round"/><line x1="20.5" y1="14.5" x2="24.5" y2="12" stroke="#C8AA6E" stroke-width="1.2"/><line x1="7" y1="24" x2="6" y2="28" stroke="#C8AA6E" stroke-width="1.2"/><line x1="21" y1="24" x2="22" y2="28" stroke="#C8AA6E" stroke-width="1.2"/></svg>`,
-    // Ngôi sao (vàng)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><path d="M14 2 L17 10 L26 10 L19 15.5 L22 24 L14 18.5 L6 24 L9 15.5 L2 10 L11 10 Z" stroke="#C8AA6E" stroke-width="1.4"/></svg>`,
-    // Chim Lạc chibi (teal)
-    `<svg viewBox="0 0 28 28" width="28" fill="none"><ellipse cx="14" cy="18" rx="7" ry="5" stroke="#0BC4C2" stroke-width="1.4"/><circle cx="14" cy="10" r="4" stroke="#0BC4C2" stroke-width="1.3"/><path d="M7 15 Q1 12 3 9 Q5 13 8 14" stroke="#0BC4C2" stroke-width="1.2"/><path d="M21 15 Q27 12 25 9 Q23 13 20 14" stroke="#0BC4C2" stroke-width="1.2"/><circle cx="15.5" cy="9" r="1.2" fill="#0BC4C2"/><path d="M16.5 10 L20 11" stroke="#C8AA6E" stroke-width="1.1" stroke-linecap="round"/><line x1="10" y1="23" x2="8" y2="27" stroke="#0BC4C2" stroke-width="1.2"/><line x1="18" y1="23" x2="20" y2="27" stroke="#0BC4C2" stroke-width="1.2"/></svg>`,
+    // Nút tròn controller ○ (crimson)
+    `<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#BE1E37" stroke-width="3"/><circle cx="12" cy="12" r="4" fill="#BE1E37"/></svg>`,
+    // Dấu × bold (teal)
+    `<svg viewBox="0 0 24 24" width="24"><line x1="4" y1="4" x2="20" y2="20" stroke="#0BC4C2" stroke-width="4" stroke-linecap="square"/><line x1="20" y1="4" x2="4" y2="20" stroke="#0BC4C2" stroke-width="4" stroke-linecap="square"/></svg>`,
+    // Diamond ◆ (gold filled)
+    `<svg viewBox="0 0 24 24" width="24"><polygon points="12,2 22,12 12,22 2,12" fill="#C8AA6E"/></svg>`,
+    // Mũi tên ▶ (crimson filled)
+    `<svg viewBox="0 0 24 24" width="24"><polygon points="4,3 20,12 4,21" fill="#BE1E37"/></svg>`,
+    // Plus ✚ dày (gold)
+    `<svg viewBox="0 0 24 24" width="24"><rect x="9" y="2" width="6" height="20" fill="#C8AA6E"/><rect x="2" y="9" width="20" height="6" fill="#C8AA6E"/></svg>`,
+    // Ngôi sao ★ filled (gold)
+    `<svg viewBox="0 0 24 24" width="24"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="#C8AA6E"/></svg>`,
+    // Square outline bold (teal)
+    `<svg viewBox="0 0 24 24" width="24"><rect x="3" y="3" width="18" height="18" fill="none" stroke="#0BC4C2" stroke-width="3.5"/></svg>`,
+    // D-pad cross (crimson)
+    `<svg viewBox="0 0 24 24" width="24"><rect x="8" y="2" width="8" height="20" rx="1" fill="#BE1E37"/><rect x="2" y="8" width="20" height="8" rx="1" fill="#BE1E37"/></svg>`,
   ];
   const petals = [];   // {el, wx, wy} — el là .petal (lớp ngoài nhận gió)
   for (let i = 0; i < 18; i++) {
@@ -432,7 +432,7 @@
 
   /* ---- TRAIL gió: 1 đường liền bám con trỏ, thuôn dần & tan ở đuôi ---- */
   const windTrail = document.getElementById("windTrail");
-  const windGrad  = document.getElementById("windFade");
+  const windGrad = document.getElementById("windFade");
   const TRAIL = [];                 // [{x, y}] mới nhất ở CUỐI mảng
   const TRAIL_MAX = 20;             // số điểm giữ lại (đuôi dài ~ chừng này)
   const TRAIL_MIN_DIST = 6;         // px tối thiểu giữa 2 điểm (lọc nhiễu)
@@ -496,10 +496,10 @@
   }
 
   const WIND_RADIUS = 130;   // bán kính ảnh hưởng quanh ĐƯỜNG trail (px)
-  const WIND_PUSH   = 30;    // hệ số lực cuốn theo nét mực
-  const WIND_MAX    = 140;   // giới hạn lệch tối đa (px)
-  const WIND_EASE    = 0.12; // tốc độ tiến tới mục tiêu
-  const WIND_RETURN  = 0.92; // hệ số hồi về 0 khi hết gió
+  const WIND_PUSH = 30;    // hệ số lực cuốn theo nét mực
+  const WIND_MAX = 140;   // giới hạn lệch tối đa (px)
+  const WIND_EASE = 0.12; // tốc độ tiến tới mục tiêu
+  const WIND_RETURN = 0.92; // hệ số hồi về 0 khi hết gió
 
   // Khoảng cách + hình chiếu từ điểm P tới đoạn AB → trả {dist, t}
   function segInfo(px, py, ax, ay, bx, by) {
