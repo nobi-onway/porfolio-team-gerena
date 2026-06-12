@@ -10,79 +10,62 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="js/tailwind.config.js"></script>
 
-  <!-- Fonts: serif thư pháp cho heading + sans gọn cho body -->
+  <!-- Fonts: Oswald (display) + Be Vietnam Pro (body) + Patrick Hand (doodle) + VT323 (arcade pixel) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Patrick+Hand&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Patrick+Hand&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=VT323&display=swap"
     rel="stylesheet" />
 
-  <!-- Custom styles (Arcane Neon × Doodle) -->
+  <!-- Custom styles (Arcade × Đông Sơn) -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body class="bg-paper bg-grain relative no-select">
 
-  <!-- ===== SVG FILTER: mép giấy rách / bờ cọ (dùng cho .info-block) ===== -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <filter id="paperEdge">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.014" numOctaves="3" seed="7" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-      <filter id="paperEdgeSoft">
-        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.018" numOctaves="2" seed="3" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </defs>
-  </svg>
-
-  <!-- ===== LỚP NỀN CẢNH (cuộn tranh thủy mặc dọc) ===== -->
+  <!-- ===== LỚP NỀN (đen arcade + họa tiết Đông Sơn, cuộn dọc theo slide) ===== -->
   <div id="sceneLayer" class="absolute inset-0 z-0 overflow-hidden"></div>
 
   <!-- ===== TRỐNG ĐỒNG LỚN (nền, tâm giữa cạnh trái) ===== -->
   <div id="drumLayer" class="absolute inset-0 z-[5] overflow-hidden pointer-events-none"></div>
 
-  <!-- ===== Vết mực loang nền tĩnh ===== -->
-  <div class="ink-wash ink-wash-1" aria-hidden="true"></div>
-  <div class="ink-wash ink-wash-2" aria-hidden="true"></div>
-
-  <!-- ===== Cánh hoa / lá rơi ===== -->
+  <!-- ===== Icon game rơi (controller / coin / chim Lạc) ===== -->
   <div id="petals" class="absolute inset-0 z-[12] overflow-hidden pointer-events-none"></div>
 
   <!-- ===== Vệt mực bám theo con trỏ (1 trail liền, vẽ động) ===== -->
   <svg id="windFx" class="fixed inset-0 z-[14] overflow-visible pointer-events-none" aria-hidden="true">
     <defs>
-      <!-- ink trail: gold → teal gradient -->
+      <!-- ink trail: vàng đồng → đỏ son, flat -->
       <linearGradient id="windFade" gradientUnits="userSpaceOnUse">
         <stop offset="0" stop-color="#C8AA6E" stop-opacity="0.0" />
-        <stop offset="0.25" stop-color="#C8AA6E" stop-opacity="0.40" />
-        <stop offset="0.55" stop-color="#0BC4C2" stop-opacity="0.30" />
-        <stop offset="0.78" stop-color="#C8AA6E" stop-opacity="0.55" />
-        <stop offset="1" stop-color="#C8AA6E" stop-opacity="0.75" />
+        <stop offset="0.35" stop-color="#C8AA6E" stop-opacity="0.35" />
+        <stop offset="0.7" stop-color="#BE1E37" stop-opacity="0.45" />
+        <stop offset="1" stop-color="#C8AA6E" stop-opacity="0.7" />
       </linearGradient>
       <!-- mép doodle: nhiễu + xô lệch nhẹ -->
       <filter id="inkBleed" x="-20%" y="-20%" width="140%" height="140%">
         <feTurbulence type="fractalNoise" baseFrequency="0.09 0.11" numOctaves="2" seed="11" result="n" />
         <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
       </filter>
-      <!-- (inkSplash / inkEdge / neonGlow aliases removed — flat bold style) -->
     </defs>
     <path id="windTrail" fill="url(#windFade)" stroke="none" filter="url(#inkBleed)" />
   </svg>
 
-  <!-- ===== Khung viền hextech (góc bracket neon) ===== -->
-  <div class="frame-corner frame-corner--neon top-6 left-6 border-t border-l"></div>
-  <div class="frame-corner frame-corner--neon top-6 right-6 border-t border-r"></div>
-  <div class="frame-corner frame-corner--neon bottom-6 left-6 border-b border-l"></div>
-  <div class="frame-corner frame-corner--neon bottom-6 right-6 border-b border-r"></div>
+  <!-- ===== Khung viền góc (bracket vàng đồng, flat) ===== -->
+  <div class="frame-corner top-6 left-6 border-t border-l"></div>
+  <div class="frame-corner top-6 right-6 border-t border-r"></div>
+  <div class="frame-corner bottom-6 left-6 border-b border-l"></div>
+  <div class="frame-corner bottom-6 right-6 border-b border-r"></div>
 
   <!-- ===== Header thương hiệu ===== -->
   <header class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-10 md:px-16 py-7 no-select">
     <div class="flex items-center gap-3">
-      <svg width="34" height="34" viewBox="0 0 40 40" class="opacity-90">
-        <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="#C8AA6E" stroke-width="1.5" />
-        <polygon points="20,11 29,20 20,29 11,20" fill="#8B6914" stroke="#C8AA6E" stroke-width="1" />
+      <!-- Logo: sao 12 cánh trống đồng -->
+      <svg width="34" height="34" viewBox="0 0 40 40" class="opacity-90" aria-hidden="true">
+        <circle cx="20" cy="20" r="19" fill="none" stroke="#C8AA6E" stroke-width="1.5" />
+        <polygon
+          points="20,4 21.7,13.7 28,6.1 24.6,15.4 33.9,12 26.3,18.3 36,20 26.3,21.7 33.9,28 24.6,24.6 28,33.9 21.7,26.3 20,36 18.3,26.3 12,33.9 15.4,24.6 6.1,28 13.7,21.7 4,20 13.7,18.3 6.1,12 15.4,15.4 12,6.1 18.3,13.7"
+          fill="#C8AA6E" />
       </svg>
       <div class="leading-tight">
         <div class="font-display text-ink text-lg md:text-xl font-bold tracking-widest">THIÊN DI</div>
@@ -90,7 +73,7 @@
       </div>
     </div>
 
-    <!-- Tên thành viên hiện tại — căn GIỮA viewport (định vị tuyệt đối) -->
+    <!-- Tiêu đề slide hiện tại — căn GIỮA viewport -->
     <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
       <div class="member-name-wrap flex items-center justify-center gap-3 md:gap-4">
         <span class="name-rule"></span>
@@ -100,10 +83,10 @@
       </div>
     </div>
 
-    <!-- Role thành viên hiện tại — thay cho "THE GUILD OF MAKERS" -->
+    <!-- Nhãn phụ slide hiện tại -->
     <div class="hidden md:flex items-center gap-2 text-[11px] tracking-[0.35em] text-ink/55 font-body">
-      <span class="seal-mini">印</span>
-      <span id="memberRole" class="transition-all duration-500">THE GUILD OF MAKERS</span>
+      <span class="seal-mini">★</span>
+      <span id="memberRole" class="transition-all duration-500">TEAM PORTFOLIO</span>
     </div>
   </header>
 
@@ -111,62 +94,50 @@
   <nav id="navDots" class="absolute right-8 md:right-12 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-5 items-center">
   </nav>
 
-  <!-- ===== Progress: số dọc nằm CẠNH thanh ===== -->
+  <!-- ===== Progress: thanh XP dọc + số ===== -->
   <div class="absolute left-5 md:left-8 top-1/2 -translate-y-1/2 z-30 no-select flex flex-row items-center gap-3">
     <div class="progress-num font-display text-ink/65 text-sm">
       <span id="curIdx">01</span>
       <span class="text-ink/30">/</span>
-      <span id="totalIdx" class="text-ink/40">05</span>
+      <span id="totalIdx" class="text-ink/40">03</span>
     </div>
-    <div class="w-[2px] h-32 bg-ink/15 relative overflow-hidden rounded">
-      <div id="progressBar"
-        class="absolute top-0 left-0 w-full bg-gradient-to-b from-seal to-seal-dark transition-all duration-700"
-        style="height:20%"></div>
+    <div class="xp-bar w-[6px] h-32 relative overflow-hidden">
+      <div id="progressBar" class="absolute top-0 left-0 w-full bg-seal transition-all duration-700"
+        style="height:33%"></div>
     </div>
   </div>
 
-  <!-- ===== STAGE: nơi các card hiện ===== -->
+  <!-- ===== STAGE: nơi các slide hiện ===== -->
   <main id="stage" class="absolute inset-0 z-10"></main>
 
   <!-- ===== Scroll hint ===== -->
   <div id="scrollHint"
     class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 no-select transition-opacity duration-500">
     <span class="text-[11px] tracking-[0.3em] text-ink/50">CUỘN ĐỂ KHÁM PHÁ</span>
-    <!-- Con chuột máy tính: thân mực, con lăn (scroll) tô đỏ chạy lên xuống -->
+    <!-- Con chuột máy tính: con lăn đỏ chạy lên xuống -->
     <svg class="mouse-hint" width="22" height="34" viewBox="0 0 24 38" fill="none" aria-hidden="true">
       <rect x="1" y="1" width="22" height="36" rx="11" fill="none" stroke="#C8AA6E" stroke-width="1.6" />
-      <rect class="mouse-wheel" x="10.5" y="7" width="3" height="7" rx="1.5" fill="#8B6914" />
+      <rect class="mouse-wheel" x="10.5" y="7" width="3" height="7" rx="1.5" fill="#BE1E37" />
     </svg>
   </div>
 
-  <!-- ===== Modal Cột Mốc — chi tiết khi click triện ===== -->
-  <div id="msModal" class="ms-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="msModalTitle">
-    <div class="ms-modal__backdrop" data-ms-close></div>
-    <div class="ms-modal__paper" role="document">
-      <button class="ms-modal__close" type="button" data-ms-close aria-label="Đóng">×</button>
-      <div class="ms-modal__year font-display" id="msModalYear"></div>
-      <div class="ms-modal__rule" aria-hidden="true"></div>
-      <h3 class="ms-modal__title font-display" id="msModalTitle"></h3>
-      <p class="ms-modal__detail" id="msModalDetail"></p>
-      <div class="ms-modal__seal" aria-hidden="true">印</div>
-    </div>
-  </div>
-
-  <!-- ===== Loading curtain ===== -->
+  <!-- ===== Loading curtain (màn hình nạp arcade) ===== -->
   <div id="curtain">
     <div class="text-center">
-      <svg width="60" height="60" viewBox="0 0 40 40" class="mx-auto mb-4 animate-pulse">
-        <polygon points="20,3 37,20 20,37 3,20" fill="none" stroke="#C8AA6E" stroke-width="1.5" />
-        <polygon points="20,11 29,20 20,29 11,20" fill="#8B6914" stroke="#C8AA6E" stroke-width="1" />
+      <svg width="60" height="60" viewBox="0 0 40 40" class="mx-auto mb-4 animate-pulse" aria-hidden="true">
+        <circle cx="20" cy="20" r="19" fill="none" stroke="#C8AA6E" stroke-width="1.5" />
+        <polygon
+          points="20,4 21.7,13.7 28,6.1 24.6,15.4 33.9,12 26.3,18.3 36,20 26.3,21.7 33.9,28 24.6,24.6 28,33.9 21.7,26.3 20,36 18.3,26.3 12,33.9 15.4,24.6 6.1,28 13.7,21.7 4,20 13.7,18.3 6.1,12 15.4,15.4 12,6.1 18.3,13.7"
+          fill="#C8AA6E" />
       </svg>
-      <div class="font-display text-gold tracking-[0.4em] text-sm">ĐANG KHỞI ĐỘNG...</div>
+      <div class="font-arcade text-gold tracking-[0.3em] text-xl">INSERT COIN...</div>
     </div>
   </div>
 
-  <!-- ===== Scripts (thứ tự: data -> scenery -> render -> main) ===== -->
+  <!-- ===== Scripts (thứ tự: data -> render -> scenery -> main; scenery cần SLIDE_META) ===== -->
   <script src="js/data.js"></script>
-  <script src="js/scenery.js"></script>
   <script src="js/render.js"></script>
+  <script src="js/scenery.js"></script>
   <script src="js/main.js"></script>
 </body>
 

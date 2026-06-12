@@ -1,36 +1,37 @@
 /* =========================================================
    MAIN — điều hướng, gesture, hiệu ứng, khởi động
    Phụ thuộc:
-     - MEMBERS (data.js)
+     - SLIDE_META, renderSlides, renderDrum (render.js)
      - renderScenes (scenery.js)
-     - renderMembers (render.js)
 ========================================================= */
 (function () {
   "use strict";
 
-  /* ---- Dựng cuộn tranh dọc (1 ảnh dài) ---- */
+  /* ---- Dựng nền cuộn dọc ---- */
   const sceneLayer = document.getElementById("sceneLayer");
   renderScenes(sceneLayer);
   const sceneScroll = document.getElementById("sceneScroll");
   const sceneImg = sceneScroll.querySelector(".scene-long");
 
-  // Tổng quãng cuộn ảnh = (chiều cao ảnh render - 1 viewport).
-  // Chia đều cho (n-1) bước slide → slide cuối chạm đáy tranh.
-  let bgTravel = 0;   // px ảnh phải dịch giữa slide 0 và slide cuối
+  // Slide hiện tại — khai báo TRƯỚC measureScene() vì được gọi ngay bên dưới
+  let current = 0;
+  let animating = false;
+
+  // Tổng quãng cuộn nền = (chiều cao nền render - 1 viewport),
+  // chia đều cho (n-1) bước slide → slide cuối chạm đáy.
+  let bgTravel = 0;
   function measureScene() {
-    const imgH = sceneImg.getBoundingClientRect().height;   // cao thật sau khi fit rộng
+    const imgH = sceneImg.getBoundingClientRect().height;
     const viewH = window.innerHeight;
     bgTravel = Math.max(0, imgH - viewH);
-    if (typeof current !== "undefined") applyBgShift(current);   // đặt lại vị trí theo slide hiện tại
+    applyBgShift(current);
   }
   function applyBgShift(idx) {
-    const segs = (typeof SLIDES_COUNT === "number" && SLIDES_COUNT) || 1;
+    const segs = SLIDE_META.length || 1;
     const t = segs > 1 ? idx / (segs - 1) : 0;
     sceneImg.style.setProperty("--bg-shift", (-bgTravel * t).toFixed(1) + "px");
   }
-  // ảnh load xong (hoặc đã cache) → đo; và đo lại khi resize
-  window.__onSceneImg = measureScene;
-  if (sceneImg.complete) measureScene();
+  measureScene();
   window.addEventListener("resize", measureScene);
 
   /* ---- Dựng trống đồng lớn (nền, tâm giữa cạnh trái) ---- */
@@ -40,15 +41,12 @@
   const DRUM_STEP = 60;        // mỗi transition xoay thêm 60°
   let drumRot = 0;
 
-  /* ---- Dựng track card + nav dots ---- */
+  /* ---- Dựng track slide + nav dots ---- */
   const stage = document.getElementById("stage");
   const navDots = document.getElementById("navDots");
-  renderMembers(stage, navDots, goTo);
+  renderSlides(stage, navDots, goTo);
   const cardTrack = document.getElementById("cardTrack");
   const cards = [...cardTrack.querySelectorAll(".member-card")];
-
-  // Tổng số slide = intro + thành viên. Dùng SLIDES_COUNT thay cho MEMBERS.length
-  // ở mọi chỗ liên quan đến điều hướng (slide index 0 = intro, 1..N = members).
   const SLIDES_COUNT = cards.length;
 
   document.getElementById("totalIdx").textContent =
@@ -63,53 +61,41 @@
   const memberName = document.getElementById("memberName");
   const memberRole = document.getElementById("memberRole");
 
-  // Đổi tên + vai trò trên header:
-  //  - tên cũ FADE OUT, rồi tên mới được GÕ RA từng ký tự (typing)
-  //  - role FADE đồng bộ
-  // Viết tên ra MỀM MẠI: mỗi ký tự là 1 span, hiện dần (mờ→rõ + nét bút)
-  // với độ trễ tăng dần → chữ "chảy ra" như đang viết, không bật cứng.
-  let switchTimer = null;     // timeout chờ fade-out
-  const STROKE_GAP = 80;      // ms giữa các nét chữ (lớn hơn = viết chậm/êm hơn)
+  // Tiêu đề slide trên header: chữ cũ fade out → chữ mới gõ ra từng ký tự
+  let switchTimer = null;
+  const STROKE_GAP = 80;      // ms giữa các ký tự
   function typeName(text) {
     memberName.classList.remove("is-switching");
-    // dựng từng ký tự thành span (khoảng trắng dùng   để không sập)
     memberName.innerHTML = "";
     [...text].forEach((ch, i) => {
       const s = document.createElement("span");
       s.className = "name-char";
-      s.textContent = ch === " " ? " " : ch;
+      s.textContent = ch === " " ? " " : ch;
       s.style.animationDelay = (i * STROKE_GAP) + "ms";
       memberName.appendChild(s);
     });
   }
-  function setHeaderMember(idx) {
+  function setHeaderSlide(idx) {
     clearTimeout(switchTimer);
-    memberName.classList.add("is-switching");        // fade out tên cũ
+    memberName.classList.add("is-switching");
     memberRole.style.opacity = "0";
     switchTimer = setTimeout(() => {
-      if (idx === 0) {
-        // Slide intro: header hiện tên team thay vì 1 thành viên
-        memberRole.textContent = "TEAM PORTFOLIO";
-        typeName("CHÚNG TÔI LÀ");
-      } else {
-        const m = MEMBERS[idx - 1];                  // members shift +1 do intro chiếm idx 0
-        memberRole.textContent = m.roleVi.toUpperCase();
-        typeName(m.name);
-      }
+      const meta = SLIDE_META[idx] || SLIDE_META[0];
+      memberRole.textContent = meta.sub;
+      // Slide 0: logo lớn đã có tên team → header không lặp lại
+      typeName(idx === 0 ? "" : meta.title);
       memberRole.style.opacity = "";
-    }, 360);                                         // khớp transition fade-out 0.35s
+    }, 360);                  // khớp transition fade-out 0.35s
   }
 
-  let current = 0;
-  let animating = false;
   document.body.classList.add("is-intro");
 
-  const TURN = 1250;      // thời gian một lần chuyển (khớp transition #cardTrack & #sceneScroll)
-  const REVEAL_AT = 620;  // khi track đã trượt ~1/2 thì nội dung card mới bắt đầu hiện ra (stagger)
+  const TURN = 1250;      // thời gian một lần chuyển (khớp transition CSS)
+  const REVEAL_AT = 620;  // track trượt ~1/2 thì nội dung slide mới hiện ra
 
   function updateIndicators() {
     applyBgShift(current);
-    setHeaderMember(current);
+    setHeaderSlide(current);
     dots.forEach((d, i) => d.classList.toggle("active", i === current));
     curIdx.textContent = String(current + 1).padStart(2, "0");
     progressBar.style.height = ((current + 1) / SLIDES_COUNT) * 100 + "%";
@@ -126,33 +112,13 @@
 
     const dir = idx > prev ? 1 : -1;
 
-    // Card cũ rời active ngay → nội dung của nó "thu lại" khi trượt đi
     cards[prev].classList.remove("active");
-
-    // MORPH: trượt cả track card liền mạch (cũ ra, mới vào — không fade)
     cardTrack.style.transform = `translateY(-${current * 100}vh)`;
-    // Trống đồng xoay đồng bộ
     drumRot += (dir * DRUM_STEP);
     drum.style.setProperty("--drum-rot", drumRot + "deg");
     updateIndicators();
 
-    // Card mới nhận active khi track gần tới nơi → nội dung lần lượt "đáp xuống"
-    setTimeout(() => {
-      // Với intro card: force-reset animation để phát lại từ đầu mỗi lần quay lại
-      if (current === 0) {
-        const introCard = cards[0];
-        const animated = introCard.querySelectorAll(
-          ".intro-portfolio, .intro-frame, .intro-tagline, .intro-meta"
-        );
-        animated.forEach(el => {
-          el.style.animation = "none";
-          void el.offsetWidth; // force reflow
-          el.style.animation = "";
-        });
-      }
-      cards[current].classList.add("active");
-    }, REVEAL_AT);
-
+    setTimeout(() => { cards[current].classList.add("active"); }, REVEAL_AT);
     setTimeout(() => { animating = false; }, TURN);
   }
 
@@ -160,98 +126,52 @@
   function prev() { goTo(current - 1); }
 
   /* =========================================================
-     MODAL CỘT MỐC — click triện trên dải ngang để xem chi tiết
+     PAGER SẢN PHẨM (slide Stage Select)
   ========================================================= */
-  const msModal = document.getElementById("msModal");
-  const msYearEl = document.getElementById("msModalYear");
-  const msTitleEl = document.getElementById("msModalTitle");
-  const msDetailEl = document.getElementById("msModalDetail");
-  let lastFocusedBeforeModal = null;
-  function modalIsOpen() {
-    return msModal.classList.contains("is-open");
-  }
-  function openMilestoneModal(memberIdx, milestoneIdx, triggerEl) {
-    const m = MEMBERS[memberIdx];
-    if (!m || !m.milestones || !m.milestones[milestoneIdx]) return;
-    const ms = m.milestones[milestoneIdx];
-    msYearEl.textContent = ms.year;
-    msTitleEl.textContent = ms.event;
-    msDetailEl.textContent = ms.detail || "";
-    lastFocusedBeforeModal = triggerEl || document.activeElement;
-    msModal.classList.add("is-open");
-    msModal.setAttribute("aria-hidden", "false");
-    // chuyển focus vào nút đóng để hỗ trợ bàn phím / screen reader
-    requestAnimationFrame(() => {
-      const closeBtn = msModal.querySelector(".ms-modal__close");
-      if (closeBtn) closeBtn.focus();
-    });
-  }
-  function closeMilestoneModal() {
-    if (!modalIsOpen()) return;
-    msModal.classList.remove("is-open");
-    msModal.setAttribute("aria-hidden", "true");
-    if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === "function") {
-      lastFocusedBeforeModal.focus();
-    }
-    lastFocusedBeforeModal = null;
-  }
-  // Delegated click — nút .js-ms-open có thể nằm trong bất kỳ card nào
   document.addEventListener("click", (e) => {
-    const opener = e.target.closest(".js-ms-open");
-    if (opener) {
-      e.preventDefault();
-      const mi = Number(opener.dataset.member);
-      const ms = Number(opener.dataset.milestone);
-      openMilestoneModal(mi, ms, opener);
-      return;
-    }
-    if (e.target.closest("[data-ms-close]")) {
-      e.preventDefault();
-      closeMilestoneModal();
-    }
-    // ===== Pager SẢN PHẨM (layout v2) =====
-    const stage = e.target.closest(".prod-stage");
-    if (!stage) return;
+    const stageEl = e.target.closest(".prod-stage");
+    if (!stageEl) return;
     const goBtn = e.target.closest("[data-prod-go]");
     const prevBtn = e.target.closest("[data-prod-prev]");
     const nextBtn = e.target.closest("[data-prod-next]");
     if (!goBtn && !prevBtn && !nextBtn) return;
     e.preventDefault();
-    const slides = [...stage.querySelectorAll(".prod-slide")];
-    const dots = [...stage.querySelectorAll(".prod-pager__dot")];
+    const slides = [...stageEl.querySelectorAll(".prod-slide")];
+    const pagerDots = [...stageEl.querySelectorAll(".prod-pager__dot")];
     const total = slides.length;
     if (total === 0) return;
-    let next = Number(stage.dataset.prodCurrent || 0);
-    if (goBtn) next = Number(goBtn.dataset.prodGo);
-    if (prevBtn) next = (next - 1 + total) % total;
-    if (nextBtn) next = (next + 1) % total;
-    setActiveProduct(stage, slides, dots, next);
+    let target = Number(stageEl.dataset.prodCurrent || 0);
+    if (goBtn) target = Number(goBtn.dataset.prodGo);
+    if (prevBtn) target = (target - 1 + total) % total;
+    if (nextBtn) target = (target + 1) % total;
+    setActiveProduct(stageEl, slides, pagerDots, target);
   });
-  function setActiveProduct(stage, slides, dots, idx) {
-    stage.dataset.prodCurrent = String(idx);
+  function setActiveProduct(stageEl, slides, pagerDots, idx) {
+    stageEl.dataset.prodCurrent = String(idx);
     slides.forEach((s, i) => {
       const on = i === idx;
       s.setAttribute("aria-hidden", on ? "false" : "true");
       s.classList.toggle("is-active", on);
     });
-    dots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
-    // hiệu ứng "quét bút lông": flash class ngắn rồi remove
-    stage.classList.remove("is-switching");
-    void stage.offsetWidth;
-    stage.classList.add("is-switching");
-    setTimeout(() => stage.classList.remove("is-switching"), 420);
+    pagerDots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
+    // hiệu ứng quét ngang khi đổi stage
+    stageEl.classList.remove("is-switching");
+    void stageEl.offsetWidth;
+    stageEl.classList.add("is-switching");
+    setTimeout(() => stageEl.classList.remove("is-switching"), 420);
   }
 
-  /* ---- Particles vàng bay lên từ chữ highlight ở intro ---- */
+  /* ---- Pixel vàng bay lên từ chữ highlight ở title screen ---- */
   (function initIntroParticles() {
     const introCard = cards[0];
     const canvas = introCard.querySelector(".intro-particles");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const GOLD = [236, 197, 151];
+    const GOLD = [200, 170, 110];
     let particles = [];
     let raf = null;
     let running = false;
+    let startTimer = null;
 
     function resize() {
       canvas.width = canvas.offsetWidth;
@@ -275,7 +195,7 @@
         vx: (Math.random() - 0.5) * 1.2,
         vy: -(Math.random() * 1.8 + 0.4),
         life: 1,
-        size: Math.random() * 2.5 + 0.8,
+        size: Math.random() * 3 + 2,
       });
     }
 
@@ -286,23 +206,18 @@
       if (frame % 4 === 0) {
         const rects = getRects();
         spawn(rects);
-        if (Math.random() < 0.4) spawn(rects); // burst thêm
+        if (Math.random() < 0.4) spawn(rects);
       }
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx; p.y += p.vy;
-        p.vy -= 0.02; // gia tốc nhẹ lên trên
+        p.vy -= 0.02;
         p.life -= 0.018;
         if (p.life <= 0) { particles.splice(i, 1); continue; }
-        const alpha = p.life * 0.85;
-        ctx.save();
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = `rgba(${GOLD},${alpha * 0.7})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${GOLD},${alpha})`;
-        ctx.fill();
-        ctx.restore();
+        // pixel vuông flat (arcade) — không glow
+        const s = Math.max(1, p.size * p.life);
+        ctx.fillStyle = `rgba(${GOLD},${(p.life * 0.85).toFixed(3)})`;
+        ctx.fillRect(Math.round(p.x), Math.round(p.y), Math.round(s), Math.round(s));
       }
       frame++;
       raf = requestAnimationFrame(loop);
@@ -318,23 +233,30 @@
     function stop() {
       running = false;
       if (raf) { cancelAnimationFrame(raf); raf = null; }
+      if (startTimer) { clearTimeout(startTimer); startTimer = null; }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Quan sát body.is-intro để start/stop
+    // Delay khớp thời điểm tagline hiện ra (reveal d2)
+    const TAGLINE_DELAY = 1400;
     const observer = new MutationObserver(() => {
-      document.body.classList.contains("is-intro") ? start() : stop();
+      if (document.body.classList.contains("is-intro")) {
+        startTimer = setTimeout(start, TAGLINE_DELAY);
+      } else {
+        stop();
+      }
     });
     observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    startTimer = setTimeout(start, TAGLINE_DELAY + 800);   // lần đầu vào trang
 
     window.addEventListener("resize", () => { if (running) resize(); });
   })();
 
-  /* ---- Khởi tạo (track đã ở vị trí 0 = INTRO) ---- */
+  /* ---- Khởi tạo (track ở vị trí 0 = TITLE SCREEN) ---- */
   function init() {
     dots[0].classList.add("active");
-    memberRole.textContent = "TEAM PORTFOLIO";
-    typeName("Thiên Di Studio");
+    memberRole.textContent = SLIDE_META[0].sub;
+    typeName("");
     curIdx.textContent = "01";
     progressBar.style.height = (1 / SLIDES_COUNT) * 100 + "%";
     document.getElementById("curtain").classList.add("gone");
@@ -346,8 +268,6 @@
   ========================================================= */
   let wheelLock = false;
   window.addEventListener("wheel", (e) => {
-    // Modal mở → cho phép cuộn nội dung modal, không chặn, không chuyển slide
-    if (modalIsOpen()) return;
     e.preventDefault();
     if (wheelLock || animating) return;
     if (Math.abs(e.deltaY) < 12) return;
@@ -359,16 +279,13 @@
   // Touch
   let touchStartY = null;
   window.addEventListener("touchstart", (e) => {
-    if (modalIsOpen()) return;
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
   window.addEventListener("touchmove", (e) => {
-    if (modalIsOpen()) return;          // modal mở → cho scroll bên trong
     e.preventDefault();
   }, { passive: false });
   window.addEventListener("touchend", (e) => {
     if (touchStartY === null) return;
-    if (modalIsOpen()) { touchStartY = null; return; }
     const dy = touchStartY - e.changedTouches[0].clientY;
     if (Math.abs(dy) > 50) dy > 0 ? next() : prev();
     touchStartY = null;
@@ -376,10 +293,6 @@
 
   // Keyboard
   window.addEventListener("keydown", (e) => {
-    if (modalIsOpen()) {
-      if (e.key === "Escape") { e.preventDefault(); closeMilestoneModal(); }
-      return;                            // các phím điều hướng bị vô hiệu khi modal mở
-    }
     if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); next(); }
     if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); prev(); }
     if (e.key === "Home") goTo(0);
@@ -387,32 +300,33 @@
   });
 
   /* =========================================================
-     CÁNH HOA / LÁ RƠI (thay tro vàng)
+     ICON GAME RƠI (petals) — controller / D-pad / sao / chim Lạc
   ========================================================= */
   const petalLayer = document.getElementById("petals");
   const PETAL_SHAPES = [
-    // Nút tròn controller ○ (crimson)
+    // Nút tròn controller ○ (đỏ son)
     `<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#BE1E37" stroke-width="3"/><circle cx="12" cy="12" r="4" fill="#BE1E37"/></svg>`,
-    // Dấu × bold (teal)
-    `<svg viewBox="0 0 24 24" width="24"><line x1="4" y1="4" x2="20" y2="20" stroke="#0BC4C2" stroke-width="4" stroke-linecap="square"/><line x1="20" y1="4" x2="4" y2="20" stroke="#0BC4C2" stroke-width="4" stroke-linecap="square"/></svg>`,
-    // Diamond ◆ (gold filled)
+    // Dấu × bold (vàng đồng)
+    `<svg viewBox="0 0 24 24" width="24"><line x1="4" y1="4" x2="20" y2="20" stroke="#C8AA6E" stroke-width="4" stroke-linecap="square"/><line x1="20" y1="4" x2="4" y2="20" stroke="#C8AA6E" stroke-width="4" stroke-linecap="square"/></svg>`,
+    // Diamond ◆ (vàng đồng)
     `<svg viewBox="0 0 24 24" width="24"><polygon points="12,2 22,12 12,22 2,12" fill="#C8AA6E"/></svg>`,
-    // Mũi tên ▶ (crimson filled)
+    // Mũi tên ▶ (đỏ son)
     `<svg viewBox="0 0 24 24" width="24"><polygon points="4,3 20,12 4,21" fill="#BE1E37"/></svg>`,
-    // Plus ✚ dày (gold)
-    `<svg viewBox="0 0 24 24" width="24"><rect x="9" y="2" width="6" height="20" fill="#C8AA6E"/><rect x="2" y="9" width="20" height="6" fill="#C8AA6E"/></svg>`,
-    // Ngôi sao ★ filled (gold)
+    // Pixel coin (vàng đồng, lỗ vuông)
+    `<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="10" fill="#C8AA6E"/><rect x="9" y="9" width="6" height="6" fill="#000"/></svg>`,
+    // Ngôi sao ★ (vàng đồng)
     `<svg viewBox="0 0 24 24" width="24"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="#C8AA6E"/></svg>`,
-    // Square outline bold (teal)
-    `<svg viewBox="0 0 24 24" width="24"><rect x="3" y="3" width="18" height="18" fill="none" stroke="#0BC4C2" stroke-width="3.5"/></svg>`,
-    // D-pad cross (crimson)
+    // Pixel heart (đỏ son)
+    `<svg viewBox="0 0 24 24" width="24"><path d="M4 6 h5 v3 h6 V6 h5 v6 h-3 v3 h-3 v3 h-4 v-3 H7 v-3 H4 Z" fill="#BE1E37"/></svg>`,
+    // D-pad cross (đỏ son)
     `<svg viewBox="0 0 24 24" width="24"><rect x="8" y="2" width="8" height="20" rx="1" fill="#BE1E37"/><rect x="2" y="8" width="20" height="8" rx="1" fill="#BE1E37"/></svg>`,
+    // Chim Lạc (vàng đồng) — chất liệu Việt
+    `<svg viewBox="-16 -12 36 20" width="24"><path d="M -14 3 Q -8 0 -3 0 Q 1 -6 8 -8 L 5 -2 Q 12 -4 18 -8 Q 16 -1 8 2 Q 1 4 -4 3 Q -9 7 -14 3 Z" fill="#C8AA6E"/></svg>`,
   ];
-  const petals = [];   // {el, wx, wy} — el là .petal (lớp ngoài nhận gió)
+  const petals = [];   // {el, fall, wx, wy} — el là lớp ngoài nhận gió
   for (let i = 0; i < 18; i++) {
     const p = document.createElement("span");
     p.className = "petal";
-    // lớp trong giữ animation rơi; lớp ngoài nhận offset gió
     const inner = document.createElement("span");
     inner.className = "petal-fall";
     inner.innerHTML = PETAL_SHAPES[i % PETAL_SHAPES.length];
@@ -427,30 +341,25 @@
     inner.firstChild.setAttribute("width", size);
     inner.firstChild.setAttribute("height", size);
     petalLayer.appendChild(p);
-    // el = lớp ngoài (áp gió); fall = lớp trong (vị trí RƠI thật để đo)
     petals.push({ el: p, fall: inner, wx: 0, wy: 0 });
   }
 
   /* =========================================================
-     GIÓ THEO CON TRỎ: chuột di chuyển → đẩy cánh hoa ở gần
-       - lưu vị trí + vận tốc chuột mỗi lần mousemove
-       - mỗi frame: hoa trong bán kính bị thổi theo hướng chuột,
-         lực ~ (tốc độ chuột) × (độ gần). Sau đó hồi về 0 (đàn hồi).
+     GIÓ THEO CON TRỎ: vệt mực + đẩy icon rơi ở gần
   ========================================================= */
-  let mx = -9999, my = -9999;   // vị trí chuột
-  let mvx = 0, mvy = 0;         // vận tốc chuột (px/move)
+  let mx = -9999, my = -9999;
+  let mvx = 0, mvy = 0;
   let lastMx = 0, lastMy = 0;
   let windActive = false;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---- TRAIL gió: 1 đường liền bám con trỏ, thuôn dần & tan ở đuôi ---- */
   const windTrail = document.getElementById("windTrail");
   const windGrad = document.getElementById("windFade");
-  const TRAIL = [];                 // [{x, y}] mới nhất ở CUỐI mảng
-  const TRAIL_MAX = 20;             // số điểm giữ lại (đuôi dài ~ chừng này)
-  const TRAIL_MIN_DIST = 6;         // px tối thiểu giữa 2 điểm (lọc nhiễu)
-  const TRAIL_HEAD_W = 9;           // bề rộng tối đa ở ĐẦU (px) — nét mực dày hơn
+  const TRAIL = [];
+  const TRAIL_MAX = 20;
+  const TRAIL_MIN_DIST = 6;
+  const TRAIL_HEAD_W = 9;
 
   window.addEventListener("mousemove", (e) => {
     if (windActive) { mvx = e.clientX - lastMx; mvy = e.clientY - lastMy; }
@@ -466,23 +375,19 @@
   });
   window.addEventListener("mouseleave", () => { windActive = false; mx = my = -9999; });
 
-  // Dựng path ribbon thuôn từ TRAIL: đi dọc 1 biên rồi vòng lại biên kia.
-  // Bề rộng = 0 ở đuôi (cũ) → TRAIL_HEAD_W ở đầu (mới) → cảm giác nét bút lông.
+  // Dựng path ribbon thuôn từ TRAIL: rộng 0 ở đuôi → TRAIL_HEAD_W ở đầu
   function buildTrailPath() {
     const n = TRAIL.length;
     if (n < 3) return "";
     const top = [], bot = [];
     for (let i = 0; i < n; i++) {
       const p = TRAIL[i];
-      // hướng pháp tuyến tại điểm i (vuông góc tiếp tuyến)
       const a = TRAIL[Math.max(0, i - 1)];
       const b = TRAIL[Math.min(n - 1, i + 1)];
       let tx = b.x - a.x, ty = b.y - a.y;
       const tl = Math.hypot(tx, ty) || 1;
-      const nx = -ty / tl, ny = tx / tl;           // pháp tuyến đơn vị
-      const t = i / (n - 1);                        // 0 đuôi … 1 đầu
-      // thuôn: nhọn ở đuôi, phình dần về đầu, hơi thon lại ngay mũi.
-      // + nhấp nhô nhẹ dọc nét (phình–thóp) như mực loãng đậm-nhạt không đều.
+      const nx = -ty / tl, ny = tx / tl;
+      const t = i / (n - 1);
       const ripple = 0.78 + 0.22 * Math.sin(i * 1.7 + p.x * 0.012);
       const w = TRAIL_HEAD_W * Math.pow(t, 0.7) * (1 - 0.18 * Math.pow(1 - t, 2)) * ripple;
       top.push([p.x + nx * w * 0.5, p.y + ny * w * 0.5]);
@@ -495,27 +400,24 @@
   }
 
   function renderTrail() {
-    // chuột ngừng di → đuôi mực co lại DẦN (chậm) cho cảm giác mực còn ướt
     if (!windActive || Math.hypot(mvx, mvy) < 0.3) {
       if (TRAIL.length > 0 && Math.random() < 0.55) TRAIL.shift();
     }
     const d = buildTrailPath();
     windTrail.setAttribute("d", d);
     if (d && TRAIL.length >= 2) {
-      // gradient chạy dọc trục đuôi→đầu (mờ→rõ)
       const tail = TRAIL[0], head = TRAIL[TRAIL.length - 1];
       windGrad.setAttribute("x1", tail.x); windGrad.setAttribute("y1", tail.y);
       windGrad.setAttribute("x2", head.x); windGrad.setAttribute("y2", head.y);
     }
   }
 
-  const WIND_RADIUS = 130;   // bán kính ảnh hưởng quanh ĐƯỜNG trail (px)
-  const WIND_PUSH = 30;    // hệ số lực cuốn theo nét mực
-  const WIND_MAX = 140;   // giới hạn lệch tối đa (px)
-  const WIND_EASE = 0.12; // tốc độ tiến tới mục tiêu
-  const WIND_RETURN = 0.92; // hệ số hồi về 0 khi hết gió
+  const WIND_RADIUS = 130;
+  const WIND_PUSH = 30;
+  const WIND_MAX = 140;
+  const WIND_EASE = 0.12;
+  const WIND_RETURN = 0.92;
 
-  // Khoảng cách + hình chiếu từ điểm P tới đoạn AB → trả {dist, t}
   function segInfo(px, py, ax, ay, bx, by) {
     const abx = bx - ax, aby = by - ay;
     const len2 = abx * abx + aby * aby || 1;
@@ -526,18 +428,15 @@
   }
 
   function windLoop() {
-    // vận tốc chuột phân rã dần (chỉ để biết trail còn "sống")
     mvx *= 0.85; mvy *= 0.85;
     const n = TRAIL.length;
 
     for (const pt of petals) {
       let tx = 0, ty = 0;
       if (n >= 2) {
-        // đo lớp TRONG (.petal-fall) vì đó là nơi cánh hoa thật sự rơi tới
         const r = pt.fall.getBoundingClientRect();
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
-        // tìm đoạn trail GẦN NHẤT với cánh hoa
         let best = WIND_RADIUS, bdx = 0, bdy = 0, bi = 0;
         for (let i = 0; i < n - 1; i++) {
           const a = TRAIL[i], b = TRAIL[i + 1];
@@ -547,10 +446,9 @@
           }
         }
         if (best < WIND_RADIUS) {
-          const falloff = 1 - best / WIND_RADIUS;        // 0..1, gần nét = mạnh
-          const fresh = (bi + 1) / n;                    // đoạn mới (gần đầu) mạnh hơn
+          const falloff = 1 - best / WIND_RADIUS;
+          const fresh = (bi + 1) / n;
           const tl = Math.hypot(bdx, bdy) || 1;
-          // CUỐN hoa theo HƯỚNG nét mực (tiếp tuyến của trail)
           const force = WIND_PUSH * falloff * falloff * (0.4 + 0.6 * fresh);
           tx = (bdx / tl) * force;
           ty = (bdy / tl) * force;
@@ -558,7 +456,6 @@
           ty = Math.max(-WIND_MAX, Math.min(WIND_MAX, ty));
         }
       }
-      // tiến tới mục tiêu, rồi đàn hồi về 0
       pt.wx += (tx - pt.wx) * WIND_EASE;
       pt.wy += (ty - pt.wy) * WIND_EASE;
       pt.wx *= WIND_RETURN;
@@ -568,10 +465,9 @@
         pt.el.style.setProperty("--wind-y", pt.wy.toFixed(1) + "px");
       }
     }
-    renderTrail();                 // vẽ lại trail mực mỗi frame
+    renderTrail();
     requestAnimationFrame(windLoop);
   }
-  // tôn trọng prefers-reduced-motion: không chạy gió
   if (!reducedMotion) {
     requestAnimationFrame(windLoop);
   }

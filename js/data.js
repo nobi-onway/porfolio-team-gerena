@@ -1,121 +1,129 @@
 /* =========================================================
-   DỮ LIỆU NỘI DUNG — PASSION & JOURNEY (placeholder Lorem)
+   DỮ LIỆU NỘI DUNG — THIÊN DI STUDIO
+   Cấu trúc 3 slide:
+     · TITLE SCREEN  — giới thiệu team + đội hình (TEAM, MEMBERS)
+     · STAGE SELECT  — sản phẩm của team (PRODUCTS)
+     · QUEST LOG     — quy trình & cách giải quyết vấn đề (PROCESS)
 
-   Mỗi thành viên chỉ còn 2 mảng nội dung, trình bày như
-   tuyên ngôn typography (không nhật ký, không tâm thư):
-
-     · passion = { headline, body }  // niềm đam mê
-     · journey = { headline, body }  // hành trình & lý do đồng hành cùng team
-
-   `layout` quyết định 1 trong 5 biến thể manifesto poster:
-     manifesto / overprint / vertical / stamp / banner
-
-   `skills` CHỈ Artist (Game Artist) mới có.
+   ⚠ Các chỗ đánh dấu [CẬP NHẬT] là placeholder — thay bằng
+     dữ liệu thật của team trước khi publish.
 ========================================================= */
+
+const TEAM = {
+  name: "THIÊN DI",
+  sub: "GAME STUDIO",
+  year: "2026",
+  // Tagline trên title screen — các <em> sẽ có particle bay lên
+  taglineHTML:
+    'Một <em class="tagline-em" style="--em-delay:0.3s">team sáng tạo</em> thuần Việt — ' +
+    'nơi <em class="tagline-em" style="--em-delay:0.8s">nghệ thuật</em> ' +
+    'gặp <em class="tagline-em" style="--em-delay:1.3s">công nghệ game</em>.',
+  // Đoạn giới thiệu ngắn về team [CẬP NHẬT]
+  intro:
+    "Thiên Di là một nhóm 5 người làm game tại Việt Nam: thiết kế, lập trình và mỹ thuật " +
+    "cùng ngồi chung một bàn. Chúng tôi tin rằng game hay bắt đầu từ một vòng lặp vui — " +
+    "và mọi thứ còn lại được xây quanh nó.",
+};
+
+/* ---- Đội hình — hiển thị dạng PLAYER SELECT trên title screen ---- */
 const MEMBERS = [
-  {
-    name: "Phạm Hùng Thiên",
-    role: "Game Designer",
-    roleVi: "Thiết Kế Game",
-    accent: "#C8AA6E",  // Riot gold
-    layout: "manifesto",
-    passion: {
-      headline: "Lorem Ipsum Dolor",
-      body: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    },
-    journey: {
-      headline: "Sit Amet Consectetur",
-      body: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-    },
-  },
+  { name: "Phạm Hùng Thiên",        role: "Game Designer",  roleVi: "Thiết Kế Game",  accent: "#C8AA6E" },
+  { name: "Đoàn Gia Bảo",           role: "Game Developer", roleVi: "Lập Trình Game", accent: "#BE1E37" },
+  { name: "Vũ Đình Khoa",           role: "Game Developer", roleVi: "Lập Trình Game", accent: "#C8AA6E" },
+  { name: "Nguyễn Trần Thanh Hằng", role: "Game Artist",    roleVi: "Họa Sĩ Game",    accent: "#BE1E37" },
+  { name: "Lê Trúc Giang",          role: "Game Artist",    roleVi: "Họa Sĩ Game",    accent: "#C8AA6E" },
+];
 
+/* ---- Sản phẩm — mỗi item là 1 "STAGE" trong slide Sản Phẩm ----
+   cover: "mountain" | "boat" | "birds" (tranh khắc đồng vẽ bằng SVG)
+   [CẬP NHẬT] title / desc / tags / status / metric bằng dự án thật. */
+const PRODUCTS = [
   {
-    name: "Đoàn Gia Bảo",
-    role: "Game Developer",
-    roleVi: "Lập Trình Game",
-    accent: "#0BC4C2",  // teal
-    layout: "overprint",
-    passion: {
-      headline: "Adipiscing Elit",
-      body: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
-    },
-    journey: {
-      headline: "Eiusmod Tempor",
-      body: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.",
-    },
+    title: "Dự Án I",
+    type: "Casual · Mobile",
+    year: "2025",
+    status: "ĐANG PHÁT TRIỂN",
+    cover: "mountain",
+    desc:
+      "Game casual lấy cảm hứng từ văn hóa dân gian Việt Nam. " +
+      "Vòng lặp nhặt – ghép – mở khóa, chơi một tay, mỗi phiên 2–3 phút. [CẬP NHẬT]",
+    tags: ["Unity", "C#", "2D"],
+    metric: "Prototype hoàn thành sau 2 tuần — đang playtest nội bộ.",
   },
-
   {
-    name: "Vũ Đình Khoa",
-    role: "Game Developer",
-    roleVi: "Lập Trình Game",
-    accent: "#C8AA6E",  // Riot gold
-    layout: "vertical",
-    passion: {
-      headline: "Incididunt Ut Labore",
-      body: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod.",
-    },
-    journey: {
-      headline: "Et Dolore Magna",
-      body: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.",
-    },
+    title: "Dự Án II",
+    type: "Puzzle · PC",
+    year: "2025",
+    status: "PROTOTYPE",
+    cover: "boat",
+    desc:
+      "Puzzle kể chuyện theo từng màn, mỗi màn là một bức tranh khắc gỗ sống dậy. " +
+      "Cơ chế xoay – ghép mảnh tranh để mở đường đi. [CẬP NHẬT]",
+    tags: ["Godot", "Pixel Art"],
+    metric: "Top 10 game jam nội bộ — bản mở rộng đang thiết kế.",
   },
-
   {
-    name: "Nguyễn Trần Thanh Hằng",
-    role: "Game Artist",
-    roleVi: "Họa Sĩ Game",
-    accent: "#C8AA6E",  // Riot gold
-    layout: "halo",
-    skills: [
-      { name: "Photoshop",     icon: "ps",      color: "31A8FF" },
-      { name: "Figma",         slug: "figma",   color: "F24E1E" },
-      { name: "Illustrator",   icon: "ai",      color: "FF9A00" },
-      { name: "Spine",         icon: "spine",   color: "FF4000" },
-      { name: "After Effects", icon: "ae",      color: "9999FF" },
-      { name: "Blender",       slug: "blender", color: "F5792A" },
-      { name: "Premiere",      icon: "pr",      color: "9999FF" },
-    ],
-    passion: {
-      headline: "Aliqua Veniam",
-      body: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
-    },
-    journey: {
-      headline: "Nostrud Exercitation",
-      body: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
-    },
-  },
-
-  {
-    name: "Lê Trúc Giang",
-    role: "Game Artist",
-    roleVi: "Họa Sĩ Game",
-    accent: "#0BC4C2",  // teal
-    layout: "folio",
-    skills: [
-      { name: "Photoshop",     icon: "ps",      color: "31A8FF" },
-      { name: "Figma",         slug: "figma",   color: "F24E1E" },
-      { name: "Illustrator",   icon: "ai",      color: "FF9A00" },
-      { name: "Spine",         icon: "spine",   color: "FF4000" },
-      { name: "After Effects", icon: "ae",      color: "9999FF" },
-      { name: "Blender",       slug: "blender", color: "F5792A" },
-      { name: "Premiere",      icon: "pr",      color: "9999FF" },
-    ],
-    passion: {
-      headline: "Ullamco Laboris",
-      body: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.",
-    },
-    journey: {
-      headline: "Aliquip Commodo",
-      body: "Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut.",
-    },
+    title: "Dự Án III",
+    type: "Arcade · Web",
+    year: "2026",
+    status: "Ý TƯỞNG",
+    cover: "birds",
+    desc:
+      "Arcade phản xạ nhịp nhanh trên trình duyệt, điều khiển đàn chim Lạc " +
+      "băng qua chướng ngại theo nhịp trống. [CẬP NHẬT]",
+    tags: ["Web", "Canvas", "Chiptune"],
+    metric: "Đang dựng bản chơi thử đầu tiên.",
   },
 ];
 
-/* ---------------------------------------------------------
-   POSE NÉT ĐỨT — mỗi role một dáng đứng riêng (placeholder)
-   viewBox 0..100 (ngang) x 0..140 (dọc)
---------------------------------------------------------- */
+/* ---- Quy trình — pipeline 6 bước, hiển thị như bản đồ màn chơi ---- */
+const PROCESS_STEPS = [
+  {
+    num: "01", title: "Ý Tưởng", en: "BRAINSTORM",
+    desc: "Mỗi ý tưởng phải trả lời được: vòng lặp vui ở đâu? Cả team pitch, bỏ phiếu, chọn 1.",
+  },
+  {
+    num: "02", title: "Thiết Kế", en: "DESIGN DOC",
+    desc: "Designer viết doc 1 trang: cơ chế lõi, phạm vi, mục tiêu playtest. Không quá 1 trang.",
+  },
+  {
+    num: "03", title: "Prototype", en: "GREYBOX",
+    desc: "Developer dựng bản chơi được trong 1–2 tuần bằng khối xám. Vui thì đi tiếp, không vui thì bỏ.",
+  },
+  {
+    num: "04", title: "Mỹ Thuật", en: "ART PASS",
+    desc: "Artist khoá art style bằng 1 màn hình mẫu, rồi phủ art lên prototype theo từng lớp.",
+  },
+  {
+    num: "05", title: "Playtest", en: "ITERATE",
+    desc: "Cho người ngoài team chơi mỗi tuần. Ghi lại chỗ người chơi kẹt, sửa, lặp lại.",
+  },
+  {
+    num: "06", title: "Hoàn Thiện", en: "SHIP IT",
+    desc: "Khoá tính năng, chỉ sửa lỗi và polish: âm thanh, juice, màn hình đầu – cuối. Rồi phát hành.",
+  },
+];
+
+/* ---- Cách team giải quyết vấn đề — 3 nguyên tắc ---- */
+const PROCESS_LOOP = [
+  {
+    icon: "play",
+    title: "Chơi được trước, đẹp sau",
+    desc: "Mọi tranh luận về tính năng đều giải quyết bằng một bản chơi thử, không bằng lời nói.",
+  },
+  {
+    icon: "loop",
+    title: "Vòng lặp ngắn",
+    desc: "Build mỗi tuần. Vấn đề lớn được cắt thành mục tiêu 5 ngày — sai thì chỉ mất 1 tuần.",
+  },
+  {
+    icon: "flag",
+    title: "Retro sau mỗi bản build",
+    desc: "30 phút: cái gì ổn, cái gì hỏng, đổi gì ở vòng sau. Quy trình cũng được patch như game.",
+  },
+];
+
+/* ---- Pose nét đứt — dáng đứng theo role (dùng cho PLAYER SELECT) ---- */
 const POSES = {
   developer: `
     <circle cx="50" cy="22" r="11"/>

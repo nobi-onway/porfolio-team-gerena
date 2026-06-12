@@ -1,81 +1,63 @@
 /* =========================================================
-   SCENERY — DARK ARCANE HEXTECH BACKDROP (thay thế cuộn tranh Thủy Mặc)
-
-   Thay vì ảnh .jpg, xây dựng nền bằng SVG + CSS gradient.
-   — Lớp gradient tối (teal/magenta quầng hextech)
-   — Doodle scribbles (nét vẽ tay phát sáng drifting)
-   — Giữ --bg-shift contract để main.js cuộn nền theo slide
+   SCENERY — NỀN ĐEN ARCADE × ĐÔNG SƠN (flat, không glow)
+   Xây nền bằng SVG dài (N×100vh):
+   — Đen tuyền + scanline CRT mờ
+   — Dấu + rải rác (arcade grid) · họa tiết Đông Sơn chìm
+   — Vài cánh chim Lạc trôi chậm
+   Giữ contract --bg-shift để main.js cuộn nền theo slide.
 ========================================================= */
 
-/* Bỏ BG_IMAGE (không còn dùng ảnh JPG) */
-const BG_IMAGE = null;
-
-/* ---------- DỰNG BACKDROP HEXTECH ---------- */
 function renderScenes(sceneLayer) {
-  const n = MEMBERS.length;
+  const n = (typeof SLIDE_META !== "undefined" ? SLIDE_META.length : 3);
 
   const scroll = document.createElement("div");
   scroll.id = "sceneScroll";
   scroll.style.height = "100vh";
   scroll.dataset.segments = String(n);
 
-  // Tạo SVG background dài (N×100vh) với doodle + hextech glow
-  const bgHeight = 100 * n;  // viewport units
+  const bgHeight = 100 * n * 10;   // hệ toạ độ viewBox
+
+  /* Dấu + rải rác */
+  const crosses = [[80, 80], [240, 200], [420, 140], [600, 260], [820, 90], [1000, 180],
+    [1200, 120], [1350, 240], [130, 320], [350, 400], [550, 350], [750, 420],
+    [980, 300], [1150, 380], [60, 500], [280, 560], [480, 490], [700, 540],
+    [900, 460], [1100, 510], [1300, 470]]
+    .map(([x, y]) =>
+      `<path d="M${x - 6},${y} L${x + 6},${y} M${x},${y - 6} L${x},${y + 6}" stroke-width="1.5"/>`
+    ).join("");
+
+  /* Vòng-tròn-chấm Đông Sơn chìm */
+  const dotRings = [[180, 150], [760, 220], [1240, 340], [420, 520], [1050, 90], [620, 60]]
+    .map(([x, y]) => `
+      <circle cx="${x}" cy="${y}" r="10" fill="none" stroke-width="1.2"/>
+      <circle cx="${x}" cy="${y}" r="2"/>`
+    ).join("");
+
+  /* Scanline CRT mờ */
+  const scan = Array.from({ length: 26 }, (_, i) =>
+    `<line x1="0" y1="${i * 40 * 10}" x2="1440" y2="${i * 40 * 10}"/>`
+  ).join("");
+
+  /* 2 chim Lạc flat trôi chậm */
+  const bird = `
+    <path d="M -14 3 Q -8 0 -3 0 Q 1 -6 8 -8 L 5 -2
+             Q 12 -4 18 -8 Q 16 -1 8 2 Q 1 4 -4 3 Q -9 7 -14 3 Z" fill="#C8AA6E"/>
+  `;
+
   const bgSvg = `
-    <svg class="scene-long" viewBox="0 0 1440 ${bgHeight * 10}"
-         preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="transform: translateY(var(--bg-shift, 0px))">
-      <defs>
-        <linearGradient id="arcaneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style="stop-color:#0e0e1a;stop-opacity:1" />
-          <stop offset="30%" style="stop-color:#0a0a14;stop-opacity:1" />
-          <stop offset="70%" style="stop-color:#070710;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#050508;stop-opacity:1" />
-        </linearGradient>
+    <svg class="scene-long" viewBox="0 0 1440 ${bgHeight}"
+         preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+         style="transform: translateY(var(--bg-shift, 0px))">
+      <rect width="100%" height="100%" fill="#000000"/>
 
-      </defs>
+      <g stroke="#C8AA6E" opacity="0.045">${scan}</g>
+      <g stroke="#C8AA6E" fill="none" opacity="0.12">${crosses}</g>
+      <g stroke="#C8AA6E" fill="#C8AA6E" opacity="0.10">${dotRings}</g>
 
-      <!-- Base gradient -->
-      <rect width="100%" height="100%" fill="url(#arcaneGrad)" />
-
-      <!-- Scan lines ngang mờ (arcade CRT feel) -->
-      <g stroke="#C8AA6E" stroke-width="1" opacity="0.04">
-        ${Array.from({length: 18}, (_, i) => `<line x1="0" y1="${i * 55 * 10}" x2="1440" y2="${i * 55 * 10}"/>`).join('')}
-      </g>
-
-      <!-- Dot grid tĩnh (scattered X marks) -->
-      <g fill="#C8AA6E" opacity="0.12">
-        ${[[80,80],[240,200],[420,140],[600,260],[820,90],[1000,180],[1200,120],[1350,240],
-           [130,320],[350,400],[550,350],[750,420],[980,300],[1150,380],[60,500],[280,560],
-           [480,490],[700,540],[900,460],[1100,510],[1300,470]].map(([x,y]) =>
-          `<path d="M${x-6},${y} L${x+6},${y} M${x},${y-6} L${x},${y+6}" stroke="#C8AA6E" stroke-width="1.5" fill="none" opacity="0.8"/>`
-        ).join('')}
-      </g>
-
-      <!-- Diamond shapes trang trí tĩnh -->
-      <g fill="none" stroke-width="1.5" opacity="0.10">
-        <polygon points="160,420 175,435 160,450 145,435" stroke="#0BC4C2"/>
-        <polygon points="1280,300 1295,315 1280,330 1265,315" stroke="#C8AA6E"/>
-        <polygon points="720,180 735,195 720,210 705,195" stroke="#BE1E37"/>
-        <polygon points="400,600 420,620 400,640 380,620" stroke="#0BC4C2"/>
-        <polygon points="1050,500 1065,515 1050,530 1035,515" stroke="#C8AA6E"/>
-      </g>
-
-      <!-- Square outlines trang trí -->
-      <g fill="none" stroke-width="1.5" opacity="0.08">
-        <rect x="50" y="150" width="30" height="30" stroke="#C8AA6E"/>
-        <rect x="1360" y="400" width="24" height="24" stroke="#0BC4C2"/>
-        <rect x="680" y="340" width="20" height="20" stroke="#BE1E37"/>
-        <rect x="200" y="480" width="26" height="26" stroke="#C8AA6E"/>
-        <rect x="1100" y="220" width="22" height="22" stroke="#0BC4C2"/>
-      </g>
-
-      <!-- 2 geometric elements drift nhẹ -->
-      <g class="neon-doodle" style="animation: driftDown 22s ease-in-out infinite; animation-delay: 0s" opacity="0.18">
-        <polygon points="0,0 14,14 0,28 -14,14" fill="#C8AA6E" transform="translate(200, 60)"/>
-      </g>
-      <g class="neon-doodle" style="animation: driftDown 28s ease-in-out infinite; animation-delay: 8s" opacity="0.15">
-        <rect x="-10" y="-10" width="20" height="20" fill="none" stroke="#0BC4C2" stroke-width="2" transform="translate(1200, 100) rotate(15)"/>
-      </g>
+      <g class="scene-bird" style="animation-delay:0s" opacity="0.20"
+         transform="translate(300, 120) scale(2.4)">${bird}</g>
+      <g class="scene-bird" style="animation-delay:9s" opacity="0.14"
+         transform="translate(1150, 300) scale(1.8)">${bird}</g>
     </svg>
   `;
 
@@ -87,19 +69,3 @@ function renderScenes(sceneLayer) {
   `;
   sceneLayer.appendChild(scroll);
 }
-
-/* CSS keyframe for doodles drifting down (inject into <style>) */
-const doodleStyle = document.createElement("style");
-doodleStyle.textContent = `
-  @keyframes driftDown {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    25% { transform: translateY(20vh) translateX(10px); }
-    50% { transform: translateY(40vh) translateX(-8px); }
-    75% { transform: translateY(60vh) translateX(5px); }
-  }
-
-  .neon-doodle {
-    will-change: transform;
-  }
-`;
-if (document.head) document.head.appendChild(doodleStyle);
