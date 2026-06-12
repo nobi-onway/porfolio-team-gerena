@@ -15,6 +15,9 @@
   --seal-dark: #8C1528;
   --gold: #C8AA6E;          /* vàng đồng */
   --bronze: #8B6914;        /* đồng sậm */
+  /* Màu TRỐNG ĐỒNG — tím violet bắc cầu giữa cyan & magenta của ảnh nền phải.
+     Đổi màu trống chỉ cần sửa biến này (+ filter #birdDrum trong index.html). */
+  --drum: #A78BFA;
 }
 
 * {
@@ -371,18 +374,18 @@ body {
 }
 
 .dongson-drum .ds-star {
-  fill: var(--gold);
+  fill: var(--drum);
   opacity: 0.5;
 }
 
 .dongson-drum .ds-saw polygon {
-  fill: var(--gold);
+  fill: var(--drum);
   opacity: 0.32;
 }
 
 .dongson-drum .ds-ring {
   fill: none;
-  stroke: var(--gold);
+  stroke: var(--drum);
   stroke-width: 1.3;
   opacity: 0.45;
 }
@@ -393,9 +396,9 @@ body {
 }
 
 .dongson-drum .ds-dotring {
-  stroke: var(--gold);
+  stroke: var(--drum);
   stroke-width: 1;
-  fill: var(--gold);
+  fill: var(--drum);
   opacity: 0.4;
 }
 
