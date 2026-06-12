@@ -22,7 +22,6 @@ tailwind.config = {
         display: ['Oswald', 'sans-serif'],
         doodle: ['"Patrick Hand"', 'cursive'],
         body: ['"Be Vietnam Pro"', 'sans-serif'],
-        arcade: ['VT323', 'monospace'],   // pixel font, có tiếng Việt
       },
     },
   },

@@ -10,11 +10,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="js/tailwind.config.js"></script>
 
-  <!-- Fonts: Oswald (display) + Be Vietnam Pro (body) + Patrick Hand (doodle) + VT323 (arcade pixel) -->
+  <!-- Fonts: Oswald (display) + Be Vietnam Pro (body) + Patrick Hand (doodle) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Patrick+Hand&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=VT323&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Patrick+Hand&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
 
   <!-- Custom styles (Arcade × Đông Sơn) -->
@@ -23,7 +23,30 @@
 
 <body class="bg-paper bg-grain relative no-select">
 
-  <!-- ===== LỚP NỀN (đen arcade + họa tiết Đông Sơn, cuộn dọc theo slide) ===== -->
+  <!-- ===== SVG FILTER dùng chung: ảnh chim Lạc ĐEN trên nền TRẮNG → vàng đồng, nền trong suốt
+       Bước 1 (feColorMatrix): alpha = 1 − luminance (đen → đặc, trắng → biến mất);
+                               RGB ép về màu vàng đồng #C8AA6E.
+       Bước 2 (feComponentTransfer): nắn cong alpha — cắt nhiễu JPEG quanh mép (alpha thấp → 0)
+                               và làm đặc thân chim (alpha cao → 1), mép vẫn mượt. ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- x/y/width/height khóa vùng filter ĐÚNG bằng ảnh: pixel ngoài ảnh (đen-trong-suốt)
+           không bị tô vàng thành khung. feComposite "in" cắt kết quả theo alpha ảnh gốc. -->
+      <filter id="birdGold" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0 0 0 0 0.784
+          0 0 0 0 0.667
+          0 0 0 0 0.431
+          -0.299 -0.587 -0.114 0 1" />
+        <feComponentTransfer>
+          <feFuncA type="table" tableValues="0 0 0.12 0.65 1 1" />
+        </feComponentTransfer>
+        <feComposite in2="SourceGraphic" operator="in" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ===== LỚP NỀN (đen arcade + họa tiết Đông Sơn, ảnh nền phải cuộn theo slide) ===== -->
   <div id="sceneLayer" class="absolute inset-0 z-0 overflow-hidden"></div>
 
   <!-- ===== TRỐNG ĐỒNG LỚN (nền, tâm giữa cạnh trái) ===== -->
@@ -130,11 +153,11 @@
           points="20,4 21.7,13.7 28,6.1 24.6,15.4 33.9,12 26.3,18.3 36,20 26.3,21.7 33.9,28 24.6,24.6 28,33.9 21.7,26.3 20,36 18.3,26.3 12,33.9 15.4,24.6 6.1,28 13.7,21.7 4,20 13.7,18.3 6.1,12 15.4,15.4 12,6.1 18.3,13.7"
           fill="#C8AA6E" />
       </svg>
-      <div class="font-arcade text-gold tracking-[0.3em] text-xl">INSERT COIN...</div>
+      <div class="font-display text-gold tracking-[0.4em] text-sm">ĐANG KHỞI ĐỘNG...</div>
     </div>
   </div>
 
-  <!-- ===== Scripts (thứ tự: data -> render -> scenery -> main; scenery cần SLIDE_META) ===== -->
+  <!-- ===== Scripts (thứ tự: data -> render -> scenery -> main) ===== -->
   <script src="js/data.js"></script>
   <script src="js/render.js"></script>
   <script src="js/scenery.js"></script>

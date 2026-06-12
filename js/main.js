@@ -31,7 +31,9 @@
     const t = segs > 1 ? idx / (segs - 1) : 0;
     sceneImg.style.setProperty("--bg-shift", (-bgTravel * t).toFixed(1) + "px");
   }
-  measureScene();
+  // ảnh nền load xong (hoặc đã cache) → đo; và đo lại khi resize
+  window.__onSceneImg = measureScene;
+  if (sceneImg.complete) measureScene();
   window.addEventListener("resize", measureScene);
 
   /* ---- Dựng trống đồng lớn (nền, tâm giữa cạnh trái) ---- */
@@ -237,8 +239,8 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Delay khớp thời điểm tagline hiện ra (reveal d2)
-    const TAGLINE_DELAY = 1400;
+    // Delay khớp thời điểm tagline hiện ra (fx-rise --d:0.95s + 0.9s)
+    const TAGLINE_DELAY = 1700;
     const observer = new MutationObserver(() => {
       if (document.body.classList.contains("is-intro")) {
         startTimer = setTimeout(start, TAGLINE_DELAY);

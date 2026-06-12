@@ -1,7 +1,7 @@
 /* =========================================================
    DỮ LIỆU NỘI DUNG — THIÊN DI STUDIO
    Cấu trúc 3 slide:
-     · TITLE SCREEN  — giới thiệu team + đội hình (TEAM, MEMBERS)
+     · HOOK          — "CHÚNG TÔI LÀ" + tagline + showreel (TEAM)
      · STAGE SELECT  — sản phẩm của team (PRODUCTS)
      · QUEST LOG     — quy trình & cách giải quyết vấn đề (PROCESS)
 
@@ -12,27 +12,17 @@
 const TEAM = {
   name: "THIÊN DI",
   sub: "GAME STUDIO",
-  year: "2026",
-  // Tagline trên title screen — các <em> sẽ có particle bay lên
+  // Câu hook lớn trên slide mở đầu
+  hook: "CHÚNG TÔI LÀ",
+  // Tagline duy nhất của intro — các <em> sẽ có particle bay lên
   taglineHTML:
-    'Một <em class="tagline-em" style="--em-delay:0.3s">team sáng tạo</em> thuần Việt — ' +
-    'nơi <em class="tagline-em" style="--em-delay:0.8s">nghệ thuật</em> ' +
-    'gặp <em class="tagline-em" style="--em-delay:1.3s">công nghệ game</em>.',
-  // Đoạn giới thiệu ngắn về team [CẬP NHẬT]
-  intro:
-    "Thiên Di là một nhóm 5 người làm game tại Việt Nam: thiết kế, lập trình và mỹ thuật " +
-    "cùng ngồi chung một bàn. Chúng tôi tin rằng game hay bắt đầu từ một vòng lặp vui — " +
-    "và mọi thứ còn lại được xây quanh nó.",
+    'Một <em class="tagline-em">team sáng tạo</em> thuần Việt — ' +
+    'nơi <em class="tagline-em">nghệ thuật</em> ' +
+    'gặp <em class="tagline-em">công nghệ game</em>.',
+  // [CẬP NHẬT] đường dẫn video showreel sản phẩm chủ đạo (mp4/webm).
+  // Để trống "" → hiển thị tranh khắc đồng động thay thế.
+  showreelSrc: "",
 };
-
-/* ---- Đội hình — hiển thị dạng PLAYER SELECT trên title screen ---- */
-const MEMBERS = [
-  { name: "Phạm Hùng Thiên",        role: "Game Designer",  roleVi: "Thiết Kế Game",  accent: "#C8AA6E" },
-  { name: "Đoàn Gia Bảo",           role: "Game Developer", roleVi: "Lập Trình Game", accent: "#BE1E37" },
-  { name: "Vũ Đình Khoa",           role: "Game Developer", roleVi: "Lập Trình Game", accent: "#C8AA6E" },
-  { name: "Nguyễn Trần Thanh Hằng", role: "Game Artist",    roleVi: "Họa Sĩ Game",    accent: "#BE1E37" },
-  { name: "Lê Trúc Giang",          role: "Game Artist",    roleVi: "Họa Sĩ Game",    accent: "#C8AA6E" },
-];
 
 /* ---- Sản phẩm — mỗi item là 1 "STAGE" trong slide Sản Phẩm ----
    cover: "mountain" | "boat" | "birds" (tranh khắc đồng vẽ bằng SVG)
@@ -123,33 +113,3 @@ const PROCESS_LOOP = [
   },
 ];
 
-/* ---- Pose nét đứt — dáng đứng theo role (dùng cho PLAYER SELECT) ---- */
-const POSES = {
-  developer: `
-    <circle cx="50" cy="22" r="11"/>
-    <path d="M50 33 L50 82"/>
-    <path d="M50 44 L30 60 L38 66"/>
-    <path d="M50 44 L70 60 L62 66"/>
-    <path d="M50 82 L38 122 L34 134"/>
-    <path d="M50 82 L62 122 L66 134"/>
-    <path d="M30 60 L70 60"/>
-  `,
-  designer: `
-    <circle cx="46" cy="22" r="11"/>
-    <path d="M48 33 L52 82"/>
-    <path d="M50 46 L72 40 L78 30"/>
-    <path d="M49 46 L30 64 L34 74"/>
-    <path d="M52 82 L40 122 L36 134"/>
-    <path d="M52 82 L64 120 L70 132"/>
-    <path d="M40 30 Q50 24 60 30"/>
-  `,
-  artist: `
-    <circle cx="52" cy="22" r="11"/>
-    <path d="M52 33 L48 82"/>
-    <path d="M50 45 L74 30 L80 18"/>
-    <path d="M50 47 L28 58 L24 70"/>
-    <path d="M48 82 L34 120 L28 132"/>
-    <path d="M48 82 L60 122 L66 134"/>
-    <polyline points="80,18 84,12 82,8"/>
-  `,
-};
