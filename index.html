@@ -43,6 +43,18 @@
         </feComponentTransfer>
         <feComposite in2="SourceGraphic" operator="in" />
       </filter>
+      <!-- Bản VÀNG SÁNG cho chim trên trống đồng (khớp --drum: #DCC08A = 0.863/0.753/0.541) -->
+      <filter id="birdDrum" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0 0 0 0 0.863
+          0 0 0 0 0.753
+          0 0 0 0 0.541
+          -0.299 -0.587 -0.114 0 1" />
+        <feComponentTransfer>
+          <feFuncA type="table" tableValues="0 0 0.12 0.65 1 1" />
+        </feComponentTransfer>
+        <feComposite in2="SourceGraphic" operator="in" />
+      </filter>
     </defs>
   </svg>
 

@@ -95,6 +95,20 @@
   const TURN = 1250;      // thời gian một lần chuyển (khớp transition CSS)
   const REVEAL_AT = 620;  // track trượt ~1/2 thì nội dung slide mới hiện ra
 
+  /* ---- FOCUS ĐỘNG: decor bừng lên khi chuyển slide, dịu dần NGAY khi
+     track dừng chuyển động (không đợi đọc xong). Bừng = transition nhanh,
+     dịu = transition chậm (xem CSS .is-reading). */
+  const CALM_AT = TURN;          // đúng lúc track dừng
+  let readTimer = null;
+  function wakeDecor(delay) {
+    document.body.classList.remove("is-reading");
+    clearTimeout(readTimer);
+    readTimer = setTimeout(
+      () => document.body.classList.add("is-reading"),
+      delay != null ? delay : CALM_AT
+    );
+  }
+
   function updateIndicators() {
     applyBgShift(current);
     setHeaderSlide(current);
@@ -118,6 +132,7 @@
     cardTrack.style.transform = `translateY(-${current * 100}vh)`;
     drumRot += (dir * DRUM_STEP);
     drum.style.setProperty("--drum-rot", drumRot + "deg");
+    wakeDecor();
     updateIndicators();
 
     setTimeout(() => { cards[current].classList.add("active"); }, REVEAL_AT);
@@ -263,6 +278,7 @@
     progressBar.style.height = (1 / SLIDES_COUNT) * 100 + "%";
     document.getElementById("curtain").classList.add("gone");
     requestAnimationFrame(() => cards[0].classList.add("active"));
+    wakeDecor(1600);   // lần đầu vào trang: dịu sau khi hook hiện xong
   }
 
   /* =========================================================

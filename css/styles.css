@@ -15,9 +15,10 @@
   --seal-dark: #8C1528;
   --gold: #C8AA6E;          /* vàng đồng */
   --bronze: #8B6914;        /* đồng sậm */
-  /* Màu TRỐNG ĐỒNG — tím violet bắc cầu giữa cyan & magenta của ảnh nền phải.
+  /* Màu TRỐNG ĐỒNG — vàng đồng sáng hơn 1 bậc so với --gold để đủ sắc độ
+     đối trọng với ảnh nền rực bên phải.
      Đổi màu trống chỉ cần sửa biến này (+ filter #birdDrum trong index.html). */
-  --drum: #A78BFA;
+  --drum: #DCC08A;
 }
 
 * {
@@ -177,13 +178,19 @@ body {
 }
 
 @keyframes fxWipe {
-  from {
+  0% {
     opacity: 1;
     clip-path: inset(0 100% 0 0);
   }
-  to {
+  99% {
     opacity: 1;
     clip-path: inset(0 0 0 0);
+  }
+  /* trả clip về none sau khi quét xong — để phần tử con (người que,
+     góc đỏ bay ra ngoài...) không bị xén tại mép khung */
+  100% {
+    opacity: 1;
+    clip-path: none;
   }
 }
 
@@ -260,12 +267,25 @@ body {
   height: auto;
   display: block;
   transform: translateY(var(--bg-shift, 0px));
-  transition: transform 1.25s cubic-bezier(0.7, 0, 0.2, 1);
+  transition:
+    transform 1.25s cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 0.45s ease,
+    filter 0.45s ease;          /* BỪNG lên: nhanh */
   will-change: transform;
   opacity: 0.9;
   filter: brightness(0.78) saturate(0.95);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 38%);
   mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 38%);
+}
+
+/* FOCUS ĐỘNG — hết chuyển động: ảnh nền DỊU DẦN (chậm) */
+body.is-reading .scene-long {
+  opacity: 0.55;
+  filter: brightness(0.55) saturate(0.8);
+  transition:
+    transform 1.25s cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 1.7s ease,
+    filter 1.7s ease;
 }
 
 /* màng tối phủ lên ảnh cho chữ nổi rõ */
@@ -287,6 +307,12 @@ body {
   filter: url(#birdGold);
   opacity: 0.3;
   will-change: transform;
+  transition: opacity 0.45s ease;
+}
+
+body.is-reading .scene-birdimg {
+  opacity: 0.14;
+  transition: opacity 1.7s ease;
 }
 
 .scene-birdimg--1 {
@@ -368,38 +394,48 @@ body {
   width: 140vh;
   height: 140vh;
   transform: translate(-50%, -50%) rotate(var(--drum-rot, 0deg));
-  transition: transform 1.25s cubic-bezier(0.34, 1.2, 0.4, 1);
-  opacity: 0.5;
+  transition:
+    transform 1.25s cubic-bezier(0.34, 1.2, 0.4, 1),
+    opacity 0.45s ease;          /* BỪNG lên: nhanh */
+  opacity: 0.68;
   will-change: transform;
+}
+
+/* FOCUS ĐỘNG — hết chuyển động: trống đồng DỊU DẦN (chậm) */
+body.is-reading .dongson-drum {
+  opacity: 0.38;
+  transition:
+    transform 1.25s cubic-bezier(0.34, 1.2, 0.4, 1),
+    opacity 1.7s ease;
 }
 
 .dongson-drum .ds-star {
   fill: var(--drum);
-  opacity: 0.5;
+  opacity: 0.72;
 }
 
 .dongson-drum .ds-saw polygon {
   fill: var(--drum);
-  opacity: 0.32;
+  opacity: 0.48;
 }
 
 .dongson-drum .ds-ring {
   fill: none;
   stroke: var(--drum);
   stroke-width: 1.3;
-  opacity: 0.45;
+  opacity: 0.62;
 }
 
 .dongson-drum .ds-ring--bold {
   stroke-width: 2.4;
-  opacity: 0.55;
+  opacity: 0.78;
 }
 
 .dongson-drum .ds-dotring {
   stroke: var(--drum);
   stroke-width: 1;
   fill: var(--drum);
-  opacity: 0.4;
+  opacity: 0.58;
 }
 
 /* =========================================================
@@ -732,6 +768,59 @@ body.is-intro .member-name-wrap {
 .ttl-video__badge {
   top: 12px;
   left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* chấm tròn trước chữ — bình thường đứng im, hover thì nháy như LIVE */
+.ttl-video__badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.6;
+}
+
+.ttl-video:hover .ttl-video__badge {
+  animation: liveBlink 1s steps(1) infinite;
+}
+
+.ttl-video:hover .ttl-video__badge::before {
+  opacity: 1;
+  animation: liveDot 1s steps(1) infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { background: var(--seal); }
+  50% { background: var(--seal-dark); }
+}
+
+@keyframes liveDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+/* 4 góc đỏ: nằm trong khung; hover → bay RA NGOÀI viền vàng */
+.ttl-video .prod-frame__corner {
+  transition:
+    top 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
+    right 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
+    bottom 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
+    left 0.35s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+.ttl-video:hover .prod-frame__corner.tl { top: -10px; left: -10px; }
+.ttl-video:hover .prod-frame__corner.tr { top: -10px; right: -10px; }
+.ttl-video:hover .prod-frame__corner.bl { bottom: -10px; left: -10px; }
+.ttl-video:hover .prod-frame__corner.br { bottom: -10px; right: -10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ttl-video:hover .ttl-video__badge,
+  .ttl-video:hover .ttl-video__badge::before {
+    animation: none;
+  }
 }
 
 /* nút play — vòng flat, nhịp "sóng" lan ra */
@@ -790,6 +879,108 @@ body.is-intro .member-name-wrap {
   .ttl-play::after {
     animation: none;
     opacity: 0;
+  }
+}
+
+/* =========================================================
+   ĐỘI NGŨ NGƯỜI QUE — hiện khi hover khung showreel
+   5 thành viên "thi công" quanh khung: gõ búa, chỉ đạo cầm cờ,
+   lăn sơn, quét cọ, ngồi gõ laptop.
+========================================================= */
+.ttl-crew {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.ttl-crew__fig {
+  position: absolute;
+  width: 54px;
+  height: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(0.75);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.34, 1.55, 0.5, 1);
+}
+
+/* stagger lúc hiện ra */
+.ttl-crew__fig--lead  { transition-delay: 0s; }
+.ttl-crew__fig--draw1 { transition-delay: 0.07s; }
+.ttl-crew__fig--code1 { transition-delay: 0.14s; }
+.ttl-crew__fig--draw2 { transition-delay: 0.21s; }
+.ttl-crew__fig--code2 { transition-delay: 0.28s; }
+
+.ttl-video:hover .ttl-crew__fig {
+  opacity: 1;
+  transform: none;
+}
+
+/* vị trí: chỉ đạo đứng NÓC khung; artist/dev ngồi hai BÊN khung */
+.ttl-crew__fig--lead  { bottom: calc(100% - 4px); left: 12%; }
+.ttl-crew__fig--draw1 { right: calc(100% + 10px); top: 6%; }
+.ttl-crew__fig--draw2 { right: calc(100% + 10px); top: 54%; }
+.ttl-crew__fig--code1 { left: calc(100% + 10px); top: 6%; }
+.ttl-crew__fig--code2 { left: calc(100% + 10px); top: 54%; }
+
+/* nét người que — vàng đồng sáng, cùng chất với trống đồng */
+.crew-line {
+  stroke: rgba(220, 192, 138, 0.95);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.crew-fill-seal { fill: var(--seal); stroke: none; }
+.crew-fill-gold { fill: var(--gold); stroke: none; }
+
+/* animation làm việc — chỉ chạy khi đang hover */
+.crew-anim {
+  transform-box: view-box;
+  animation-play-state: paused;
+}
+
+.ttl-video:hover .crew-anim {
+  animation-play-state: running;
+}
+
+.crew--point {
+  transform-origin: 38px 27px;
+  animation: crewPoint 1.5s ease-in-out infinite paused;
+}
+
+@keyframes crewPoint {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-12deg); }
+}
+
+/* tay vẽ: phác nét nhanh quanh vai */
+.crew--draw {
+  transform-origin: 20px 26px;
+  animation: crewDraw 0.55s ease-in-out infinite paused;
+}
+
+@keyframes crewDraw {
+  0%, 100% { transform: rotate(6deg); }
+  50% { transform: rotate(-5deg); }
+}
+
+.crew--type {
+  animation: crewType 0.3s steps(2) infinite paused;
+}
+
+@keyframes crewType {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(1.8px); }
+}
+
+/* lệch pha người thứ 2 mỗi cặp cho tự nhiên */
+.ttl-crew__fig--draw2 .crew--draw { animation-duration: 0.72s; animation-delay: -0.2s; }
+.ttl-crew__fig--code2 .crew--type { animation-duration: 0.38s; animation-delay: -0.15s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .crew-anim {
+    animation: none !important;
   }
 }
 

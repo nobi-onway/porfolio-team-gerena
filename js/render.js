@@ -98,7 +98,7 @@ function dongSonDrum() {
     birds += `
       <g transform="rotate(${i * 60} ${C} ${C}) translate(${C} 22.5) scale(1 -1)">
         <image href="img/bird.jpg" x="-21" y="-11.5" width="42" height="23"
-               filter="url(#birdGold)" opacity="0.6" preserveAspectRatio="xMidYMid meet"/>
+               filter="url(#birdDrum)" opacity="0.85" preserveAspectRatio="xMidYMid meet"/>
       </g>`;
   }
 
@@ -244,6 +244,69 @@ function showreelArt() {
 }
 
 /* =========================================================
+   ĐỘI NGŨ NGƯỜI QUE — hiện khi hover .ttl-video (CSS):
+   1 chỉ đạo đứng nóc khung · 2 artist ngồi vẽ bên TRÁI
+   · 2 dev ngồi code bên PHẢI.
+========================================================= */
+function crewFigs() {
+  /* 1 · CHỈ ĐẠO — đứng trên nóc khung, cầm cờ, tay chỉ xuống */
+  const lead = `
+    <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 84" aria-hidden="true">
+      <g class="crew-line">
+        <circle cx="38" cy="13" r="7"/>
+        <path d="M38 20 L38 48"/>
+        <path d="M38 48 L28 68 L26 80"/>
+        <path d="M38 48 L48 66 L50 80"/>
+        <path d="M38 27 L52 20 L52 6"/>
+        <polygon class="crew-fill-seal" points="52,6 64,10 52,15"/>
+        <g class="crew-anim crew--point">
+          <path d="M38 27 L18 38"/>
+        </g>
+      </g>
+    </svg>`;
+
+  /* 2-3 · ARTIST ngồi vẽ trước giá vẽ (mặt hướng PHẢI → đặt bên trái khung) */
+  const draw = (mod) => `
+    <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
+      <g class="crew-line">
+        <circle cx="20" cy="12" r="7"/>
+        <path d="M20 19 L20 42"/>
+        <path d="M20 42 L34 46 L34 62"/>
+        <path d="M20 42 L30 48 L30 64"/>
+        <!-- giá vẽ + khung tranh -->
+        <path d="M46 22 L42 64 M50 38 L56 64"/>
+        <rect x="40" y="20" width="18" height="20" rx="1"/>
+        <g class="crew-anim crew--draw">
+          <path d="M20 26 L40 30"/>
+          <rect class="crew-fill-seal" x="38" y="27" width="6" height="6" rx="1"/>
+        </g>
+      </g>
+    </svg>`;
+
+  /* 4-5 · DEV ngồi gõ laptop (mặt hướng TRÁI → đặt bên phải khung) */
+  const code = (mod) => `
+    <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
+      <g class="crew-line">
+        <circle cx="44" cy="12" r="7"/>
+        <path d="M44 19 L44 42"/>
+        <path d="M44 42 L30 46 L30 62"/>
+        <path d="M44 42 L34 48 L34 64"/>
+        <!-- laptop: bàn phím + màn hình mở -->
+        <rect class="crew-fill-gold" x="12" y="38" width="18" height="3" rx="1"/>
+        <path d="M12 38 L8 24 L24 24"/>
+        <g class="crew-anim crew--type">
+          <path d="M44 26 L28 36"/>
+          <path d="M44 29 L24 38"/>
+        </g>
+      </g>
+    </svg>`;
+
+  return `<div class="ttl-crew" aria-hidden="true">
+    ${lead}${draw("draw1")}${draw("draw2")}${code("code1")}${code("code2")}
+  </div>`;
+}
+
+/* =========================================================
    SLIDE 0 — HOOK: "CHÚNG TÔI LÀ" + tagline + showreel
 ========================================================= */
 function titleCardHTML() {
@@ -282,6 +345,7 @@ function titleCardHTML() {
         <span class="prod-frame__corner bl"></span>
         <span class="prod-frame__corner br"></span>
         <span class="prod-status ttl-video__badge font-display">SHOWREEL</span>
+        ${crewFigs()}
       </div>
 
       <canvas class="intro-particles" aria-hidden="true"></canvas>
