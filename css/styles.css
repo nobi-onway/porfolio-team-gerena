@@ -742,248 +742,212 @@ body.is-intro .member-name-wrap {
   margin: 2px auto;
 }
 
-/* ---- Khung SHOWREEL (sản phẩm chủ đạo) ---- */
-.ttl-video {
+/* ---- BĂNG PHIM HẬU TRƯỜNG — gallery cuộn ngang vô tận ----
+   JS điều khiển tốc độ: x1 auto-scroll, hover → x3 (translateX rAF).
+   seq = half.concat(half): khi translateX đạt nửa tổng chiều rộng → reset 0. */
+.ttl-reel {
   position: relative;
-  width: min(640px, 58vw);
-  aspect-ratio: 16 / 9;
-  max-height: 42vh;
-  /* gap với tagline/band phía trên — chừa chỗ người chỉ đạo đứng nóc khung */
-  margin-top: 58px;
-  border: 2px solid rgba(200, 170, 110, 0.55);
-  background: #000;
+  width: min(940px, 94vw);
+  margin-top: 6px;
+  padding-top: 84px;      /* vùng dành cho crew — không tràn lên nội dung trên */
 }
 
-.ttl-video__media {
+/* Khung băng: lỗ phim trên (::before) + border + nền đen */
+.ttl-reel__viewport {
+  position: relative;
+  overflow: hidden;
+  background: #080604;
+  border: 1.5px solid rgba(200, 170, 110, 0.4);
+  padding-top: 11px;     /* chừa dải lỗ phim trên */
+}
+
+/* Dải lỗ phim Đông Sơn: nền đen + tick vàng đồng đều nhau */
+.ttl-reel__viewport::before {
+  content: "";
   position: absolute;
-  inset: 0;
+  top: 0; left: 0; right: 0;
+  height: 11px;
+  z-index: 2;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.9);
+  background-image: repeating-linear-gradient(90deg,
+    transparent 0 4px,
+    rgba(200, 170, 110, 0.5) 4px 6px,
+    transparent 6px 18px
+  );
+}
+
+.ttl-reel__track {
+  display: flex;
+  gap: 6px;
+  padding: 0 6px 6px;
+  will-change: transform;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ttl-reel__track:active { cursor: grabbing; }
+
+.ttl-reel__frame {
+  flex: 0 0 auto;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  background: #050301;
+  border: 1px solid rgba(200, 170, 110, 0.28);
   overflow: hidden;
 }
 
-.ttl-video__player {
+.ttl-reel__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: brightness(0.88) saturate(0.85);
+  transition: filter 0.35s ease;
+}
+
+.ttl-reel:hover .ttl-reel__img {
+  filter: brightness(1) saturate(1);
+}
+
+.ttl-reel__art {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000;
+}
+
+.ttl-reel__art .prod-cover-svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
 
-.ttl-video__badge {
-  top: 12px;
-  left: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* chấm tròn trước chữ — bình thường đứng im, hover thì nháy như LIVE */
-.ttl-video__badge::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink);
-  opacity: 0.6;
-}
-
-.ttl-video:hover .ttl-video__badge {
-  animation: liveBlink 1s steps(1) infinite;
-}
-
-.ttl-video:hover .ttl-video__badge::before {
-  opacity: 1;
-  animation: liveDot 1s steps(1) infinite;
-}
-
-@keyframes liveBlink {
-  0%, 100% { background: var(--seal); }
-  50% { background: var(--seal-dark); }
-}
-
-@keyframes liveDot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.15; }
-}
-
-/* 4 góc đỏ: nằm trong khung; hover → bay RA NGOÀI viền vàng */
-.ttl-video .prod-frame__corner {
-  transition:
-    top 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
-    right 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
-    bottom 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
-    left 0.35s cubic-bezier(0.34, 1.4, 0.5, 1);
-}
-
-.ttl-video:hover .prod-frame__corner.tl { top: -10px; left: -10px; }
-.ttl-video:hover .prod-frame__corner.tr { top: -10px; right: -10px; }
-.ttl-video:hover .prod-frame__corner.bl { bottom: -10px; left: -10px; }
-.ttl-video:hover .prod-frame__corner.br { bottom: -10px; right: -10px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .ttl-video:hover .ttl-video__badge,
-  .ttl-video:hover .ttl-video__badge::before {
-    animation: none;
-  }
-}
-
-/* nút play — vòng flat, nhịp "sóng" lan ra */
-.ttl-play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 64px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
+.ttl-reel__cap {
+  display: block;
+  padding: 4px 6px 5px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 11.5px;
+  line-height: 1;
+  color: rgba(200, 170, 110, 0.72);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   background: rgba(0, 0, 0, 0.55);
-  color: var(--ink);
-  cursor: pointer;
-  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
-  z-index: 4;
-}
-
-.ttl-play svg {
-  width: 30px;
-  height: 30px;
-}
-
-.ttl-play:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-  background: var(--seal);
-  border-color: var(--seal);
-}
-
-.ttl-play::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border: 2px solid rgba(200, 170, 110, 0.6);
-  border-radius: 50%;
-  animation: playPulse 2.4s ease-out infinite;
-  pointer-events: none;
-}
-
-@keyframes playPulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  70%, 100% {
-    transform: scale(1.7);
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ttl-play::after {
-    animation: none;
-    opacity: 0;
-  }
+  border-top: 1px solid rgba(200, 170, 110, 0.18);
 }
 
 /* =========================================================
-   ĐỘI NGŨ NGƯỜI QUE — hiện khi hover khung showreel
-   5 thành viên "thi công" quanh khung: gõ búa, chỉ đạo cầm cờ,
-   lăn sơn, quét cọ, ngồi gõ laptop.
+   NGƯỜI QUE BĂNG PHIM — 5 nhân vật đứng trên mép cuộn băng.
+   Ẩn mặc định, xuất hiện + animate khi hover .ttl-reel.
 ========================================================= */
 .ttl-crew {
   position: absolute;
-  inset: 0;
+  top: 4px;               /* nằm trong vùng padding 84px — không đè nội dung trên */
+  left: 0;
+  right: 0;
+  height: 76px;
   pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 0 4%;
+  opacity: 0;
+  transition: opacity 0.38s ease;
   z-index: 5;
 }
 
-.ttl-crew__fig {
-  position: absolute;
-  width: 54px;
-  height: auto;
-  opacity: 0;
-  transform: translateY(10px) scale(0.75);
-  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.34, 1.55, 0.5, 1);
-}
-
-/* stagger lúc hiện ra */
-.ttl-crew__fig--lead  { transition-delay: 0s; }
-.ttl-crew__fig--draw1 { transition-delay: 0.07s; }
-.ttl-crew__fig--code1 { transition-delay: 0.14s; }
-.ttl-crew__fig--draw2 { transition-delay: 0.21s; }
-.ttl-crew__fig--code2 { transition-delay: 0.28s; }
-
-.ttl-video:hover .ttl-crew__fig {
+.ttl-reel:hover .ttl-crew {
   opacity: 1;
-  transform: none;
 }
 
-/* vị trí: chỉ đạo đứng NÓC khung; artist/dev ngồi hai BÊN khung */
-.ttl-crew__fig--lead  { bottom: calc(100% - 4px); left: 12%; }
-.ttl-crew__fig--draw1 { right: calc(100% + 10px); top: 6%; }
-.ttl-crew__fig--draw2 { right: calc(100% + 10px); top: 54%; }
-.ttl-crew__fig--code1 { left: calc(100% + 10px); top: 6%; }
-.ttl-crew__fig--code2 { left: calc(100% + 10px); top: 54%; }
-
-/* nét người que — trắng */
-.crew-line {
-  stroke: rgba(255, 255, 255, 0.95);
-  stroke-width: 3;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* Badge "HẬU TRƯỜNG": nằm TRONG viewport góc trên-trái
+   — hover thì nhấp nháy như đèn LIVE đang ghi hình */
+.ttl-reel__badge {
+  top: 98px;             /* 14px từ mép trên reel = 14px từ mép trong viewport */
+  left: 14px;
+  z-index: 6;
 }
 
-.crew-fill-seal { fill: var(--seal); stroke: none; }
-.crew-fill-gold { fill: var(--gold); stroke: none; }
+.ttl-reel__badge::before {
+  content: "●";
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 0.7em;
+  vertical-align: 0.1em;
+}
 
-/* animation làm việc — chỉ chạy khi đang hover */
+.ttl-reel:hover .ttl-reel__badge {
+  animation: reelLiveBlink 0.8s steps(1, end) infinite;
+}
+
+.ttl-reel:hover .ttl-reel__badge::before {
+  animation: reelDotBlink 0.45s steps(1, end) infinite;
+}
+
+@keyframes reelLiveBlink {
+  0%, 100% { background: var(--seal); color: var(--ink); }
+  50%       { background: var(--seal-dark); color: rgba(240, 230, 211, 0.35); }
+}
+
+@keyframes reelDotBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.ttl-crew__fig {
+  width: clamp(36px, 4.2vw, 52px);
+  height: auto;
+  overflow: visible;
+  flex: 0 0 auto;
+}
+
+/* Crew animations — PAUSED mặc định, RUNNING khi hover reel */
 .crew-anim {
   transform-box: view-box;
   animation-play-state: paused;
 }
 
-.ttl-video:hover .crew-anim {
+.crew--point { transform-origin: 38px 27px; }
+.crew--draw  { transform-origin: 20px 26px; }
+.crew--type  { transform-origin: 44px 26px; }
+
+.ttl-reel:hover .crew--point {
+  animation: crewPoint 1.4s ease-in-out infinite;
   animation-play-state: running;
 }
 
-.crew--point {
-  transform-origin: 38px 27px;
-  animation: crewPoint 1.5s ease-in-out infinite paused;
+.ttl-reel:hover .crew--draw {
+  animation: crewDraw 0.62s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.ttl-reel:hover .crew--type {
+  animation: crewType 0.3s steps(2) infinite;
+  animation-play-state: running;
 }
 
 @keyframes crewPoint {
   0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-12deg); }
-}
-
-/* tay vẽ: phác nét nhanh quanh vai */
-.crew--draw {
-  transform-origin: 20px 26px;
-  animation: crewDraw 0.55s ease-in-out infinite paused;
+  40%       { transform: rotate(-16deg) translateY(-2px); }
+  70%       { transform: rotate(8deg); }
 }
 
 @keyframes crewDraw {
-  0%, 100% { transform: rotate(6deg); }
-  50% { transform: rotate(-5deg); }
-}
-
-.crew--type {
-  animation: crewType 0.3s steps(2) infinite paused;
+  0%, 100% { transform: rotate(5deg); }
+  50%       { transform: rotate(-7deg) translateY(2px); }
 }
 
 @keyframes crewType {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(1.8px); }
+  50%       { transform: translateY(2px); }
 }
 
-/* lệch pha người thứ 2 mỗi cặp cho tự nhiên */
-.ttl-crew__fig--draw2 .crew--draw { animation-duration: 0.72s; animation-delay: -0.2s; }
-.ttl-crew__fig--code2 .crew--type { animation-duration: 0.38s; animation-delay: -0.15s; }
-
 @media (prefers-reduced-motion: reduce) {
-  .crew-anim {
-    animation: none !important;
-  }
+  .ttl-crew { display: none; }
+  .crew-anim { animation: none !important; animation-play-state: paused !important; }
 }
 
 /* ---- Chim Lạc (ảnh) bay trang trí trên intro ---- */
@@ -1024,74 +988,6 @@ body.is-intro .member-name-wrap {
   width: 100%;
   height: 100%;
   pointer-events: none;
-}
-
-/* =========================================================
-   TRANH KHẮC ĐỒNG ĐỘNG (showreel placeholder)
-========================================================= */
-.sr-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* mặt trời xoay quanh tâm riêng (--ox/--oy do render đặt) */
-.sr-sun {
-  transform-origin: var(--ox) var(--oy);
-  animation: srSpin 40s linear infinite;
-}
-
-@keyframes srSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* sóng trôi ngang 1 chu kỳ (44px) — lặp liền mạch */
-.sr-waves {
-  animation: srWaves 4.5s linear infinite;
-}
-
-@keyframes srWaves {
-  from { transform: translateX(0); }
-  to { transform: translateX(44px); }
-}
-
-/* thuyền dập dềnh */
-.sr-boat {
-  transform-origin: 240px 180px;
-  animation: srBoat 5.5s ease-in-out infinite;
-}
-
-@keyframes srBoat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-6px) rotate(-0.8deg); }
-}
-
-/* chim trong tranh chao nhẹ (animate path con — không phá transform của <g>) */
-.sr-bird path {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: birdBob 8s ease-in-out infinite;
-}
-
-.sr-bird--2 path {
-  animation-duration: 11s;
-  animation-delay: -3s;
-}
-
-@keyframes birdBob {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(10px, -7px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sr-sun,
-  .sr-waves,
-  .sr-boat,
-  .sr-bird path {
-    animation: none;
-  }
 }
 
 /* =========================================================
@@ -1176,22 +1072,19 @@ body.is-intro .member-name-wrap {
   display: block;
 }
 
-.prod-cover-svg .cv-scan,
-.sr-svg .cv-scan {
+.prod-cover-svg .cv-scan {
   stroke: var(--gold);
   opacity: 0.06;
 }
 
-.prod-cover-svg .cv-ink,
-.sr-svg .cv-ink {
+.prod-cover-svg .cv-ink {
   stroke: var(--gold);
   stroke-width: 2;
   fill: none;
   opacity: 0.85;
 }
 
-.prod-cover-svg .cv-fill,
-.sr-svg .cv-fill {
+.prod-cover-svg .cv-fill {
   fill: var(--gold);
   stroke: none;
 }
@@ -1217,7 +1110,6 @@ body.is-intro .member-name-wrap {
 /* nhãn trạng thái — ô đỏ son góc trên trái */
 .prod-status {
   position: absolute;
-  top: 12px;
   left: 12px;
   z-index: 3;
   padding: 3px 9px 2px;
@@ -1564,6 +1456,18 @@ body.is-intro .member-name-wrap {
    JS set --hx/--hy đặt chỗ TỨC THỜI (không glide); node bật/tắt thì
    nhân vật teleport hiện ra / biến mất (heroTpIn / heroTpOut).
 ========================================================= */
+/* nét người que (dùng chung cho nhân vật Quest) — viền trắng + mảng tô */
+.crew-line {
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.crew-fill-seal { fill: var(--seal); stroke: none; }
+.crew-fill-gold { fill: var(--gold); stroke: none; }
+
 .qm-hero {
   position: absolute;
   left: -20px;
@@ -1803,7 +1707,7 @@ body.is-intro .member-name-wrap {
   .dongson-drum { width: 116vh; height: 116vh; opacity: 0.32; }
   .frame-corner { width: 40px; height: 40px; }
 
-  .ttl-video { width: min(560px, 84vw); }
+  .ttl-reel { width: min(680px, 92vw); }
   .scene-longwrap { width: 66vw; opacity: 0.68; }
 
   #memberName { font-size: clamp(20px, 3.6vw, 30px); }
@@ -1831,7 +1735,10 @@ body.is-intro .member-name-wrap {
   .ttl { gap: 10px; padding: 0 16px; margin-bottom: 4vh; }
   .ttl-hook { font-size: clamp(30px, 9vw, 44px); white-space: normal; }
   .ttl-tagline { font-size: 13.5px; line-height: 1.6; }
-  .ttl-video { width: min(520px, 92vw); max-height: 40vh; margin-top: 40px; }
+  /* reel: khung hẹp, frame + crew zone nhỏ lại */
+  .ttl-reel { width: min(440px, 96vw); margin-top: 8px; padding-top: 60px; }
+  .ttl-reel__frame { width: clamp(130px, 38vw, 185px); }
+  .ttl-crew { top: 2px; height: 54px; }
   .ttl-bird--1 { width: 74px; }
   .ttl-bird--2 { display: none; }
 
@@ -1872,7 +1779,9 @@ body.is-intro .member-name-wrap {
   .ttl { gap: 10px; margin-bottom: 4vh; }
   .ttl-hook { font-size: clamp(40px, 9vh, 72px); }
   .ttl-band { display: none; }
-  .ttl-video { max-height: 38vh; margin-top: 44px; }
+  .ttl-reel { margin-top: 4px; padding-top: 64px; }
+  .ttl-reel__badge { top: 66px; }
+  .ttl-crew { top: 2px; height: 58px; }
   .ps-head,
   .qm-head { margin-bottom: 10px; }
   .qm-band { display: none; }
@@ -1884,7 +1793,7 @@ body.is-intro .member-name-wrap {
 /* ---------- RẤT THẤP / ĐIỆN THOẠI XOAY NGANG ≤520 cao ---------- */
 @media (max-height: 520px) {
   .member-card { align-items: flex-start; }
-  .ttl-video { display: none; }            /* nhường chỗ cho hook + tagline */
+  .ttl-reel { display: none; }             /* nhường chỗ cho hook + tagline */
   .ttl-hook { font-size: clamp(28px, 12vh, 52px); }
   .scene-birdimg,
   .ttl-bird { display: none; }

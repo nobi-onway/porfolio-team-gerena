@@ -630,6 +630,66 @@
     requestAnimationFrame(windLoop);
   }
 
+  /* ---- Băng phim Hậu Trường — tự cuộn x1, hover → x3 ----
+     Dùng rAF + translateX (không CSS animation-duration) để đổi tốc độ
+     tức thời không gợn. seq = half×2 → khi pos >= halfW thì reset về 0. */
+  (function initIntroReel() {
+    const introCard = cards[0];
+    const reel = introCard && introCard.querySelector(".ttl-reel");
+    if (!reel) return;
+    const track = reel.querySelector(".ttl-reel__track");
+    if (!track) return;
+
+    const SPEED_BASE = 0.5;   // px/frame ≈ 30px/s tại 60fps (x1)
+    const SPEED_FAST = 1.5;   // px/frame ≈ 90px/s tại 60fps (x3)
+
+    let speed = SPEED_BASE;
+    let pos = 0;
+    let halfW = 0;
+    let raf = null;
+    let running = false;
+
+    function measure() {
+      halfW = track.scrollWidth / 2;
+    }
+
+    function tick() {
+      if (!running) return;
+      pos += speed;
+      if (halfW > 0 && pos >= halfW) pos -= halfW;
+      track.style.transform = "translateX(-" + pos.toFixed(2) + "px)";
+      raf = requestAnimationFrame(tick);
+    }
+
+    function start() {
+      if (running) return;
+      measure();
+      running = true;
+      raf = requestAnimationFrame(tick);
+    }
+
+    function stop() {
+      running = false;
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+    }
+
+    reel.addEventListener("mouseenter", function () {
+      speed = SPEED_FAST;
+      measure();
+    });
+    reel.addEventListener("mouseleave", function () {
+      speed = SPEED_BASE;
+    });
+
+    const reelObs = new MutationObserver(function () {
+      introCard.classList.contains("active") ? start() : stop();
+    });
+    reelObs.observe(introCard, { attributes: true, attributeFilter: ["class"] });
+    if (introCard.classList.contains("active")) start();
+
+    window.addEventListener("resize", measure);
+  })();
+
   /* =========================================================
      BOOT
   ========================================================= */

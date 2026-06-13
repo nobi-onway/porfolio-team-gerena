@@ -10,7 +10,10 @@
       "Bash(git rev-list *)",
       "Bash(touch .nojekyll)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "PowerShell($ErrorActionPreference='Stop'; foreach\\($f in 'js/data.js','js/render.js','js/main.js'\\){ try { node --check $f; if\\($?\\){ \"OK $f\" } } catch { \"node missing\" } })",
+      "PowerShell($c = Get-Content -Raw 'css/styles.css'; $o = \\([regex]::Matches\\($c,'\\\\{'\\)\\).Count; $cl = \\([regex]::Matches\\($c,'\\\\}'\\)\\).Count; \"open=$o close=$cl\")",
+      "Bash(python -c ' *)"
     ]
   }
 }

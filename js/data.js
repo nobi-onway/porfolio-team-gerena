@@ -19,9 +19,15 @@ const TEAM = {
     'Một <em class="tagline-em">team sáng tạo</em> thuần Việt — ' +
     'nơi <em class="tagline-em">nghệ thuật</em> ' +
     'gặp <em class="tagline-em">công nghệ game</em>.',
-  // [CẬP NHẬT] đường dẫn video showreel sản phẩm chủ đạo (mp4/webm).
-  // Để trống "" → hiển thị tranh khắc đồng động thay thế.
-  showreelSrc: "",
+  // [CẬP NHẬT] Ảnh hoạt động/hậu trường của team — hiện dạng cụm polaroid.
+  //   Thả file vào thư mục img/ rồi khai báo { src, caption } ở đây.
+  //   Khuyến nghị 3–4 ảnh, ngang (tỉ lệ ~4:3) cho đẹp.
+  //   Để mảng RỖNG [] → tự hiển thị 3 tranh khắc đồng placeholder.
+  photos: [
+    // { src: "img/team-1.jpg", caption: "Brainstorm ý tưởng" },
+    // { src: "img/team-2.jpg", caption: "Dựng prototype" },
+    // { src: "img/team-3.jpg", caption: "Playtest nội bộ" },
+  ],
 };
 
 /* ---- Sản phẩm — mỗi item là 1 "STAGE" trong slide Sản Phẩm ----

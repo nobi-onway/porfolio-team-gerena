@@ -204,52 +204,16 @@ function coverArt(kind, idx) {
   `;
 }
 
-/* Tranh khắc đồng ĐỘNG cho khung showreel (khi chưa có video):
-   thuyền Đông Sơn lướt sóng + mặt trời xoay + chim bay */
-function showreelArt() {
-  const W = 480, H = 270;
-  let scan = "";
-  for (let y = 12; y < H; y += 14) scan += `<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;
-  let rowers = "";
-  for (let i = 0; i < 4; i++) {
-    const x = 168 + i * 46;
-    rowers += `
-      <circle cx="${x}" cy="142" r="6.5" fill="none" stroke-width="2"/>
-      <path d="M${x} 148 L${x} 166 M${x} 154 L${x + 15} 170 M${x} 166 L${x - 7} 179" fill="none" stroke-width="2"/>`;
-  }
-  let waves = "";
-  for (let x = -64; x < W + 20; x += 44) {
-    waves += `<path d="M${x} 224 q 11 -15 22 0 q 11 15 22 0" fill="none" opacity="0.5"/>`;
-  }
-  return `
-    <svg class="sr-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice"
-         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="${W}" height="${H}" fill="#000000"/>
-      <g class="cv-scan">${scan}</g>
-      <g class="cv-ink">
-        ${drumSun(398, 62, 24, "sr-sun")}
-        <g class="sr-boat">
-          <path d="M104 182 Q 240 214 376 182" fill="none" stroke-width="3"/>
-          <path d="M104 182 Q 92 167 100 152 q 10 6 5 19" fill="none" stroke-width="2.5"/>
-          <path d="M376 182 Q 390 165 382 148 q -11 7 -5 21" fill="none" stroke-width="2.5"/>
-          <path d="M134 188 L348 188" opacity="0.4"/>
-          ${rowers}
-        </g>
-        <g class="sr-waves">${waves}</g>
-        ${svgBird(86, 64, 1.0, "sr-bird")}
-        ${svgBird(150, 44, 0.7, "sr-bird sr-bird--2")}
-      </g>
-    </svg>
-  `;
-}
-
 /* =========================================================
-   ĐỘI NGŨ NGƯỜI QUE — hiện khi hover .ttl-video (CSS):
-   1 chỉ đạo đứng nóc khung · 2 artist ngồi vẽ bên TRÁI
-   · 2 dev ngồi code bên PHẢI.
+   SLIDE 0 — HOOK: "CHÚNG TÔI LÀ" + tagline + ẢNH HẬU TRƯỜNG
+   Cụm ảnh polaroid Đông Sơn: ảnh giữ MÀU GỐC, viền đồng + scanline
+   dịu nhẹ, ghim dấu son sao trống đồng, xếp lệch — hover nhấc & thẳng.
 ========================================================= */
+
+/* ĐỘI NGŨ NGƯỜI QUE — hiện khi hover băng phim: 1 chỉ đạo cầm cờ,
+   2 artist vẽ, 2 dev gõ laptop; đứng rải trên nóc băng (CSS định vị). */
 function crewFigs() {
-  /* 1 · CHỈ ĐẠO — đứng trên nóc khung, cầm cờ, tay chỉ xuống */
+  /* CHỈ ĐẠO — cầm cờ, tay chỉ */
   const lead = `
     <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 84" aria-hidden="true">
       <g class="crew-line">
@@ -265,7 +229,7 @@ function crewFigs() {
       </g>
     </svg>`;
 
-  /* 2-3 · ARTIST ngồi vẽ trước giá vẽ (mặt hướng PHẢI → đặt bên trái khung) */
+  /* ARTIST — ngồi vẽ trước giá vẽ */
   const draw = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
       <g class="crew-line">
@@ -273,7 +237,6 @@ function crewFigs() {
         <path d="M20 19 L20 42"/>
         <path d="M20 42 L34 46 L34 62"/>
         <path d="M20 42 L30 48 L30 64"/>
-        <!-- giá vẽ + khung tranh -->
         <path d="M46 22 L42 64 M50 38 L56 64"/>
         <rect x="40" y="20" width="18" height="20" rx="1"/>
         <g class="crew-anim crew--draw">
@@ -283,7 +246,7 @@ function crewFigs() {
       </g>
     </svg>`;
 
-  /* 4-5 · DEV ngồi gõ laptop (mặt hướng TRÁI → đặt bên phải khung) */
+  /* DEV — ngồi gõ laptop */
   const code = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
       <g class="crew-line">
@@ -291,7 +254,6 @@ function crewFigs() {
         <path d="M44 19 L44 42"/>
         <path d="M44 42 L30 46 L30 62"/>
         <path d="M44 42 L34 48 L34 64"/>
-        <!-- laptop: bàn phím + màn hình mở -->
         <rect class="crew-fill-gold" x="12" y="38" width="18" height="3" rx="1"/>
         <path d="M12 38 L8 24 L24 24"/>
         <g class="crew-anim crew--type">
@@ -302,22 +264,48 @@ function crewFigs() {
     </svg>`;
 
   return `<div class="ttl-crew" aria-hidden="true">
-    ${lead}${draw("draw1")}${draw("draw2")}${code("code1")}${code("code2")}
+    ${draw("draw1")}${code("code1")}${lead}${draw("draw2")}${code("code2")}
   </div>`;
 }
 
-/* =========================================================
-   SLIDE 0 — HOOK: "CHÚNG TÔI LÀ" + tagline + showreel
-========================================================= */
+/* BĂNG PHIM HẬU TRƯỜNG — gallery cuộn ngang vô tận (tốc độ do main.js
+   điều khiển: x1 tự động, hover → x3). Nhân đôi danh sách thành 2 nửa
+   giống hệt để cuộn liền mạch không gợn. */
+function introReelHTML() {
+  const ART = ["mountain", "boat", "birds"];
+  const caps = ["Brainstorm", "Dựng prototype", "Playtest"];
+  const base = (TEAM.photos && TEAM.photos.length)
+    ? TEAM.photos
+    : ART.map((art, i) => ({ art, caption: caps[i] || "" }));
+
+  // 1 nửa băng phải đủ rộng phủ khung → lặp base tới >= 6 khung, rồi x2
+  const half = [];
+  while (half.length < Math.max(6, base.length * 2)) half.push(base[half.length % base.length]);
+  const seq = half.concat(half);
+
+  const frame = (p) => {
+    const media = p.src
+      ? `<img class="ttl-reel__img" src="${p.src}" alt="${p.caption || "Ảnh hậu trường team"}" draggable="false"/>`
+      : `<div class="ttl-reel__art">${coverArt(p.art || "birds", 0)}</div>`;
+    const cap = p.caption ? `<span class="ttl-reel__cap">${p.caption}</span>` : "";
+    return `<div class="ttl-reel__frame">${media}${cap}</div>`;
+  };
+
+  return `
+    <div class="ttl-reel fx fx-wipe" style="--d:1.25s">
+      <span class="prod-status ttl-reel__badge font-display">HẬU TRƯỜNG</span>
+      <div class="ttl-reel__viewport">
+        <div class="ttl-reel__track">${seq.map(frame).join("")}</div>
+      </div>
+      ${crewFigs()}
+    </div>
+  `;
+}
+
 function titleCardHTML() {
   const chars = [...TEAM.hook].map((ch, i) =>
     `<span class="ttl-hook__ch" style="--i:${i}">${ch === " " ? "&nbsp;" : ch}</span>`
   ).join("");
-
-  /* [CẬP NHẬT] khi TEAM.showreelSrc có file → render <video>, ngược lại dùng tranh động */
-  const media = TEAM.showreelSrc
-    ? `<video class="ttl-video__player" src="${TEAM.showreelSrc}" autoplay muted loop playsinline></video>`
-    : showreelArt();
 
   return `
     <div class="ttl">
@@ -329,24 +317,9 @@ function titleCardHTML() {
 
       <p class="ttl-tagline fx fx-rise" style="--d:0.95s">${TEAM.taglineHTML}</p>
 
-      ${dsBand("ttl-band fx fx-draw", "--d:1.2s")}
+      ${dsBand("ttl-band fx fx-draw", "--d:1.1s")}
 
-      <div class="ttl-video fx fx-wipe" style="--d:1.35s">
-        <div class="ttl-video__media">
-          ${media}
-          <button type="button" class="ttl-play" aria-label="Phát showreel">
-            <svg viewBox="0 0 36 36" aria-hidden="true">
-              <polygon points="13,9 28,18 13,27" fill="currentColor"/>
-            </svg>
-          </button>
-        </div>
-        <span class="prod-frame__corner tl"></span>
-        <span class="prod-frame__corner tr"></span>
-        <span class="prod-frame__corner bl"></span>
-        <span class="prod-frame__corner br"></span>
-        <span class="prod-status ttl-video__badge font-display">SHOWREEL</span>
-        ${crewFigs()}
-      </div>
+      ${introReelHTML()}
 
       <canvas class="intro-particles" aria-hidden="true"></canvas>
     </div>
