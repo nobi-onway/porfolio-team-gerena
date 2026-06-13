@@ -248,56 +248,105 @@ function showreelArt() {
    1 chỉ đạo đứng nóc khung · 2 artist ngồi vẽ bên TRÁI
    · 2 dev ngồi code bên PHẢI.
 ========================================================= */
+/* =========================================================
+   SLIME SPRITE — pixel art. Lưới ký tự → <rect> 1×1 (đơn vị local),
+   group ngoài dùng transform translate+scale để đặt vào từng SVG.
+   Bảng màu tím: O viền · L sáng · M giữa · D tối · E mắt · W loé · K má · T miệng.
+========================================================= */
+const SLIME_PAL = {
+  O: "#382a5e", L: "#c9b8f0", M: "#9b7ed8", D: "#6a4fa3",
+  E: "#241a33", W: "#ffffff", K: "#f0a8c8", T: "#241a33",
+};
+const SLIME_GRID = [
+  ".......OO.......",
+  "......OLLO......",
+  ".....OLLLLO.....",
+  "....OLLLLLLO....",
+  "...OLLLLLLLLO...",
+  "..OLLLLLLMMMMO..",
+  "..OLLLLMMMMMMO..",
+  ".OLLMMMMMMMMMMO.",
+  ".OMMWEMMMMWEMMO.",
+  ".OMMEEMMMMEEMMO.",
+  ".OMKMMMTTMMMKMO.",
+  ".OMMMMMMMMMMMMO.",
+  ".ODDDDDDDDDDDDO.",
+  "..ODDDDDDDDDDO..",
+  "...ODDDDDDDDO...",
+  "....OOOOOOOO....",
+];
+/* Trả { body, eyes } — mắt tách group riêng để chớp mắt độc lập. */
+function slimeSprite() {
+  let body = "", eyes = "";
+  SLIME_GRID.forEach((row, y) => {
+    [...row].forEach((ch, x) => {
+      const fill = SLIME_PAL[ch];
+      if (!fill) return;
+      const rect = `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${fill}"/>`;
+      if (ch === "E" || ch === "W") eyes += rect;
+      else body += rect;
+    });
+  });
+  return { body, eyes };
+}
+
 function crewFigs() {
-  /* 1 · CHỈ ĐẠO — đứng trên nóc khung, cầm cờ, tay chỉ xuống */
+  const s = slimeSprite();
+  /* 1 · CHỈ ĐẠO — slime đứng nóc khung, cạnh lá cờ */
   const lead = `
-    <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 84" aria-hidden="true">
-      <g class="crew-line">
-        <circle cx="38" cy="13" r="7"/>
-        <path d="M38 20 L38 48"/>
-        <path d="M38 48 L28 68 L26 80"/>
-        <path d="M38 48 L48 66 L50 80"/>
-        <path d="M38 27 L52 20 L52 6"/>
-        <polygon class="crew-fill-seal" points="52,6 64,10 52,15"/>
-        <g class="crew-anim crew--point">
-          <path d="M38 27 L18 38"/>
+    <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 66" aria-hidden="true">
+      <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
+      <path class="hero-line" d="M50 48 L52 12"/>
+      <polygon class="crew-fill-seal" points="52,12 64,16 52,22"/>
+      <g class="blob-crew">
+        <path class="blob-skin" d="M30 22 C20 22 12 30 11 41 C10 49 12 56 17 59 C21 61 25 61 30 59 C35 61 39 61 43 59 C48 56 50 49 49 41 C48 30 40 22 30 22 Z"/>
+        <ellipse class="blob-skin blob-nub" cx="30" cy="20" rx="3" ry="2.6"/>
+        <ellipse class="blob-gloss" cx="21" cy="40" rx="5" ry="7" transform="rotate(-18 21 40)"/>
+        <g class="blob-eyes-c">
+          <ellipse class="blob-eye" cx="25" cy="40" rx="3.4" ry="4.4"/>
+          <ellipse class="blob-eye" cx="35" cy="40" rx="3.4" ry="4.4"/>
         </g>
+        <path class="blob-face" d="M26 48 Q30 51 34 48"/>
       </g>
     </svg>`;
 
-  /* 2-3 · ARTIST ngồi vẽ trước giá vẽ (mặt hướng PHẢI → đặt bên trái khung) */
+  /* 2-3 · ARTIST — blob bên trái khung, vẽ lên giá (cọ vẫy) */
   const draw = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
-      <g class="crew-line">
-        <circle cx="20" cy="12" r="7"/>
-        <path d="M20 19 L20 42"/>
-        <path d="M20 42 L34 46 L34 62"/>
-        <path d="M20 42 L30 48 L30 64"/>
-        <!-- giá vẽ + khung tranh -->
-        <path d="M46 22 L42 64 M50 38 L56 64"/>
-        <rect x="40" y="20" width="18" height="20" rx="1"/>
-        <g class="crew-anim crew--draw">
-          <path d="M20 26 L40 30"/>
-          <rect class="crew-fill-seal" x="38" y="27" width="6" height="6" rx="1"/>
+      <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
+      <g class="hero-line">
+        <path d="M46 22 L42 66 M54 34 L60 66 M44 60 L58 60"/>
+        <rect x="40" y="16" width="18" height="22" rx="1"/>
+      </g>
+      <g class="blob-crew">
+        <path class="blob-skin" d="M20 13 C12 13 6 21 5 31 C4 38 6 44 11 47 C14 49 17 49 20 47 C23 49 26 49 29 47 C34 44 36 38 35 31 C34 21 28 13 20 13 Z"/>
+        <ellipse class="blob-skin blob-nub" cx="20" cy="11" rx="2.8" ry="2.4"/>
+        <ellipse class="blob-gloss" cx="12" cy="29" rx="4.5" ry="6" transform="rotate(-18 12 29)"/>
+        <g class="blob-eyes-c">
+          <ellipse class="blob-eye" cx="16" cy="29" rx="3" ry="4"/>
+          <ellipse class="blob-eye" cx="25" cy="29" rx="3" ry="4"/>
         </g>
+        <path class="blob-face" d="M17 37 Q21 40 25 37"/>
       </g>
     </svg>`;
 
-  /* 4-5 · DEV ngồi gõ laptop (mặt hướng TRÁI → đặt bên phải khung) */
+  /* 4-5 · DEV — blob bên phải khung, gõ laptop */
   const code = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
-      <g class="crew-line">
-        <circle cx="44" cy="12" r="7"/>
-        <path d="M44 19 L44 42"/>
-        <path d="M44 42 L30 46 L30 62"/>
-        <path d="M44 42 L34 48 L34 64"/>
-        <!-- laptop: bàn phím + màn hình mở -->
-        <rect class="crew-fill-gold" x="12" y="38" width="18" height="3" rx="1"/>
-        <path d="M12 38 L8 24 L24 24"/>
-        <g class="crew-anim crew--type">
-          <path d="M44 26 L28 36"/>
-          <path d="M44 29 L24 38"/>
+      <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
+      <g class="hero-line">
+        <rect class="crew-fill-gold" x="10" y="40" width="20" height="3" rx="1"/>
+        <path d="M10 40 L6 24 L26 24"/>
+      </g>
+      <g class="blob-crew">
+        <path class="blob-skin" d="M44 13 C36 13 30 21 29 31 C28 38 30 44 35 47 C38 49 41 49 44 47 C47 49 50 49 53 47 C58 44 60 38 59 31 C58 21 52 13 44 13 Z"/>
+        <ellipse class="blob-skin blob-nub" cx="44" cy="11" rx="2.8" ry="2.4"/>
+        <ellipse class="blob-gloss" cx="36" cy="29" rx="4.5" ry="6" transform="rotate(-18 36 29)"/>
+        <g class="blob-eyes-c">
+          <ellipse class="blob-eye" cx="40" cy="29" rx="3" ry="4"/>
+          <ellipse class="blob-eye" cx="49" cy="29" rx="3" ry="4"/>
         </g>
+        <path class="blob-face" d="M40 37 Q44 40 48 37"/>
       </g>
     </svg>`;
 
@@ -435,93 +484,74 @@ function loopIcon(kind) {
   </svg>`;
 }
 
-/* Người que đứng góc bottom-left trong khung quest. JS đổi pose theo step
-   đang active (.hero--idea/doc/code/art/play/win) — mỗi pose lộ 1 bộ tay +
-   đạo cụ riêng; khi chuyển step bật .is-running cho nhân vật chạy tại chỗ. */
-function questHeroHTML() {
+/* Blob theo TỪNG node: mỗi node 1 nhân vật giọt mực cố định góc top-right,
+   pose khớp step (idea/doc/code/art/play/win). Node active → blob xuất hiện
+   (CSS .qm-node.is-cur .qm-node-blob), node tắt → biến mất. Đạo cụ "môi
+   trường" (bóng đèn/giá vẽ/màn hình/sao) đặt ngoài .blob để không bị bóp méo. */
+const QUEST_POSES = ["idea", "doc", "code", "art", "play", "win"];
+
+function questBlobEnv(pose) {
+  switch (pose) {
+    case "idea": return `
+      <g class="hero-bulb">
+        <circle class="crew-fill-gold" cx="40" cy="-14" r="6"/>
+        <path class="hero-line" d="M37 -7 L43 -7"/>
+        <path class="hero-ray hero-line" d="M40 -24 L40 -28 M28 -16 L24 -18 M52 -16 L56 -18"/>
+      </g>`;
+    case "art": return `
+      <g class="hero-line">
+        <path d="M70 14 L66 80 M82 30 L88 80 M68 72 L86 72"/>
+        <rect x="62" y="8" width="22" height="28" rx="1"/>
+      </g>`;
+    case "play": return `
+      <rect class="hero-screen hero-line" x="58" y="2" width="22" height="16" rx="1"/>
+      <polygon class="crew-fill-gold hero-screen-blip" points="66,7 66,13 73,10"/>`;
+    case "win": return `
+      <polygon class="crew-fill-gold hero-star"
+        points="40,-32 43.5,-23 53,-23 45.5,-17 48.5,-8 40,-13 31.5,-8 34.5,-17 27,-23 36.5,-23"/>`;
+    default: return "";
+  }
+}
+
+function questBlobArms(pose) {
+  switch (pose) {
+    case "doc": return `
+      <rect class="hero-line" x="45" y="56" width="17" height="22" rx="1" style="fill:rgba(0,0,0,0.35)"/>
+      <path class="hero-line" d="M48 62 L59 62 M48 67 L59 67 M48 72 L55 72" stroke-width="1.7" opacity="0.85"/>`;
+    case "code": return `
+      <path class="hero-line" d="M22 80 L52 80 L57 66 L27 66 Z"/>
+      <rect class="hero-line" x="28" y="48" width="27" height="18" rx="1"/>
+      <path class="hero-line" d="M32 53 L51 53 M32 58 L47 58" stroke-width="1.7" opacity="0.55"/>`;
+    case "play": return `
+      <g class="hero-pad">
+        <rect class="hero-line" x="28" y="64" width="34" height="12" rx="6" style="fill:rgba(0,0,0,0.4)"/>
+        <circle class="crew-fill-seal" cx="37" cy="70" r="1.9"/>
+        <circle class="crew-fill-gold" cx="53" cy="70" r="1.9"/>
+      </g>`;
+    default: return "";
+  }
+}
+
+function nodeBlobHTML(pose) {
   return `
-    <div class="qm-hero" aria-hidden="true">
-      <svg class="qm-hero__svg" viewBox="0 -22 90 106">
-        <g class="crew-line">
-          <!-- chân (vung mạnh khi .is-running) -->
-          <g class="hero-legs">
-            <path class="hero-leg hero-leg--l" d="M36 50 L29 78"/>
-            <path class="hero-leg hero-leg--r" d="M36 50 L43 78"/>
+    <div class="qm-node-blob hero--${pose}" aria-hidden="true">
+      <svg class="qm-blob__svg" viewBox="0 -34 92 118">
+        <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
+        ${questBlobEnv(pose)}
+        <g class="blob">
+          <path class="blob-skin" d="M40 29 C22 29 12 42 12 56 C12 67 17 78 27 81 C31 83 36 82 40 79 C44 82 49 83 53 81 C63 78 68 67 68 56 C68 42 58 29 40 29 Z"/>
+          <ellipse class="blob-skin blob-nub" cx="40" cy="26" rx="4.2" ry="3.4"/>
+          <ellipse class="blob-gloss" cx="29" cy="47" rx="8" ry="11" transform="rotate(-18 29 47)"/>
+          <ellipse class="blob-gloss" cx="51" cy="70" rx="3.5" ry="5" transform="rotate(-20 51 70)"/>
+          <g class="blob-eyes">
+            <ellipse class="blob-eye" cx="33" cy="50" rx="4.2" ry="5.4"/>
+            <ellipse class="blob-eye" cx="47" cy="50" rx="4.2" ry="5.4"/>
           </g>
-          <!-- thân + đầu -->
-          <path d="M36 22 L36 50"/>
-          <circle cx="36" cy="14" r="7.5"/>
-
-          <!-- CHẠY giữa các step: hai tay vung -->
-          <g class="hero-act hero-act--run">
-            <path class="hero-arm-run hero-arm-run--a" d="M36 28 L46 31 L44 23"/>
-            <path class="hero-arm-run hero-arm-run--b" d="M36 28 L27 32 L29 24"/>
-          </g>
-
-          <!-- 01 · Ý TƯỞNG → brainstorm: tay lên đầu + bóng đèn loé -->
-          <g class="hero-act hero-act--idea">
-            <path d="M36 30 L29 42"/>
-            <path d="M36 28 L46 26 L41 15"/>
-            <g class="hero-bulb">
-              <circle class="crew-fill-gold" cx="41" cy="-4" r="4.5"/>
-              <path d="M39 1 L43 1"/>
-              <path class="hero-ray" d="M41 -11 L41 -14 M33 -4 L30 -4 M49 -4 L52 -4"/>
-            </g>
-          </g>
-
-          <!-- 02 · THIẾT KẾ → viết tài liệu: cầm bảng kẹp, tay viết -->
-          <g class="hero-act hero-act--doc">
-            <path d="M36 30 L29 42"/>
-            <rect x="50" y="32" width="16" height="22" rx="1"/>
-            <path d="M53 38 L63 38 M53 43 L63 43 M53 48 L59 48" stroke-width="2" opacity="0.8"/>
-            <g class="hero-write">
-              <path d="M36 28 L52 40"/>
-              <rect class="crew-fill-seal" x="50" y="37" width="4.5" height="4.5" rx="0.6"/>
-            </g>
-          </g>
-
-          <!-- 03 · PROTOTYPE → code: gõ laptop -->
-          <g class="hero-act hero-act--code">
-            <rect x="46" y="44" width="22" height="3" rx="1"/>
-            <path d="M46 44 L49 26 L65 26 L68 44"/>
-            <path d="M50 30 L62 30 M50 34 L60 34" stroke-width="2" opacity="0.55"/>
-            <g class="hero-type">
-              <path class="hero-type--a" d="M36 29 L48 45"/>
-              <path class="hero-type--b" d="M36 31 L46 46"/>
-            </g>
-          </g>
-
-          <!-- 04 · MỸ THUẬT → vẽ: giá vẽ + cọ -->
-          <g class="hero-act hero-act--art">
-            <path d="M56 24 L52 80 M66 38 L72 80 M54 72 L70 72"/>
-            <rect x="50" y="20" width="20" height="26" rx="1"/>
-            <path d="M36 30 L30 42"/>
-            <g class="hero-brush">
-              <path d="M36 28 L54 34"/>
-              <rect class="crew-fill-seal" x="52" y="31" width="5" height="5" rx="0.6"/>
-            </g>
-          </g>
-
-          <!-- 05 · PLAYTEST → chơi game: cầm tay cầm + màn hình nhấp nháy -->
-          <g class="hero-act hero-act--play">
-            <rect class="hero-screen" x="46" y="14" width="20" height="14" rx="1"/>
-            <polygon class="crew-fill-gold hero-screen-blip" points="53,18 53,24 59,21"/>
-            <path d="M36 30 L46 42"/>
-            <path d="M36 31 L66 42"/>
-            <g class="hero-pad">
-              <rect x="44" y="38" width="24" height="10" rx="5"/>
-              <circle class="crew-fill-seal" cx="50" cy="43" r="1.6"/>
-              <circle class="crew-fill-gold" cx="62" cy="43" r="1.6"/>
-            </g>
-          </g>
-
-          <!-- 06 · HOÀN THIỆN → success: giơ hai tay + sao loé -->
-          <g class="hero-act hero-act--win">
-            <path d="M36 28 L26 13"/>
-            <path d="M36 28 L46 13"/>
-            <polygon class="crew-fill-gold hero-star"
-              points="36,-14 38.5,-7 46,-7 40,-2.5 42.3,4.5 36,0.2 29.7,4.5 32,-2.5 26,-7 33.5,-7"/>
-          </g>
+          <ellipse class="blob-mouth" cx="40" cy="62" rx="2.4" ry="3.2"/>
+          <path class="blob-tongue" d="M38 63.2 Q40 66 42 63.2 Z"/>
+          <circle class="blob-blush" cx="25" cy="58" r="3"/>
+          <circle class="blob-blush" cx="55" cy="58" r="3"/>
+          ${questBlobArms(pose)}
         </g>
       </svg>
     </div>`;
@@ -530,8 +560,6 @@ function questHeroHTML() {
 function processCardHTML() {
   return `
     <div class="ghost-index absolute select-none text-[40vh] md:text-[55vh] right-[3vw] top-1/2 -translate-y-1/2 -z-10">03</div>
-
-    ${questHeroHTML()}
 
     <div class="qm-wrap w-full max-w-[1180px] mx-auto px-8 md:px-12">
       <header class="qm-head">
@@ -542,6 +570,7 @@ function processCardHTML() {
       <ol class="qm-path">
         ${PROCESS_STEPS.map((s, i) => `
           <li class="qm-node fx fx-pop" style="--d:${(0.45 + i * 0.13).toFixed(2)}s">
+            ${nodeBlobHTML(QUEST_POSES[i] || "idea")}
             <span class="qm-node__num font-display">${s.num}</span>
             <div class="qm-node__body">
               <div class="qm-node__en font-display">${s.en}</div>

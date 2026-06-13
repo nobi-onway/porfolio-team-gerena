@@ -269,10 +269,10 @@
     window.addEventListener("resize", () => { if (running) resize(); });
   })();
 
-  /* ---- Quest log: con trỏ highlight node + NGƯỜI QUE bám node active ----
+  /* ---- Quest log: highlight node + blob xuất hiện/biến mất theo node ----
      Chỉ chạy khi slide quy trình đang .active; dừng & dọn khi rời slide.
-     Người que đứng ở GÓC BOTTOM-LEFT của node active; chuyển node thì chạy
-     (.is-running) + glide sang chỗ mới rồi diễn động tác khớp step. */
+     Mỗi node có blob riêng (góc top-right); .is-cur bật → node sáng + blob
+     bung ra (CSS), tick sau .is-cur chuyển node → blob node cũ biến mất. */
   (function initQuestPlayhead() {
     const card = cards.find((c) => c.classList.contains("member-card--process"));
     if (!card) return;
@@ -280,73 +280,31 @@
     if (!nodes.length) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const hero = card.querySelector(".qm-hero");
-    // pose khớp PROCESS_STEPS: Ý tưởng·Thiết kế·Prototype·Mỹ thuật·Playtest·Hoàn thiện
-    const POSES = ["hero--idea", "hero--doc", "hero--code", "hero--art", "hero--play", "hero--win"];
-
     const ENTER_DELAY = 1500;   // chờ animation xuất hiện (fx-pop) chạy xong
-    const STEP_MS = 2800;       // mỗi node giữ bao lâu (chạy + diễn động tác)
-    const RUN_MS = 700;         // chạy + glide sang node kế (khớp transition CSS)
-    let startTimer = null, tickTimer = null, poseTimer = null, idx = 0;
+    const STEP_MS = 2800;       // mỗi node sáng bao lâu trước khi chuyển node kế
+    let startTimer = null, tickTimer = null, idx = 0;
 
-    // đặt người que vào góc bottom-left của node i (offsetParent chung = card)
-    function placeHero(i, instant) {
-      if (!hero) return;
-      const n = nodes[i];
-      const hx = n.offsetLeft - hero.offsetWidth * 0.32;
-      const hy = n.offsetTop + n.offsetHeight - hero.offsetHeight + 4;
-      if (instant) {
-        hero.style.transition = "none";
-        hero.style.setProperty("--hx", hx.toFixed(1) + "px");
-        hero.style.setProperty("--hy", hy.toFixed(1) + "px");
-        void hero.offsetWidth;   // ép reflow để bỏ glide cho lần đặt đầu
-        hero.style.transition = "";
-      } else {
-        hero.style.setProperty("--hx", hx.toFixed(1) + "px");
-        hero.style.setProperty("--hy", hy.toFixed(1) + "px");
-      }
-    }
-
-    function setPose(i) {
-      if (!hero) return;
-      hero.classList.remove("is-running", ...POSES);
-      hero.classList.add(POSES[i % POSES.length]);
-    }
-
-    function advance(i, instant) {
+    function light(i) {
       nodes.forEach((n, k) => n.classList.toggle("is-cur", k === i));
-      placeHero(i, instant);
-      if (!hero) return;
-      clearTimeout(poseTimer);
-      if (instant) {
-        setPose(i);                       // node đầu: vào pose ngay
-      } else {
-        hero.classList.remove(...POSES);  // chạy + glide rồi mới diễn
-        hero.classList.add("is-running");
-        poseTimer = setTimeout(() => setPose(i), RUN_MS);
-      }
     }
 
     function start() {
       stop();
       idx = 0;
       startTimer = setTimeout(() => {
-        advance(idx, true);                      // đặt vị trí node đầu (chưa hiện)
-        if (hero) hero.classList.add("is-on");   // fade-in tại chỗ
+        light(idx);
         tickTimer = setInterval(() => {
           idx = (idx + 1) % nodes.length;
-          advance(idx, false);
+          light(idx);
         }, STEP_MS);
       }, ENTER_DELAY);
     }
 
     function stop() {
       clearTimeout(startTimer);
-      clearTimeout(poseTimer);
       clearInterval(tickTimer);
-      startTimer = tickTimer = poseTimer = null;
+      startTimer = tickTimer = null;
       nodes.forEach((n) => n.classList.remove("is-cur"));
-      if (hero) hero.classList.remove("is-on", "is-running", ...POSES);
     }
 
     const obs = new MutationObserver(() => {
@@ -354,13 +312,6 @@
     });
     obs.observe(card, { attributes: true, attributeFilter: ["class"] });
     if (card.classList.contains("active")) start();
-
-    // layout đổi cột (resize) → đặt lại vị trí tức thời cho node hiện tại
-    window.addEventListener("resize", () => {
-      if (card.classList.contains("active") && hero && hero.classList.contains("is-on")) {
-        placeHero(idx, true);
-      }
-    });
   })();
 
   /* ---- Khởi tạo (track ở vị trí 0 = TITLE SCREEN) ---- */
