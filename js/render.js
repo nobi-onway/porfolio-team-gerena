@@ -259,21 +259,21 @@ const SLIME_PAL = {
 };
 const SLIME_GRID = [
   ".......OO.......",
-  "......OLLO......",
   ".....OLLLLO.....",
-  "....OLLLLLLO....",
   "...OLLLLLLLLO...",
-  "..OLLLLLLMMMMO..",
-  "..OLLLLMMMMMMO..",
-  ".OLLMMMMMMMMMMO.",
-  ".OMMWEMMMMWEMMO.",
-  ".OMMEEMMMMEEMMO.",
-  ".OMKMMMTTMMMKMO.",
+  "..OLLLLLLLLLLO..",
+  ".OLLLLLLLLLLLLO.",
+  ".OLLLLLLLLLLLLO.",
+  "OMMMMMMMMMMMMMMO",
+  "OMMMWEMMMMWEMMMO",
+  "OMMMEEMMMMEEMMMO",
+  "OMKMMMMTTMMMMKMO",
   ".OMMMMMMMMMMMMO.",
   ".ODDDDDDDDDDDDO.",
+  ".ODDDDDDDDDDDDO.",
   "..ODDDDDDDDDDO..",
-  "...ODDDDDDDDO...",
-  "....OOOOOOOO....",
+  "...OOOOOOOOOO...",
+  "................",
 ];
 /* Trả { body, eyes } — mắt tách group riêng để chớp mắt độc lập. */
 function slimeSprite() {
@@ -287,7 +287,11 @@ function slimeSprite() {
       else body += rect;
     });
   });
-  return { body, eyes };
+  // đốm sáng "shimmer" — 2 pixel trắng vùng đỉnh-trái, CSS cho lướt + nhấp nháy
+  const glint =
+    `<rect x="3" y="5" width="1.02" height="1.02" fill="#ffffff"/>` +
+    `<rect x="4" y="5" width="1.02" height="1.02" fill="#ffffff"/>`;
+  return { body, eyes, glint };
 }
 
 function crewFigs() {
@@ -295,58 +299,46 @@ function crewFigs() {
   /* 1 · CHỈ ĐẠO — slime đứng nóc khung, cạnh lá cờ */
   const lead = `
     <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 66" aria-hidden="true">
-      <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
       <path class="hero-line" d="M50 48 L52 12"/>
       <polygon class="crew-fill-seal" points="52,12 64,16 52,22"/>
-      <g class="blob-crew">
-        <path class="blob-skin" d="M30 22 C20 22 12 30 11 41 C10 49 12 56 17 59 C21 61 25 61 30 59 C35 61 39 61 43 59 C48 56 50 49 49 41 C48 30 40 22 30 22 Z"/>
-        <ellipse class="blob-skin blob-nub" cx="30" cy="20" rx="3" ry="2.6"/>
-        <ellipse class="blob-gloss" cx="21" cy="40" rx="5" ry="7" transform="rotate(-18 21 40)"/>
-        <g class="blob-eyes-c">
-          <ellipse class="blob-eye" cx="25" cy="40" rx="3.4" ry="4.4"/>
-          <ellipse class="blob-eye" cx="35" cy="40" rx="3.4" ry="4.4"/>
+      <g transform="translate(10 20) scale(2.5)">
+        <g class="blob-crew">
+          ${s.body}
+          <g class="blob-glint">${s.glint}</g>
+          <g class="blob-eyes-c">${s.eyes}</g>
         </g>
-        <path class="blob-face" d="M26 48 Q30 51 34 48"/>
       </g>
     </svg>`;
 
   /* 2-3 · ARTIST — blob bên trái khung, vẽ lên giá (cọ vẫy) */
   const draw = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
-      <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
       <g class="hero-line">
         <path d="M46 22 L42 66 M54 34 L60 66 M44 60 L58 60"/>
         <rect x="40" y="16" width="18" height="22" rx="1"/>
       </g>
-      <g class="blob-crew">
-        <path class="blob-skin" d="M20 13 C12 13 6 21 5 31 C4 38 6 44 11 47 C14 49 17 49 20 47 C23 49 26 49 29 47 C34 44 36 38 35 31 C34 21 28 13 20 13 Z"/>
-        <ellipse class="blob-skin blob-nub" cx="20" cy="11" rx="2.8" ry="2.4"/>
-        <ellipse class="blob-gloss" cx="12" cy="29" rx="4.5" ry="6" transform="rotate(-18 12 29)"/>
-        <g class="blob-eyes-c">
-          <ellipse class="blob-eye" cx="16" cy="29" rx="3" ry="4"/>
-          <ellipse class="blob-eye" cx="25" cy="29" rx="3" ry="4"/>
+      <g transform="translate(4 12) scale(2)">
+        <g class="blob-crew">
+          ${s.body}
+          <g class="blob-glint">${s.glint}</g>
+          <g class="blob-eyes-c">${s.eyes}</g>
         </g>
-        <path class="blob-face" d="M17 37 Q21 40 25 37"/>
       </g>
     </svg>`;
 
   /* 4-5 · DEV — blob bên phải khung, gõ laptop */
   const code = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
-      <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
       <g class="hero-line">
         <rect class="crew-fill-gold" x="10" y="40" width="20" height="3" rx="1"/>
         <path d="M10 40 L6 24 L26 24"/>
       </g>
-      <g class="blob-crew">
-        <path class="blob-skin" d="M44 13 C36 13 30 21 29 31 C28 38 30 44 35 47 C38 49 41 49 44 47 C47 49 50 49 53 47 C58 44 60 38 59 31 C58 21 52 13 44 13 Z"/>
-        <ellipse class="blob-skin blob-nub" cx="44" cy="11" rx="2.8" ry="2.4"/>
-        <ellipse class="blob-gloss" cx="36" cy="29" rx="4.5" ry="6" transform="rotate(-18 36 29)"/>
-        <g class="blob-eyes-c">
-          <ellipse class="blob-eye" cx="40" cy="29" rx="3" ry="4"/>
-          <ellipse class="blob-eye" cx="49" cy="29" rx="3" ry="4"/>
+      <g transform="translate(28 12) scale(2)">
+        <g class="blob-crew">
+          ${s.body}
+          <g class="blob-glint">${s.glint}</g>
+          <g class="blob-eyes-c">${s.eyes}</g>
         </g>
-        <path class="blob-face" d="M40 37 Q44 40 48 37"/>
       </g>
     </svg>`;
 
@@ -533,26 +525,19 @@ function questBlobArms(pose) {
 }
 
 function nodeBlobHTML(pose) {
+  const s = slimeSprite();
   return `
     <div class="qm-node-blob hero--${pose}" aria-hidden="true">
       <svg class="qm-blob__svg" viewBox="0 -34 92 118">
-        <defs><linearGradient id="slimeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6b4ee"/><stop offset="0.5" stop-color="#9b7ed8"/><stop offset="1" stop-color="#5d4a9e"/></linearGradient></defs>
         ${questBlobEnv(pose)}
-        <g class="blob">
-          <path class="blob-skin" d="M40 29 C22 29 12 42 12 56 C12 67 17 78 27 81 C31 83 36 82 40 79 C44 82 49 83 53 81 C63 78 68 67 68 56 C68 42 58 29 40 29 Z"/>
-          <ellipse class="blob-skin blob-nub" cx="40" cy="26" rx="4.2" ry="3.4"/>
-          <ellipse class="blob-gloss" cx="29" cy="47" rx="8" ry="11" transform="rotate(-18 29 47)"/>
-          <ellipse class="blob-gloss" cx="51" cy="70" rx="3.5" ry="5" transform="rotate(-20 51 70)"/>
-          <g class="blob-eyes">
-            <ellipse class="blob-eye" cx="33" cy="50" rx="4.2" ry="5.4"/>
-            <ellipse class="blob-eye" cx="47" cy="50" rx="4.2" ry="5.4"/>
+        <g transform="translate(12 27) scale(3.5)">
+          <g class="blob">
+            ${s.body}
+            <g class="blob-glint">${s.glint}</g>
+            <g class="blob-eyes">${s.eyes}</g>
           </g>
-          <ellipse class="blob-mouth" cx="40" cy="62" rx="2.4" ry="3.2"/>
-          <path class="blob-tongue" d="M38 63.2 Q40 66 42 63.2 Z"/>
-          <circle class="blob-blush" cx="25" cy="58" r="3"/>
-          <circle class="blob-blush" cx="55" cy="58" r="3"/>
-          ${questBlobArms(pose)}
         </g>
+        ${questBlobArms(pose)}
       </svg>
     </div>`;
 }

@@ -942,12 +942,13 @@ body.is-intro .member-name-wrap {
 .blob-crew {
   transform-box: fill-box;
   transform-origin: 50% 92%;
-  animation: blobBreathe 2.6s ease-in-out infinite;
+  animation: blobJiggle 1.3s steps(1, end) infinite;
+  shape-rendering: crispEdges;
 }
 .blob-eyes-c {
   transform-box: fill-box;
   transform-origin: 50% 50%;
-  animation: blobBlink 4.2s infinite;
+  animation: blobBlink 5.5s infinite;
 }
 /* lệch pha — không thở/chớp đồng loạt */
 .ttl-crew__fig--lead  .blob-crew { animation-delay: -0.2s; }
@@ -998,7 +999,10 @@ body.is-intro .member-name-wrap {
 @media (prefers-reduced-motion: reduce) {
   .crew-anim,
   .blob-crew,
-  .blob-eyes-c {
+  .blob-eyes-c,
+  .blob,
+  .blob-eyes,
+  .blob-glint {
     animation: none !important;
   }
 }
@@ -1598,11 +1602,17 @@ body.is-intro .member-name-wrap {
 /* node active đẩy lên trên để blob không bị node kế che */
 .qm-node.is-cur { z-index: 3; }
 
-/* XUẤT HIỆN: bung nảy lò xo */
+/* XUẤT HIỆN: bung nảy lò xo (settle 2 nhịp) */
 .qm-node.is-cur .qm-node-blob {
   opacity: 1;
-  transform: translateY(0) scale(1) rotate(0deg);
-  transition: opacity 0.28s ease, transform 0.5s cubic-bezier(0.34, 1.65, 0.5, 1);
+  transform: none;
+  animation: blobPop 0.62s cubic-bezier(0.34, 1.56, 0.5, 1) both;
+}
+@keyframes blobPop {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.2) rotate(10deg); }
+  55%  { opacity: 1; transform: translateY(-4px) scale(1.12) rotate(-3deg); }
+  76%  { transform: translateY(0) scale(0.96) rotate(1deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
 }
 
 .qm-blob__svg {
@@ -1646,24 +1656,46 @@ body.is-intro .member-name-wrap {
   stroke-linejoin: round;
 }
 
-/* ---- blob luôn thở nhẹ (squash & stretch) + chớp mắt ---- */
+/* ---- slime jelly: jiggle theo BƯỚC (sprite-frame) + nảy nhẹ + chớp/liếc ---- */
 .blob {
-  transform-box: view-box;
-  transform-origin: 40px 82px;
-  animation: blobBreathe 2.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 95%;
+  animation: blobJiggle 1.3s steps(1, end) infinite;
+  shape-rendering: crispEdges;
 }
 .blob-eyes {
-  transform-box: view-box;
-  transform-origin: 40px 50px;
-  animation: blobBlink 4.2s infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: blobBlink 5.5s infinite;
 }
-@keyframes blobBreathe {
-  0%, 100% { transform: scale(1, 1); }
-  50% { transform: scale(1.025, 0.97); }
+/* shimmer: đốm sáng lướt qua thân theo chu kỳ */
+.blob-glint {
+  transform-box: fill-box;
+  animation: blobGlint 5s ease-in-out infinite;
 }
+/* squash & stretch dạng frame (steps) — kèm nảy dọc theo nhịp */
+@keyframes blobJiggle {
+  0%   { transform: translateY(0) scale(1, 1); }
+  22%  { transform: translateY(1px) scale(1.07, 0.93); }
+  44%  { transform: translateY(-2px) scale(0.95, 1.05); }
+  66%  { transform: translateY(0) scale(1.03, 0.97); }
+  88%  { transform: translateY(0) scale(0.99, 1.01); }
+}
+/* chớp ĐÔI rồi liếc sang phải — bớt máy móc */
 @keyframes blobBlink {
-  0%, 92%, 100% { transform: scaleY(1); }
-  96% { transform: scaleY(0.12); }
+  0%, 36%  { transform: translateX(0) scaleY(1); }
+  39%      { transform: scaleY(0.12); }
+  42%      { transform: scaleY(1); }
+  45%      { transform: scaleY(0.12); }
+  48%      { transform: scaleY(1); }
+  64%, 80% { transform: translateX(1px) scaleY(1); }
+  84%, 100%{ transform: translateX(0) scaleY(1); }
+}
+@keyframes blobGlint {
+  0%, 55%, 100% { opacity: 0; transform: translate(0, 0); }
+  62% { opacity: 0.95; transform: translate(0, 0); }
+  72% { opacity: 0.9; transform: translate(3px, -2px); }
+  80% { opacity: 0; transform: translate(3px, -2px); }
 }
 
 /* ---- 01 Ý TƯỞNG · bóng đèn loé ---- */
@@ -1738,9 +1770,9 @@ body.is-intro .member-name-wrap {
 .qm-node-blob.hero--win .blob { animation: blobWin 0.72s ease-in-out infinite; }
 @keyframes blobWin {
   0%, 100% { transform: translateY(0) scale(1.08, 0.92); }
-  25% { transform: translateY(-16px) scale(0.9, 1.1); }
+  25% { transform: translateY(-4px) scale(0.9, 1.1); }
   55% { transform: translateY(0) scale(1.08, 0.92); }
-  80% { transform: translateY(-4px) scale(0.98, 1.02); }
+  80% { transform: translateY(-1px) scale(0.98, 1.02); }
 }
 .hero-star { transform-box: view-box; transform-origin: 40px -19px; }
 .qm-node-blob.hero--win .hero-star { animation: heroStar 0.72s ease-in-out infinite; }
