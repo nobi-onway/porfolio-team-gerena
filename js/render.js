@@ -14,6 +14,7 @@ const SLIDE_META = [
   { title: "Thiên Di Studio", sub: "TEAM PORTFOLIO" },
   { title: "Sản Phẩm",        sub: "STAGE SELECT" },
   { title: "Quy Trình",       sub: "QUEST LOG" },
+  { title: "Hành Trang",      sub: "INVENTORY" },
 ];
 
 /* =========================================================
@@ -539,6 +540,77 @@ function processCardHTML() {
 }
 
 /* =========================================================
+   SLIDE 3 — INVENTORY (KHO ĐỒ): "Chúng tôi đã chuẩn bị những gì"
+   Lưới ô slot kiểu túi đồ RPG (trái) + bảng mô tả món (phải).
+   main.js xoay vòng .is-cur qua từng ô + đồng bộ bảng .inv-card.is-active;
+   hover/click 1 ô → chọn ô đó.
+========================================================= */
+function arsenalIcon(kind) {
+  const open = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">`;
+  if (kind === "engine") {
+    return `${open}<circle cx="12" cy="12" r="3.2"/>
+      <path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg>`;
+  }
+  if (kind === "art") {
+    return `${open}<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2 0-1.3 1-2 2.2-2H18a3 3 0 0 0 3-3c0-5-4-8-9-8Z"/>
+      <circle cx="7.6" cy="11.4" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="10.4" cy="7.6" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="14.8" cy="8.2" r="1" fill="currentColor" stroke="none"/></svg>`;
+  }
+  if (kind === "team") {
+    return `${open}<circle cx="9" cy="8" r="3"/>
+      <path d="M3.6 20a5.4 5.4 0 0 1 10.8 0"/>
+      <path d="M16 5.4a3 3 0 0 1 0 5.6M16.8 14.3a5.4 5.4 0 0 1 3.6 5.7"/></svg>`;
+  }
+  if (kind === "core") {
+    return `${open}<rect x="7" y="7" width="10" height="10" rx="1"/>
+      <path d="M10 7V4M14 7V4M10 20v-3M14 20v-3M7 10H4M7 14H4M20 10h-3M20 14h-3"/></svg>`;
+  }
+  if (kind === "flow") {
+    return `${open}<path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3L20 9"/><path d="M20 4.5V9h-4.5"/>
+      <path d="M19.5 12a7.5 7.5 0 0 1-12.8 5.3L4 15"/><path d="M4 19.5V15h4.5"/></svg>`;
+  }
+  // spirit — ngọn lửa
+  return `${open}<path d="M12 3c1 3-2 4-2 7a2 2 0 0 0 4 0c0-.9-.1-1.4-.4-2 2 1.6 3.4 3.8 3.4 6.2a5 5 0 0 1-10 0c0-3.6 3-5.7 5-11.2Z"/></svg>`;
+}
+
+function arsenalCardHTML() {
+  const slots = ARSENAL.map((it, i) => `
+    <li class="inv-slot ${i === 0 ? "is-cur" : ""} fx fx-pop" style="--d:${(0.45 + i * 0.1).toFixed(2)}s"
+        data-idx="${i}" role="button" tabindex="0" aria-label="${it.name}">
+      <span class="inv-slot__icon">${arsenalIcon(it.icon)}</span>
+      <span class="inv-slot__name font-display">${it.name}</span>
+    </li>`).join("");
+
+  const cards = ARSENAL.map((it, i) => `
+    <div class="inv-card ${i === 0 ? "is-active" : ""}" data-idx="${i}">
+      <div class="inv-card__top">
+        <span class="inv-card__en font-display">${it.en}</span>
+        <span class="inv-card__idx font-display">${String(i + 1).padStart(2, "0")} / ${String(ARSENAL.length).padStart(2, "0")}</span>
+      </div>
+      <span class="inv-card__status font-display">${it.status}</span>
+      <h3 class="inv-card__name font-display">${it.name}</h3>
+      <p class="inv-card__desc">${it.desc}</p>
+    </div>`).join("");
+
+  return `
+    <div class="ghost-index absolute select-none text-[40vh] md:text-[55vh] right-[3vw] top-1/2 -translate-y-1/2 -z-10">04</div>
+
+    <div class="inv-wrap w-full max-w-[1100px] mx-auto px-8 md:px-12">
+      <header class="inv-head">
+        <div class="arc-label font-display fx fx-track" style="--d:0.1s">— HÀNH TRANG —</div>
+        <h2 class="inv-title font-display fx fx-rise" style="--d:0.28s">CHÚNG TÔI ĐÃ CHUẨN BỊ GÌ</h2>
+      </header>
+
+      <div class="inv-body">
+        <ul class="inv-grid">${slots}</ul>
+        <div class="inv-detail fx fx-wipe" style="--d:0.5s">${cards}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
    DỰNG TRACK + NAV DOTS
 ========================================================= */
 function renderSlides(stage, navDots, onDotClick) {
@@ -549,6 +621,7 @@ function renderSlides(stage, navDots, onDotClick) {
     { cls: "member-card--title",    html: titleCardHTML(),    dot: "Mở Đầu" },
     { cls: "member-card--products", html: productsCardHTML(), dot: "Sản Phẩm" },
     { cls: "member-card--process",  html: processCardHTML(),  dot: "Quy Trình" },
+    { cls: "member-card--arsenal",  html: arsenalCardHTML(),  dot: "Hành Trang" },
   ];
 
   slides.forEach((s, i) => {

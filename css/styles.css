@@ -996,13 +996,15 @@ body.is-intro .member-name-wrap {
    SLIDE 1 — STAGE SELECT (SẢN PHẨM)
 ========================================================= */
 .ps-head,
-.qm-head {
+.qm-head,
+.inv-head {
   text-align: center;
   margin-bottom: 18px;
 }
 
 .ps-title,
-.qm-title {
+.qm-title,
+.inv-title {
   margin: 8px 0 0;
   font-size: clamp(26px, 4.5vh, 42px);
   font-weight: 700;
@@ -1663,6 +1665,183 @@ body.is-intro .member-name-wrap {
 }
 
 /* =========================================================
+   SLIDE 3 — INVENTORY (HÀNH TRANG / KHO ĐỒ)
+   Lưới ô slot kiểu túi đồ RPG (trái) + bảng mô tả món (phải).
+   Ô đang chọn (.is-cur): viền son + nền son nhạt + khung son lồng trong.
+========================================================= */
+.inv-wrap {
+  position: relative;
+}
+
+.inv-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 26px;
+  align-items: stretch;
+}
+
+/* ---- Lưới ô (trái) ---- */
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.inv-slot {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 8px;
+  border: 1px solid rgba(200, 170, 110, 0.3);
+  background: rgba(13, 11, 8, 0.55);
+  cursor: pointer;
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.inv-slot:hover,
+.inv-slot:focus-visible {
+  border-color: rgba(200, 170, 110, 0.7);
+  outline: none;
+}
+
+/* khung son lồng bên trong — chỉ hiện ở ô đang chọn */
+.inv-slot::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--seal);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.inv-slot.is-cur {
+  border-color: var(--seal);
+  background: rgba(190, 30, 55, 0.1);
+}
+
+.inv-slot.is-cur::after {
+  opacity: 1;
+}
+
+.inv-slot__icon {
+  width: 36px;
+  height: 36px;
+  color: var(--gold);
+  transition: color 0.35s ease, transform 0.35s ease;
+}
+
+.inv-slot__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.inv-slot.is-cur .inv-slot__icon {
+  color: var(--seal);
+  transform: scale(1.08);
+}
+
+.inv-slot__name {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  text-align: center;
+  color: rgba(240, 230, 211, 0.6);
+  transition: color 0.35s ease;
+}
+
+.inv-slot.is-cur .inv-slot__name {
+  color: var(--ink);
+}
+
+/* ---- Bảng mô tả món (phải) ---- */
+.inv-detail {
+  position: relative;
+  display: flex;
+  border: 1px solid rgba(200, 170, 110, 0.4);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 22px 24px;
+}
+
+.inv-card {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  animation: invFade 0.4s ease both;
+}
+
+.inv-card.is-active {
+  display: flex;
+}
+
+@keyframes invFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-card { animation: none !important; }
+}
+
+.inv-card__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.inv-card__en {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: rgba(200, 170, 110, 0.6);
+}
+
+.inv-card__idx {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(200, 170, 110, 0.4);
+}
+
+.inv-card__status {
+  align-self: flex-start;
+  margin-top: 12px;
+  padding: 3px 9px 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--seal);
+}
+
+.inv-card__name {
+  margin: 13px 0 10px;
+  font-size: clamp(22px, 3.4vh, 30px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.inv-card__desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(240, 230, 211, 0.8);
+}
+
+/* =========================================================
    RESPONSIVE
    Triết lý deck: mỗi slide = 1 viewport. Thu gọn dần theo bề
    NGANG (tablet → mobile → mobile nhỏ) và bề CAO (laptop thấp /
@@ -1702,6 +1881,10 @@ body.is-intro .member-name-wrap {
   /* Sản phẩm: ảnh trên · thông tin dưới */
   .prod-slide.is-active { grid-template-columns: 1fr; gap: 14px; }
   .prod-frame { aspect-ratio: 16 / 8; }
+
+  /* Kho đồ: lưới ô trên · bảng mô tả dưới */
+  .inv-body { grid-template-columns: 1fr; gap: 16px; }
+  .inv-slot { aspect-ratio: 3 / 2; }
 
   .ghost-index { display: none; }
 
@@ -1750,6 +1933,15 @@ body.is-intro .member-name-wrap {
   .prod-info__contrib { font-size: 12px; margin: 6px 0 10px; }
   .prod-pager { margin-top: 12px; }
 
+  /* --- KHO ĐỒ: 2 ô/hàng, bảng mô tả dưới --- */
+  .member-card--arsenal .inv-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .inv-title { font-size: clamp(20px, 5.6vw, 28px); }
+  .inv-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .inv-slot { aspect-ratio: 2 / 1; }
+  .inv-slot__icon { width: 30px; height: 30px; }
+  .inv-detail { padding: 16px 16px; }
+  .inv-card__desc { font-size: 12.5px; line-height: 1.6; }
+
   /* --- QUY TRÌNH: 1 cột, đọc dọc --- */
   .member-card--process .qm-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
   .qm-title { font-size: clamp(20px, 5.6vw, 28px); }
@@ -1783,8 +1975,11 @@ body.is-intro .member-name-wrap {
   .ttl-reel__badge { top: 66px; }
   .ttl-crew { top: 2px; height: 58px; }
   .ps-head,
-  .qm-head { margin-bottom: 10px; }
+  .qm-head,
+  .inv-head { margin-bottom: 10px; }
   .qm-band { display: none; }
+  .inv-detail { padding: 16px 18px; }
+  .inv-card__desc { font-size: 12.5px; line-height: 1.6; }
   .qm-node__desc { font-size: 11px; }
   .qm-path,
   .qm-loop__grid { gap: 10px; }

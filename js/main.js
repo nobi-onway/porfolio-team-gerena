@@ -374,6 +374,55 @@
     });
   })();
 
+  /* ---- Kho đồ (slide Hành Trang): xoay vòng ô .is-cur + đồng bộ bảng mô tả.
+     Chỉ chạy khi slide đang .active; hover/focus 1 ô thì dừng & chọn ô đó. ---- */
+  (function initArsenal() {
+    const card = cards.find((c) => c.classList.contains("member-card--arsenal"));
+    if (!card) return;
+    const slots = [...card.querySelectorAll(".inv-slot")];
+    const detail = [...card.querySelectorAll(".inv-card")];
+    if (!slots.length) return;
+
+    const ENTER_DELAY = 900;    // chờ ô bung ra (fx-pop) xong mới bắt đầu xoay
+    const STEP_MS = 2800;       // mỗi ô giữ bao lâu (đồng bộ nhịp Quest Log)
+    let idx = 0, startTimer = null, tickTimer = null, hovering = false;
+
+    function select(i) {
+      idx = i;
+      slots.forEach((s, k) => s.classList.toggle("is-cur", k === i));
+      detail.forEach((d, k) => d.classList.toggle("is-active", k === i));
+    }
+
+    function start() {
+      stop();
+      startTimer = setTimeout(() => {
+        tickTimer = setInterval(() => {
+          if (!hovering) select((idx + 1) % slots.length);
+        }, STEP_MS);
+      }, ENTER_DELAY);
+    }
+
+    function stop() {
+      clearTimeout(startTimer);
+      clearInterval(tickTimer);
+      startTimer = tickTimer = null;
+    }
+
+    slots.forEach((s, i) => {
+      s.addEventListener("mouseenter", () => { hovering = true; select(i); });
+      s.addEventListener("mouseleave", () => { hovering = false; });
+      s.addEventListener("click", () => select(i));
+      s.addEventListener("focus", () => { hovering = true; select(i); });
+      s.addEventListener("blur", () => { hovering = false; });
+    });
+
+    const obs = new MutationObserver(() => {
+      card.classList.contains("active") ? start() : stop();
+    });
+    obs.observe(card, { attributes: true, attributeFilter: ["class"] });
+    if (card.classList.contains("active")) start();
+  })();
+
   /* ---- Khởi tạo (track ở vị trí 0 = TITLE SCREEN) ---- */
   function init() {
     dots[0].classList.add("active");

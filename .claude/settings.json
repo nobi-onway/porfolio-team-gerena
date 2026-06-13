@@ -14,7 +14,12 @@
       "PowerShell($ErrorActionPreference='Stop'; foreach\\($f in 'js/data.js','js/render.js','js/main.js'\\){ try { node --check $f; if\\($?\\){ \"OK $f\" } } catch { \"node missing\" } })",
       "PowerShell($c = Get-Content -Raw 'css/styles.css'; $o = \\([regex]::Matches\\($c,'\\\\{'\\)\\).Count; $cl = \\([regex]::Matches\\($c,'\\\\}'\\)\\).Count; \"open=$o close=$cl\")",
       "Bash(python -c ' *)",
-      "Read(//c/Users/doang/.claude/projects/c--Repository-web-portfolio-garena-team/memory/**)"
+      "Read(//c/Users/doang/.claude/projects/c--Repository-web-portfolio-garena-team/memory/**)",
+      "Bash(node -e ' *)",
+      "PowerShell($ErrorActionPreference='Stop'; foreach\\($f in 'js/data.js','js/render.js','js/main.js'\\){ try { & node -e \"new Function\\(require\\('fs'\\).readFileSync\\('$f','utf8'\\)\\)\"; if\\($?\\){ \"OK  $f\" } } catch { \"ERR $f -> $_\" } })"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\doang\\.claude\\projects\\c--Repository-web-portfolio-garena-team\\memory"
     ]
   }
 }

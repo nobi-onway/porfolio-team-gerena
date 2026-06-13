@@ -100,6 +100,43 @@ const PROCESS_STEPS = [
   },
 ];
 
+/* ---- "Chúng tôi đã chuẩn bị những gì" — KHO ĐỒ mang vào Game Jam ----
+   Hiển thị như túi đồ RPG: lưới ô slot (trái) + bảng mô tả món (phải).
+   icon: "engine" | "art" | "team" | "core" | "flow" | "spirit"
+   [CẬP NHẬT] name / status / desc bằng thực tế của team. */
+const ARSENAL = [
+  {
+    icon: "engine", name: "Engine & Công Nghệ", en: "ENGINE", status: "ĐÃ SẴN SÀNG",
+    desc: "Unity + C#, project template & pipeline build dựng sẵn — vào jam là code ngay, " +
+      "không tốn thời gian set-up. [CẬP NHẬT]",
+  },
+  {
+    icon: "art", name: "Pipeline Mỹ Thuật", en: "ART PIPELINE", status: "ĐÃ SẴN SÀNG",
+    desc: "Style guide thống nhất + quy trình asset 2D. Art ra nhanh, đồng bộ, " +
+      "không tắc giữa jam. [CẬP NHẬT]",
+  },
+  {
+    icon: "team", name: "Đội Ngũ Đủ Vai", en: "FULL SQUAD", status: "ĐÃ SẴN SÀNG",
+    desc: "Design · Art · Code phối hợp ăn ý. Mỗi người một mảng, " +
+      "không chồng chéo, không khoảng trống. [CẬP NHẬT]",
+  },
+  {
+    icon: "core", name: "Cơ Chế Lõi", en: "CORE SYSTEM", status: "ĐÃ SẴN SÀNG",
+    desc: "Bộ system tái sử dụng: input, state machine, spawn, UI cơ bản... " +
+      "cắm vào là chạy, dồn sức cho cơ chế mới. [CẬP NHẬT]",
+  },
+  {
+    icon: "flow", name: "Quy Trình Làm Việc", en: "WORKFLOW", status: "ĐÃ SẴN SÀNG",
+    desc: "Chia task, build mỗi ngày, retro nhanh. Giữ nhịp ổn định " +
+      "suốt thời gian jam. [CẬP NHẬT]",
+  },
+  {
+    icon: "spirit", name: "Tinh Thần", en: "SPIRIT", status: "MÁU LỬA",
+    desc: "Làm hết mình, không bỏ cuộc giữa chừng. Vui là chính, " +
+      "nhưng đã làm là làm tới cùng. [CẬP NHẬT]",
+  },
+];
+
 /* ---- Cách team giải quyết vấn đề — 3 nguyên tắc ---- */
 const PROCESS_LOOP = [
   {
