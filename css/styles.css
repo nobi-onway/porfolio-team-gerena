@@ -1756,137 +1756,137 @@ body.is-intro .member-name-wrap {
 
 /* =========================================================
    RESPONSIVE
+   Triết lý deck: mỗi slide = 1 viewport. Thu gọn dần theo bề
+   NGANG (tablet → mobile → mobile nhỏ) và bề CAO (laptop thấp /
+   điện thoại xoay ngang). Từ ≤860px, slide nào dài hơn 100vh
+   được phép CUỘN trong lòng nó — xem .member-card{overflow} bên
+   dưới + handler touch/wheel "cardScrollable" trong main.js,
+   nên nội dung không bao giờ bị cắt cụt.
 ========================================================= */
+
+/* ---------- TABLET NGANG ≤1024 ---------- */
 @media (max-width: 1024px) {
-  .qm-path {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  #siteHeader { padding-left: 2rem; padding-right: 2rem; }
+  #memberName { font-size: clamp(22px, 4vw, 34px); }
 
-  .qm-node:nth-child(3n) .qm-node__link {
-    display: block;
-  }
-
+  /* Quy trình: 6 node → 2 cột (3 hàng) */
+  .qm-path { grid-template-columns: repeat(2, 1fr); }
+  .qm-node:nth-child(3n) .qm-node__link { display: block; }
   .qm-node:nth-child(2n) .qm-node__link,
-  .qm-node:last-child .qm-node__link {
-    display: none;
-  }
+  .qm-node:last-child   .qm-node__link { display: none; }
+
+  /* Nền ảnh phải hẹp + mờ hơn cho chữ nổi rõ */
+  .scene-longwrap { width: 54vw; opacity: 0.82; }
+
+  /* Chrome dọc kéo sát mép, chừa bề ngang cho nội dung */
+  #navDots { right: 1.25rem; }
+  #sideProgress { left: 1.25rem; }
 }
 
-@media (max-width: 900px) {
-  .prod-slide.is-active {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .prod-frame {
-    aspect-ratio: 16 / 8;
-  }
-
-  .ghost-index {
-    display: none;
-  }
-
-  .dongson-drum {
-    width: 110vh;
-    height: 110vh;
-    opacity: 0.3;
-  }
-
-  .frame-corner {
-    width: 36px;
-    height: 36px;
-  }
-
-  .ttl-video {
-    width: min(560px, 86vw);
-  }
-
-  .scene-longwrap {
-    width: 70vw;
-    opacity: 0.7;
-  }
-}
-
-@media (max-width: 640px) {
-  .ttl-hook {
-    font-size: clamp(34px, 9vw, 46px);
-    white-space: normal;
-  }
-
-  .ttl-tagline {
-    font-size: 14px;
-  }
-
-  .ttl-bird--1 {
-    width: 80px;
-  }
-
-  .ttl-bird--2 {
-    display: none;
-  }
-
-  .qm-path,
-  .qm-loop__grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .qm-node__link {
-    display: none !important;
-  }
-
-  .qm-node {
-    padding: 10px 12px;
-  }
-
-  .qm-node__desc {
-    font-size: 11px;
-  }
-
-  .prod-info__contrib {
-    font-size: 12px;
-  }
-
+/* ---------- TABLET DỌC / PHABLET ≤860 ---------- */
+@media (max-width: 860px) {
+  /* Cho phép slide dài tự cuộn (an toàn khi nội dung > 100vh) */
   .member-card {
-    padding: 76px 0 48px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
+  /* Slide thường neo TOP để cuộn tới được; slide mở đầu vẫn căn giữa */
+  .member-card:not(.member-card--title) { align-items: flex-start; }
+
+  /* Sản phẩm: ảnh trên · thông tin dưới */
+  .prod-slide.is-active { grid-template-columns: 1fr; gap: 14px; }
+  .prod-frame { aspect-ratio: 16 / 8; }
+
+  .ghost-index { display: none; }
+
+  .dongson-drum { width: 116vh; height: 116vh; opacity: 0.32; }
+  .frame-corner { width: 40px; height: 40px; }
+
+  .ttl-video { width: min(560px, 84vw); }
+  .scene-longwrap { width: 66vw; opacity: 0.68; }
+
+  #memberName { font-size: clamp(20px, 3.6vw, 30px); }
 }
 
-/* Màn thấp: nén khoảng cách để mọi slide lọt 100vh */
-@media (max-height: 760px) {
-  .ttl {
-    gap: 10px;
-    margin-bottom: 4vh;
-  }
+/* ---------- MOBILE ≤640 ---------- */
+@media (max-width: 640px) {
+  /* --- Chrome thu sát mép, nhường bề ngang cho nội dung --- */
+  #siteHeader { padding: 0.85rem 1rem 0; }
+  #navDots { right: 0.5rem; gap: 1rem; }
+  #navDots .nav-dot::before { display: none; }     /* nhãn hover thừa trên cảm ứng */
+  #sideProgress { left: 0.5rem; gap: 0; }
+  #sideProgress .progress-num { display: none; }
+  .xp-bar { height: 84px; }
+  .frame-corner { width: 26px; height: 26px; }
+  #scrollHint { display: none; }                    /* vuốt thay cho con lăn chuột */
 
-  .ttl-hook {
-    font-size: clamp(40px, 9vh, 72px);
-  }
+  /* Tiêu đề slide trên header gọn lại để không đè logo */
+  #memberName { font-size: clamp(17px, 5.2vw, 23px); }
+  .name-rule { width: clamp(12px, 4vw, 26px); }
 
-  .ttl-band {
-    display: none;
-  }
+  .member-card { padding: 70px 0 40px; }
 
-  .ttl-video {
-    max-height: 38vh;
-    margin-top: 48px;
-  }
+  /* --- INTRO --- */
+  .ttl { gap: 10px; padding: 0 16px; margin-bottom: 4vh; }
+  .ttl-hook { font-size: clamp(30px, 9vw, 44px); white-space: normal; }
+  .ttl-tagline { font-size: 13.5px; line-height: 1.6; }
+  .ttl-video { width: min(520px, 92vw); max-height: 40vh; margin-top: 40px; }
+  .ttl-bird--1 { width: 74px; }
+  .ttl-bird--2 { display: none; }
 
-  .ps-head,
-  .qm-head {
-    margin-bottom: 10px;
-  }
+  /* --- SẢN PHẨM --- */
+  .member-card--products .ps-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .ps-title { font-size: clamp(22px, 6.4vw, 30px); }
+  .prod-frame { aspect-ratio: 16 / 9; }
+  .prod-info__title { font-size: clamp(20px, 5.6vw, 26px); }
+  .prod-info__contrib { font-size: 12px; margin: 6px 0 10px; }
+  .prod-pager { margin-top: 12px; }
 
-  .qm-band {
-    display: none;
-  }
-
-  .qm-node__desc {
-    font-size: 11px;
-  }
-
+  /* --- QUY TRÌNH: 1 cột, đọc dọc --- */
+  .member-card--process .qm-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .qm-title { font-size: clamp(20px, 5.6vw, 28px); }
   .qm-path,
-  .qm-loop__grid {
-    gap: 10px;
-  }
+  .qm-loop__grid { grid-template-columns: 1fr; gap: 8px; }
+  .qm-node__link { display: none !important; }
+  .qm-node { padding: 10px 12px; }
+  .qm-node__num { width: 30px; height: 30px; font-size: 13px; }
+  .qm-node__title { font-size: 15px; }
+  .qm-node__desc { font-size: 11px; line-height: 1.45; }
+
+  .dongson-drum { opacity: 0.2; }
+}
+
+/* ---------- MOBILE NHỎ ≤400 ---------- */
+@media (max-width: 400px) {
+  #siteHeader .font-display.text-lg { font-size: 1rem; }   /* tên brand */
+  #memberName { font-size: clamp(15px, 5.4vw, 20px); }
+  .ttl-hook { font-size: clamp(26px, 8.6vw, 36px); }
+  .ttl-tagline { font-size: 12.5px; }
+  .prod-info__tags { gap: 5px; }
+  .prod-tag { font-size: 10px; padding: 2px 6px 3px; }
+}
+
+/* ---------- LAPTOP THẤP ≤760 cao ---------- */
+@media (max-height: 760px) {
+  .ttl { gap: 10px; margin-bottom: 4vh; }
+  .ttl-hook { font-size: clamp(40px, 9vh, 72px); }
+  .ttl-band { display: none; }
+  .ttl-video { max-height: 38vh; margin-top: 44px; }
+  .ps-head,
+  .qm-head { margin-bottom: 10px; }
+  .qm-band { display: none; }
+  .qm-node__desc { font-size: 11px; }
+  .qm-path,
+  .qm-loop__grid { gap: 10px; }
+}
+
+/* ---------- RẤT THẤP / ĐIỆN THOẠI XOAY NGANG ≤520 cao ---------- */
+@media (max-height: 520px) {
+  .member-card { align-items: flex-start; }
+  .ttl-video { display: none; }            /* nhường chỗ cho hook + tagline */
+  .ttl-hook { font-size: clamp(28px, 12vh, 52px); }
+  .scene-birdimg,
+  .ttl-bird { display: none; }
+  .qm-loop { display: none; }
 }

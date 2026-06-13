@@ -5,7 +5,12 @@
       "PowerShell(python -m pip install --quiet Pillow 2>&1 | Select-Object -Last 2; \"exit=$LASTEXITCODE\")",
       "PowerShell(python _inspect_png.py)",
       "PowerShell(python _try_png.py 2>$null)",
-      "PowerShell(python _verify_petals.py 2>$null)"
+      "PowerShell(python _verify_petals.py 2>$null)",
+      "Bash(git fetch *)",
+      "Bash(git rev-list *)",
+      "Bash(touch .nojekyll)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

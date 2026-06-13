@@ -389,8 +389,27 @@
   /* =========================================================
      GESTURE: WHEEL / TOUCH / KEYBOARD
   ========================================================= */
+  /* Slide hiện tại có đang ở chế độ cuộn-trong-lòng không? (responsive ≤860px
+     đặt .member-card{overflow-y:auto}). Trả về biên: cho cuộn nội dung khi
+     CHƯA chạm mép theo hướng vuốt; chạm mép rồi mới chuyển slide. */
+  function cardScroll() {
+    const card = cards[current];
+    if (!card) return null;
+    const oy = getComputedStyle(card).overflowY;
+    if (oy !== "auto" && oy !== "scroll") return null;
+    if (card.scrollHeight <= card.clientHeight + 1) return null;
+    return {
+      atTop: card.scrollTop <= 0,
+      atBottom: card.scrollTop + card.clientHeight >= card.scrollHeight - 1,
+    };
+  }
+
   let wheelLock = false;
   window.addEventListener("wheel", (e) => {
+    const sc = cardScroll();
+    if (sc && ((e.deltaY > 0 && !sc.atBottom) || (e.deltaY < 0 && !sc.atTop))) {
+      return;                       // để trình duyệt cuộn nội dung trong slide
+    }
     e.preventDefault();
     if (wheelLock || animating) return;
     if (Math.abs(e.deltaY) < 12) return;
@@ -405,11 +424,18 @@
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
   window.addEventListener("touchmove", (e) => {
-    e.preventDefault();
+    // chỉ khóa cuộn khi slide KHÔNG tự cuộn được; ngược lại cho vuốt cuộn nội dung
+    if (!cardScroll()) e.preventDefault();
   }, { passive: false });
   window.addEventListener("touchend", (e) => {
     if (touchStartY === null) return;
     const dy = touchStartY - e.changedTouches[0].clientY;
+    const sc = cardScroll();
+    // đang cuộn nội dung & chưa tới mép theo hướng vuốt → không chuyển slide
+    if (sc && ((dy > 0 && !sc.atBottom) || (dy < 0 && !sc.atTop))) {
+      touchStartY = null;
+      return;
+    }
     if (Math.abs(dy) > 50) dy > 0 ? next() : prev();
     touchStartY = null;
   }, { passive: true });
