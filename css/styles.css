@@ -247,8 +247,7 @@ body {
   pointer-events: none;
 }
 
-/* Vùng ảnh bên phải — cao hơn viewport, JS dịch --bg-shift:
-   slide đầu = đỉnh ảnh, slide cuối = đáy ảnh */
+/* Vùng ảnh bên phải — ẩn */
 .scene-longwrap {
   position: absolute;
   top: 0;
@@ -257,7 +256,10 @@ body {
   height: 100vh;
   overflow: hidden;
   pointer-events: none;
+  display: none; /*tạm thời đóng */
 }
+
+.scene-longwrap { width: 54vw; opacity: 0.82; }
 
 .scene-long {
   position: absolute;
@@ -389,8 +391,8 @@ body.is-reading .scene-birdimg {
 
 .dongson-drum {
   position: absolute;
-  top: 50%;
-  left: 0;
+  top: 0;
+  left: 50%;
   width: 140vh;
   height: 140vh;
   transform: translate(-50%, -50%) rotate(var(--drum-rot, 0deg));
@@ -1139,6 +1141,7 @@ body.is-intro .member-name-wrap {
   letter-spacing: 0.38em;
   color: var(--seal);
   margin-bottom: 3px;
+  display: none;
 }
 
 .prod-info__title {
@@ -1680,9 +1683,6 @@ body.is-intro .member-name-wrap {
   .qm-node:nth-child(2n) .qm-node__link,
   .qm-node:last-child   .qm-node__link { display: none; }
 
-  /* Nền ảnh phải hẹp + mờ hơn cho chữ nổi rõ */
-  .scene-longwrap { width: 54vw; opacity: 0.82; }
-
   /* Chrome dọc kéo sát mép, chừa bề ngang cho nội dung */
   #navDots { right: 1.25rem; }
   #sideProgress { left: 1.25rem; }
@@ -1705,11 +1705,10 @@ body.is-intro .member-name-wrap {
 
   .ghost-index { display: none; }
 
-  .dongson-drum { width: 116vh; height: 116vh; opacity: 0.32; }
+  .dongson-drum { width: 39vh; height: 39vh; opacity: 0.32; }
   .frame-corner { width: 40px; height: 40px; }
 
   .ttl-reel { width: min(680px, 92vw); }
-  .scene-longwrap { width: 66vw; opacity: 0.68; }
 
   #memberName { font-size: clamp(20px, 3.6vw, 30px); }
 }

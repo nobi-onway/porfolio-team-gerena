@@ -476,8 +476,8 @@
     // Spine — khung + cột đốt sống bo tròn nhỏ dần (giống logo Spine)
     `<svg viewBox="0 0 24 24" width="24">${toolFrame}<g fill="currentColor"><rect x="7.4" y="4.6" width="9.2" height="3.1" rx="1.55" transform="rotate(-7 12 6.15)"/><rect x="7.9" y="8.7" width="8.2" height="2.8" rx="1.4" transform="rotate(5 12 10.1)"/><rect x="8.6" y="12.4" width="6.6" height="2.5" rx="1.25" transform="rotate(-5 11.9 13.65)"/><rect x="9.7" y="15.9" width="4.6" height="2.1" rx="1.05" transform="rotate(4 12 16.95)"/></g></svg>`,
   ];
-  const petals = [];   // {el, fall, wx, wy} — el là lớp ngoài nhận gió
-  for (let i = 0; i < 18; i++) {
+  const petals = [];   // {el, fall, wx, wy} — disabled (set to 0)
+  for (let i = 0; i < 0; i++) {
     const p = document.createElement("span");
     p.className = "petal";
     const inner = document.createElement("span");
