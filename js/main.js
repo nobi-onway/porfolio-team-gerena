@@ -269,6 +269,47 @@
     window.addEventListener("resize", () => { if (running) resize(); });
   })();
 
+  /* ---- Playhead quest log: con trỏ "đang chơi" chạy lặp qua từng step ----
+     Chỉ chạy khi slide quy trình đang .active; dừng & dọn khi rời slide. */
+  (function initQuestPlayhead() {
+    const card = cards.find((c) => c.classList.contains("member-card--process"));
+    if (!card) return;
+    const nodes = [...card.querySelectorAll(".qm-node")];
+    if (!nodes.length) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ENTER_DELAY = 1500;   // chờ animation xuất hiện (fx-pop) chạy xong
+    const STEP_MS = 1150;       // mỗi node sáng bao lâu trước khi nhảy sang node kế
+    let startTimer = null, tickTimer = null, idx = 0;
+
+    function light(i) {
+      nodes.forEach((n, k) => n.classList.toggle("is-cur", k === i));
+    }
+    function start() {
+      stop();
+      idx = 0;
+      startTimer = setTimeout(() => {
+        light(idx);
+        tickTimer = setInterval(() => {
+          idx = (idx + 1) % nodes.length;
+          light(idx);
+        }, STEP_MS);
+      }, ENTER_DELAY);
+    }
+    function stop() {
+      clearTimeout(startTimer);
+      clearInterval(tickTimer);
+      startTimer = tickTimer = null;
+      nodes.forEach((n) => n.classList.remove("is-cur"));
+    }
+
+    const obs = new MutationObserver(() => {
+      card.classList.contains("active") ? start() : stop();
+    });
+    obs.observe(card, { attributes: true, attributeFilter: ["class"] });
+    if (card.classList.contains("active")) start();
+  })();
+
   /* ---- Khởi tạo (track ở vị trí 0 = TITLE SCREEN) ---- */
   function init() {
     dots[0].classList.add("active");

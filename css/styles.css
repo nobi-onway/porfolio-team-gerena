@@ -1494,6 +1494,71 @@ body.is-intro .member-name-wrap {
   display: none;
 }
 
+/* =========================================================
+   PLAYHEAD QUEST LOG — con trỏ "đang chơi" chạy lặp qua từng node.
+   JS toggle .is-cur lần lượt 01→02→03→01… khi slide đang active.
+   Flat, không glow: thanh đỏ trái + nền đỏ nhạt + ô số tô đầy + ▸ nhấp nháy.
+========================================================= */
+.qm-node {
+  transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+/* thanh dấu đỏ chạy dọc mép trái node đang active (::before không bị
+   animation .fx-pop ghi đè transform như chính node) */
+.qm-node::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--seal);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.qm-node.is-cur {
+  border-color: var(--seal);
+  background: rgba(190, 30, 55, 0.1);
+}
+
+.qm-node.is-cur::before {
+  transform: scaleY(1);
+}
+
+.qm-node__num {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.qm-node.is-cur .qm-node__num {
+  background: var(--seal);
+  color: var(--ink);
+}
+
+.qm-node.is-cur .qm-node__link {
+  animation: qmArrowBlink 0.7s steps(1, end) infinite;
+}
+
+@keyframes qmArrowBlink {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    opacity: 0.25;
+    transform: translateY(-50%) translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qm-node::before,
+  .qm-node.is-cur .qm-node__link {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 .qm-band {
   margin: 16px auto 10px;
 }
