@@ -673,7 +673,7 @@ body.is-intro .member-name-wrap {
   gap: 14px;
   width: 100%;
   max-width: 1020px;
-  margin: 0 auto;
+  margin: 0 auto 7vh;     /* đẩy cả khối nội dung LÊN TRÊN (card flex-center) */
   padding: 0 24px;
   text-align: center;
 }
@@ -747,7 +747,9 @@ body.is-intro .member-name-wrap {
   position: relative;
   width: min(640px, 58vw);
   aspect-ratio: 16 / 9;
-  max-height: 46vh;
+  max-height: 42vh;
+  /* gap với tagline/band phía trên — chừa chỗ người chỉ đạo đứng nóc khung */
+  margin-top: 58px;
   border: 2px solid rgba(200, 170, 110, 0.55);
   background: #000;
 }
@@ -922,9 +924,9 @@ body.is-intro .member-name-wrap {
 .ttl-crew__fig--code1 { left: calc(100% + 10px); top: 6%; }
 .ttl-crew__fig--code2 { left: calc(100% + 10px); top: 54%; }
 
-/* nét người que — vàng đồng sáng, cùng chất với trống đồng */
+/* nét người que — trắng */
 .crew-line {
-  stroke: rgba(220, 192, 138, 0.95);
+  stroke: rgba(255, 255, 255, 0.95);
   stroke-width: 3;
   fill: none;
   stroke-linecap: round;
@@ -1647,6 +1649,7 @@ body.is-intro .member-name-wrap {
 @media (max-height: 760px) {
   .ttl {
     gap: 10px;
+    margin-bottom: 4vh;
   }
 
   .ttl-hook {
@@ -1658,7 +1661,8 @@ body.is-intro .member-name-wrap {
   }
 
   .ttl-video {
-    max-height: 40vh;
+    max-height: 38vh;
+    margin-top: 48px;
   }
 
   .ps-head,
