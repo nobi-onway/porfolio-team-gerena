@@ -435,9 +435,103 @@ function loopIcon(kind) {
   </svg>`;
 }
 
+/* Người que đứng góc bottom-left trong khung quest. JS đổi pose theo step
+   đang active (.hero--idea/doc/code/art/play/win) — mỗi pose lộ 1 bộ tay +
+   đạo cụ riêng; khi chuyển step bật .is-running cho nhân vật chạy tại chỗ. */
+function questHeroHTML() {
+  return `
+    <div class="qm-hero" aria-hidden="true">
+      <svg class="qm-hero__svg" viewBox="0 -22 90 106">
+        <g class="crew-line">
+          <!-- chân (vung mạnh khi .is-running) -->
+          <g class="hero-legs">
+            <path class="hero-leg hero-leg--l" d="M36 50 L29 78"/>
+            <path class="hero-leg hero-leg--r" d="M36 50 L43 78"/>
+          </g>
+          <!-- thân + đầu -->
+          <path d="M36 22 L36 50"/>
+          <circle cx="36" cy="14" r="7.5"/>
+
+          <!-- CHẠY giữa các step: hai tay vung -->
+          <g class="hero-act hero-act--run">
+            <path class="hero-arm-run hero-arm-run--a" d="M36 28 L46 31 L44 23"/>
+            <path class="hero-arm-run hero-arm-run--b" d="M36 28 L27 32 L29 24"/>
+          </g>
+
+          <!-- 01 · Ý TƯỞNG → brainstorm: tay lên đầu + bóng đèn loé -->
+          <g class="hero-act hero-act--idea">
+            <path d="M36 30 L29 42"/>
+            <path d="M36 28 L46 26 L41 15"/>
+            <g class="hero-bulb">
+              <circle class="crew-fill-gold" cx="41" cy="-4" r="4.5"/>
+              <path d="M39 1 L43 1"/>
+              <path class="hero-ray" d="M41 -11 L41 -14 M33 -4 L30 -4 M49 -4 L52 -4"/>
+            </g>
+          </g>
+
+          <!-- 02 · THIẾT KẾ → viết tài liệu: cầm bảng kẹp, tay viết -->
+          <g class="hero-act hero-act--doc">
+            <path d="M36 30 L29 42"/>
+            <rect x="50" y="32" width="16" height="22" rx="1"/>
+            <path d="M53 38 L63 38 M53 43 L63 43 M53 48 L59 48" stroke-width="2" opacity="0.8"/>
+            <g class="hero-write">
+              <path d="M36 28 L52 40"/>
+              <rect class="crew-fill-seal" x="50" y="37" width="4.5" height="4.5" rx="0.6"/>
+            </g>
+          </g>
+
+          <!-- 03 · PROTOTYPE → code: gõ laptop -->
+          <g class="hero-act hero-act--code">
+            <rect x="46" y="44" width="22" height="3" rx="1"/>
+            <path d="M46 44 L49 26 L65 26 L68 44"/>
+            <path d="M50 30 L62 30 M50 34 L60 34" stroke-width="2" opacity="0.55"/>
+            <g class="hero-type">
+              <path class="hero-type--a" d="M36 29 L48 45"/>
+              <path class="hero-type--b" d="M36 31 L46 46"/>
+            </g>
+          </g>
+
+          <!-- 04 · MỸ THUẬT → vẽ: giá vẽ + cọ -->
+          <g class="hero-act hero-act--art">
+            <path d="M56 24 L52 80 M66 38 L72 80 M54 72 L70 72"/>
+            <rect x="50" y="20" width="20" height="26" rx="1"/>
+            <path d="M36 30 L30 42"/>
+            <g class="hero-brush">
+              <path d="M36 28 L54 34"/>
+              <rect class="crew-fill-seal" x="52" y="31" width="5" height="5" rx="0.6"/>
+            </g>
+          </g>
+
+          <!-- 05 · PLAYTEST → chơi game: cầm tay cầm + màn hình nhấp nháy -->
+          <g class="hero-act hero-act--play">
+            <rect class="hero-screen" x="46" y="14" width="20" height="14" rx="1"/>
+            <polygon class="crew-fill-gold hero-screen-blip" points="53,18 53,24 59,21"/>
+            <path d="M36 30 L46 42"/>
+            <path d="M36 31 L66 42"/>
+            <g class="hero-pad">
+              <rect x="44" y="38" width="24" height="10" rx="5"/>
+              <circle class="crew-fill-seal" cx="50" cy="43" r="1.6"/>
+              <circle class="crew-fill-gold" cx="62" cy="43" r="1.6"/>
+            </g>
+          </g>
+
+          <!-- 06 · HOÀN THIỆN → success: giơ hai tay + sao loé -->
+          <g class="hero-act hero-act--win">
+            <path d="M36 28 L26 13"/>
+            <path d="M36 28 L46 13"/>
+            <polygon class="crew-fill-gold hero-star"
+              points="36,-14 38.5,-7 46,-7 40,-2.5 42.3,4.5 36,0.2 29.7,4.5 32,-2.5 26,-7 33.5,-7"/>
+          </g>
+        </g>
+      </svg>
+    </div>`;
+}
+
 function processCardHTML() {
   return `
     <div class="ghost-index absolute select-none text-[40vh] md:text-[55vh] right-[3vw] top-1/2 -translate-y-1/2 -z-10">03</div>
+
+    ${questHeroHTML()}
 
     <div class="qm-wrap w-full max-w-[1180px] mx-auto px-8 md:px-12">
       <header class="qm-head">
