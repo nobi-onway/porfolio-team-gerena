@@ -1205,7 +1205,7 @@ body.is-intro .member-name-wrap {
   width: 14px;
   height: 14px;
   border: 2px solid var(--seal);
-  background: #000;
+  background: transparent;
   z-index: 3;
 }
 
@@ -1560,25 +1560,17 @@ body.is-intro .member-name-wrap {
 }
 
 /* =========================================================
-   NGƯỜI QUE QUEST — đứng ở góc BOTTOM-LEFT của node đang active.
-   JS set --hx/--hy theo vị trí node; chuyển node thì chạy (.is-running)
-   + glide sang chỗ mới, tới nơi đổi động tác khớp nội dung step.
+   NGƯỜI QUE QUEST — đứng ở GÓC TOP-RIGHT của node đang active.
+   JS set --hx/--hy đặt chỗ TỨC THỜI (không glide); node bật/tắt thì
+   nhân vật teleport hiện ra / biến mất (heroTpIn / heroTpOut).
 ========================================================= */
 .qm-hero {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: -20px;
+  top: 40px;
   width: clamp(50px, 5.2vw, 70px);
   z-index: 8;
-  opacity: 0;
-  transform: translate(var(--hx, 0), var(--hy, 0));
-  /* glide vị trí khớp RUN_MS trong JS */
-  transition: transform 0.7s cubic-bezier(0.45, 0, 0.2, 1), opacity 0.45s ease;
-  will-change: transform;
-}
-
-.qm-hero.is-on {
-  opacity: 1;
+  transform: translate(var(--hx, 0), var(--hy, 0));   /* nhảy chỗ tức thời */
 }
 
 .qm-hero__svg {
@@ -1586,39 +1578,38 @@ body.is-intro .member-name-wrap {
   width: 100%;
   height: auto;
   overflow: visible;
+  opacity: 0;                       /* ẩn tới khi teleport-in */
+  transform-origin: 50% 100%;       /* gốc co giãn ở chân (đáy giữa) */
+  will-change: transform, opacity;
+}
+
+.qm-hero.is-on .qm-hero__svg { opacity: 1; }
+
+/* ---- TELEPORT: co thành cột dọc rồi hiện/biến (dịch chuyển tức thời) ----
+   .is-on luôn có khi teleport → đủ specificity để thắng heroWin trên svg */
+.qm-hero.is-on.is-tp-in  .qm-hero__svg { animation: heroTpIn  0.19s cubic-bezier(0.3, 0.8, 0.3, 1) both; }
+.qm-hero.is-on.is-tp-out .qm-hero__svg { animation: heroTpOut 0.15s ease-in both; }
+
+@keyframes heroTpIn {
+  0%   { opacity: 0; transform: scaleX(0.12) scaleY(1.7); }
+  45%  { opacity: 1; transform: scaleX(0.12) scaleY(1.7); }
+  72%  { opacity: 1; transform: scaleX(1.12) scaleY(0.88); }
+  100% { opacity: 1; transform: scaleX(1) scaleY(1); }
+}
+@keyframes heroTpOut {
+  0%   { opacity: 1; transform: scaleX(1) scaleY(1); }
+  35%  { opacity: 1; transform: scaleX(1.12) scaleY(0.88); }
+  100% { opacity: 0; transform: scaleX(0.1) scaleY(1.85); }
 }
 
 /* mỗi pose chỉ lộ bộ tay + đạo cụ tương ứng */
 .hero-act { display: none; }
-.qm-hero.is-running .hero-act--run  { display: block; }
 .qm-hero.hero--idea .hero-act--idea { display: block; }
 .qm-hero.hero--doc  .hero-act--doc  { display: block; }
 .qm-hero.hero--code .hero-act--code { display: block; }
 .qm-hero.hero--art  .hero-act--art  { display: block; }
 .qm-hero.hero--play .hero-act--play { display: block; }
 .qm-hero.hero--win  .hero-act--win  { display: block; }
-
-/* ---- CHẠY tại chỗ: chân + tay vung mạnh so le, thân nhún ---- */
-.hero-leg { transform-box: view-box; transform-origin: 36px 50px; }
-.hero-arm-run { transform-box: view-box; transform-origin: 36px 28px; }
-.qm-hero.is-running .hero-leg--l,
-.qm-hero.is-running .hero-arm-run--b { animation: heroRunA 0.32s linear infinite; }
-.qm-hero.is-running .hero-leg--r,
-.qm-hero.is-running .hero-arm-run--a { animation: heroRunB 0.32s linear infinite; }
-.qm-hero.is-running .qm-hero__svg { animation: heroBob 0.32s ease-in-out infinite; }
-
-@keyframes heroRunA {
-  0%, 100% { transform: rotate(26deg); }
-  50% { transform: rotate(-26deg); }
-}
-@keyframes heroRunB {
-  0%, 100% { transform: rotate(-26deg); }
-  50% { transform: rotate(26deg); }
-}
-@keyframes heroBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2.5px); }
-}
 
 /* ---- 01 Ý TƯỞNG · bóng đèn loé ---- */
 .hero-bulb {

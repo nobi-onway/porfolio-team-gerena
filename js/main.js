@@ -271,8 +271,9 @@
 
   /* ---- Quest log: con trỏ highlight node + NGƯỜI QUE bám node active ----
      Chỉ chạy khi slide quy trình đang .active; dừng & dọn khi rời slide.
-     Người que đứng ở GÓC BOTTOM-LEFT của node active; chuyển node thì chạy
-     (.is-running) + glide sang chỗ mới rồi diễn động tác khớp step. */
+     Người que đứng ở GÓC TOP-RIGHT của node active. Đổi node = TELEPORT:
+     node cũ tắt + nhân vật biến mất, node mới bật + nhân vật hiện ra tại chỗ
+     (dịch chuyển tức thời, không chạy/glide). */
   (function initQuestPlayhead() {
     const card = cards.find((c) => c.classList.contains("member-card--process"));
     if (!card) return;
@@ -285,45 +286,55 @@
     const POSES = ["hero--idea", "hero--doc", "hero--code", "hero--art", "hero--play", "hero--win"];
 
     const ENTER_DELAY = 1500;   // chờ animation xuất hiện (fx-pop) chạy xong
-    const STEP_MS = 2800;       // mỗi node giữ bao lâu (chạy + diễn động tác)
-    const RUN_MS = 700;         // chạy + glide sang node kế (khớp transition CSS)
-    let startTimer = null, tickTimer = null, poseTimer = null, idx = 0;
+    const STEP_MS = 2600;       // mỗi node giữ bao lâu trước khi nhảy node kế
+    const TP_OUT_MS = 150;      // teleport biến mất (khớp heroTpOut)
+    const TP_IN_MS = 190;       // teleport hiện ra (khớp heroTpIn)
+    let startTimer = null, tickTimer = null, tpTimer = null, tpInTimer = null, idx = 0;
 
-    // đặt người que vào góc bottom-left của node i (offsetParent chung = card)
-    function placeHero(i, instant) {
+    // đặt người que lên GÓC TOP-RIGHT của node i — tức thời, không glide
+    function placeHero(i) {
       if (!hero) return;
       const n = nodes[i];
-      const hx = n.offsetLeft - hero.offsetWidth * 0.32;
-      const hy = n.offsetTop + n.offsetHeight - hero.offsetHeight + 4;
-      if (instant) {
-        hero.style.transition = "none";
-        hero.style.setProperty("--hx", hx.toFixed(1) + "px");
-        hero.style.setProperty("--hy", hy.toFixed(1) + "px");
-        void hero.offsetWidth;   // ép reflow để bỏ glide cho lần đặt đầu
-        hero.style.transition = "";
-      } else {
-        hero.style.setProperty("--hx", hx.toFixed(1) + "px");
-        hero.style.setProperty("--hy", hy.toFixed(1) + "px");
-      }
+      const hx = n.offsetLeft + n.offsetWidth - hero.offsetWidth * 0.68;
+      const hy = n.offsetTop - hero.offsetHeight + 10;
+      hero.style.setProperty("--hx", hx.toFixed(1) + "px");
+      hero.style.setProperty("--hy", hy.toFixed(1) + "px");
     }
 
     function setPose(i) {
       if (!hero) return;
-      hero.classList.remove("is-running", ...POSES);
+      hero.classList.remove(...POSES);
       hero.classList.add(POSES[i % POSES.length]);
     }
 
-    function advance(i, instant) {
+    // hiện người que tại node i: đặt chỗ tức thời + diễn teleport-in
+    function showAt(i) {
       nodes.forEach((n, k) => n.classList.toggle("is-cur", k === i));
-      placeHero(i, instant);
       if (!hero) return;
-      clearTimeout(poseTimer);
-      if (instant) {
-        setPose(i);                       // node đầu: vào pose ngay
+      placeHero(i);
+      setPose(i);
+      hero.classList.remove("is-tp-out", "is-tp-in");
+      hero.classList.add("is-on", "is-tp-in");   // is-tp-in kích heroTpIn
+      clearTimeout(tpInTimer);
+      // gỡ is-tp-in sau khi hiện xong để pose tự diễn (vd heroWin)
+      tpInTimer = setTimeout(() => hero.classList.remove("is-tp-in"), TP_IN_MS);
+    }
+
+    // đổi node: node cũ tắt + teleport-out, rồi node mới bật + teleport-in
+    function advance(i) {
+      if (!hero) {
+        nodes.forEach((n, k) => n.classList.toggle("is-cur", k === i));
+        return;
+      }
+      clearTimeout(tpTimer);
+      if (hero.classList.contains("is-on")) {
+        nodes.forEach((n) => n.classList.remove("is-cur"));   // node cũ tắt
+        hero.classList.remove("is-tp-in");
+        void hero.offsetWidth;                                // reflow để chạy lại
+        hero.classList.add("is-tp-out");
+        tpTimer = setTimeout(() => showAt(i), TP_OUT_MS);
       } else {
-        hero.classList.remove(...POSES);  // chạy + glide rồi mới diễn
-        hero.classList.add("is-running");
-        poseTimer = setTimeout(() => setPose(i), RUN_MS);
+        showAt(i);                                            // lần đầu: hiện luôn
       }
     }
 
@@ -331,22 +342,22 @@
       stop();
       idx = 0;
       startTimer = setTimeout(() => {
-        advance(idx, true);                      // đặt vị trí node đầu (chưa hiện)
-        if (hero) hero.classList.add("is-on");   // fade-in tại chỗ
+        advance(idx);
         tickTimer = setInterval(() => {
           idx = (idx + 1) % nodes.length;
-          advance(idx, false);
+          advance(idx);
         }, STEP_MS);
       }, ENTER_DELAY);
     }
 
     function stop() {
       clearTimeout(startTimer);
-      clearTimeout(poseTimer);
+      clearTimeout(tpTimer);
+      clearTimeout(tpInTimer);
       clearInterval(tickTimer);
-      startTimer = tickTimer = poseTimer = null;
+      startTimer = tickTimer = tpTimer = tpInTimer = null;
       nodes.forEach((n) => n.classList.remove("is-cur"));
-      if (hero) hero.classList.remove("is-on", "is-running", ...POSES);
+      if (hero) hero.classList.remove("is-on", "is-tp-in", "is-tp-out", ...POSES);
     }
 
     const obs = new MutationObserver(() => {
@@ -358,7 +369,7 @@
     // layout đổi cột (resize) → đặt lại vị trí tức thời cho node hiện tại
     window.addEventListener("resize", () => {
       if (card.classList.contains("active") && hero && hero.classList.contains("is-on")) {
-        placeHero(idx, true);
+        placeHero(idx);
       }
     });
   })();

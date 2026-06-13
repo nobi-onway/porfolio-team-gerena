@@ -435,15 +435,15 @@ function loopIcon(kind) {
   </svg>`;
 }
 
-/* Người que đứng góc bottom-left trong khung quest. JS đổi pose theo step
-   đang active (.hero--idea/doc/code/art/play/win) — mỗi pose lộ 1 bộ tay +
-   đạo cụ riêng; khi chuyển step bật .is-running cho nhân vật chạy tại chỗ. */
+/* Người que teleport tới góc top-right của node đang active. JS đổi pose theo
+   step (.hero--idea/doc/code/art/play/win) — mỗi pose lộ 1 bộ tay + đạo cụ
+   riêng; đổi node thì nhân vật biến mất rồi hiện lại (heroTpOut/heroTpIn). */
 function questHeroHTML() {
   return `
     <div class="qm-hero" aria-hidden="true">
       <svg class="qm-hero__svg" viewBox="0 -22 90 106">
         <g class="crew-line">
-          <!-- chân (vung mạnh khi .is-running) -->
+          <!-- chân (đứng yên) -->
           <g class="hero-legs">
             <path class="hero-leg hero-leg--l" d="M36 50 L29 78"/>
             <path class="hero-leg hero-leg--r" d="M36 50 L43 78"/>
@@ -451,12 +451,6 @@ function questHeroHTML() {
           <!-- thân + đầu -->
           <path d="M36 22 L36 50"/>
           <circle cx="36" cy="14" r="7.5"/>
-
-          <!-- CHẠY giữa các step: hai tay vung -->
-          <g class="hero-act hero-act--run">
-            <path class="hero-arm-run hero-arm-run--a" d="M36 28 L46 31 L44 23"/>
-            <path class="hero-arm-run hero-arm-run--b" d="M36 28 L27 32 L29 24"/>
-          </g>
 
           <!-- 01 · Ý TƯỞNG → brainstorm: tay lên đầu + bóng đèn loé -->
           <g class="hero-act hero-act--idea">
