@@ -269,10 +269,11 @@
     window.addEventListener("resize", () => { if (running) resize(); });
   })();
 
-  /* ---- Quest log: highlight node + blob xuất hiện/biến mất theo node ----
+  /* ---- Quest log: con trỏ highlight node + NGƯỜI QUE bám node active ----
      Chỉ chạy khi slide quy trình đang .active; dừng & dọn khi rời slide.
-     Mỗi node có blob riêng (góc top-right); .is-cur bật → node sáng + blob
-     bung ra (CSS), tick sau .is-cur chuyển node → blob node cũ biến mất. */
+     Người que đứng ở GÓC TOP-RIGHT của node active. Đổi node = TELEPORT:
+     node cũ tắt + nhân vật biến mất, node mới bật + nhân vật hiện ra tại chỗ
+     (dịch chuyển tức thời, không chạy/glide). */
   (function initQuestPlayhead() {
     const card = cards.find((c) => c.classList.contains("member-card--process"));
     if (!card) return;
@@ -280,31 +281,83 @@
     if (!nodes.length) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const ENTER_DELAY = 1500;   // chờ animation xuất hiện (fx-pop) chạy xong
-    const STEP_MS = 2800;       // mỗi node sáng bao lâu trước khi chuyển node kế
-    let startTimer = null, tickTimer = null, idx = 0;
+    const hero = card.querySelector(".qm-hero");
+    // pose khớp PROCESS_STEPS: Ý tưởng·Thiết kế·Prototype·Mỹ thuật·Playtest·Hoàn thiện
+    const POSES = ["hero--idea", "hero--doc", "hero--code", "hero--art", "hero--play", "hero--win"];
 
-    function light(i) {
+    const ENTER_DELAY = 1500;   // chờ animation xuất hiện (fx-pop) chạy xong
+    const STEP_MS = 2600;       // mỗi node giữ bao lâu trước khi nhảy node kế
+    const TP_OUT_MS = 150;      // teleport biến mất (khớp heroTpOut)
+    const TP_IN_MS = 190;       // teleport hiện ra (khớp heroTpIn)
+    let startTimer = null, tickTimer = null, tpTimer = null, tpInTimer = null, idx = 0;
+
+    // đặt người que lên GÓC TOP-RIGHT của node i — tức thời, không glide
+    function placeHero(i) {
+      if (!hero) return;
+      const n = nodes[i];
+      const hx = n.offsetLeft + n.offsetWidth - hero.offsetWidth * 0.68;
+      const hy = n.offsetTop - hero.offsetHeight + 10;
+      hero.style.setProperty("--hx", hx.toFixed(1) + "px");
+      hero.style.setProperty("--hy", hy.toFixed(1) + "px");
+    }
+
+    function setPose(i) {
+      if (!hero) return;
+      hero.classList.remove(...POSES);
+      hero.classList.add(POSES[i % POSES.length]);
+    }
+
+    // hiện người que tại node i: đặt chỗ tức thời + diễn teleport-in
+    function showAt(i) {
       nodes.forEach((n, k) => n.classList.toggle("is-cur", k === i));
+      if (!hero) return;
+      placeHero(i);
+      setPose(i);
+      hero.classList.remove("is-tp-out", "is-tp-in");
+      hero.classList.add("is-on", "is-tp-in");   // is-tp-in kích heroTpIn
+      clearTimeout(tpInTimer);
+      // gỡ is-tp-in sau khi hiện xong để pose tự diễn (vd heroWin)
+      tpInTimer = setTimeout(() => hero.classList.remove("is-tp-in"), TP_IN_MS);
+    }
+
+    // đổi node: node cũ tắt + teleport-out, rồi node mới bật + teleport-in
+    function advance(i) {
+      if (!hero) {
+        nodes.forEach((n, k) => n.classList.toggle("is-cur", k === i));
+        return;
+      }
+      clearTimeout(tpTimer);
+      if (hero.classList.contains("is-on")) {
+        nodes.forEach((n) => n.classList.remove("is-cur"));   // node cũ tắt
+        hero.classList.remove("is-tp-in");
+        void hero.offsetWidth;                                // reflow để chạy lại
+        hero.classList.add("is-tp-out");
+        tpTimer = setTimeout(() => showAt(i), TP_OUT_MS);
+      } else {
+        showAt(i);                                            // lần đầu: hiện luôn
+      }
     }
 
     function start() {
       stop();
       idx = 0;
       startTimer = setTimeout(() => {
-        light(idx);
+        advance(idx);
         tickTimer = setInterval(() => {
           idx = (idx + 1) % nodes.length;
-          light(idx);
+          advance(idx);
         }, STEP_MS);
       }, ENTER_DELAY);
     }
 
     function stop() {
       clearTimeout(startTimer);
+      clearTimeout(tpTimer);
+      clearTimeout(tpInTimer);
       clearInterval(tickTimer);
-      startTimer = tickTimer = null;
+      startTimer = tickTimer = tpTimer = tpInTimer = null;
       nodes.forEach((n) => n.classList.remove("is-cur"));
+      if (hero) hero.classList.remove("is-on", "is-tp-in", "is-tp-out", ...POSES);
     }
 
     const obs = new MutationObserver(() => {
@@ -312,6 +365,13 @@
     });
     obs.observe(card, { attributes: true, attributeFilter: ["class"] });
     if (card.classList.contains("active")) start();
+
+    // layout đổi cột (resize) → đặt lại vị trí tức thời cho node hiện tại
+    window.addEventListener("resize", () => {
+      if (card.classList.contains("active") && hero && hero.classList.contains("is-on")) {
+        placeHero(idx);
+      }
+    });
   })();
 
   /* ---- Khởi tạo (track ở vị trí 0 = TITLE SCREEN) ---- */
@@ -363,28 +423,32 @@
   });
 
   /* =========================================================
-     ICON GAME RƠI (petals) — controller / D-pad / sao / chim Lạc
+     ICON RƠI (petals) — 6 shape: controller · D-pad + tool có khung bo góc
+     (Photoshop · Unity · Blender · Spine). Mỗi hạt random 1 trong 3 màu:
+     đỏ son · vàng đồng · tím (stroke/fill = currentColor; logo PNG đổi filter).
   ========================================================= */
   const petalLayer = document.getElementById("petals");
+  // 3 màu random cho icon rơi: đỏ son · vàng đồng · tím
+  const PETAL_COLORS = ["#BE1E37", "#C8AA6E", "#A77BDC"];
+  // khung bo góc dùng chung cho icon tool — màu lấy theo currentColor (random từng hạt)
+  const toolFrame = `<rect x="2" y="2" width="20" height="20" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/>`;
+  // filter tô màu logo PNG nền trắng (trắng→trong suốt, đen→màu). Mỗi màu 1 filter.
+  const tintFilter = (id, col) => `<filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="luminanceToAlpha" result="l"/><feComponentTransfer in="l" result="inv"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer><feComposite in="inv" in2="SourceGraphic" operator="in" result="m"/><feFlood flood-color="${col}" result="c"/><feComposite in="c" in2="m" operator="in"/></filter>`;
+  document.body.insertAdjacentHTML("beforeend",
+    `<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>${PETAL_COLORS.map((c, i) => tintFilter("toolTint" + i, c)).join("")}</defs></svg>`);
   const PETAL_SHAPES = [
-    // Nút tròn controller ○ (đỏ son)
-    `<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="9" fill="none" stroke="#BE1E37" stroke-width="3"/><circle cx="12" cy="12" r="4" fill="#BE1E37"/></svg>`,
-    // Dấu × bold (vàng đồng)
-    `<svg viewBox="0 0 24 24" width="24"><line x1="4" y1="4" x2="20" y2="20" stroke="#C8AA6E" stroke-width="4" stroke-linecap="square"/><line x1="20" y1="4" x2="4" y2="20" stroke="#C8AA6E" stroke-width="4" stroke-linecap="square"/></svg>`,
-    // Diamond ◆ (vàng đồng)
-    `<svg viewBox="0 0 24 24" width="24"><polygon points="12,2 22,12 12,22 2,12" fill="#C8AA6E"/></svg>`,
-    // Mũi tên ▶ (đỏ son)
-    `<svg viewBox="0 0 24 24" width="24"><polygon points="4,3 20,12 4,21" fill="#BE1E37"/></svg>`,
-    // Pixel coin (vàng đồng, lỗ vuông)
-    `<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="10" fill="#C8AA6E"/><rect x="9" y="9" width="6" height="6" fill="#000"/></svg>`,
-    // Ngôi sao ★ (vàng đồng)
-    `<svg viewBox="0 0 24 24" width="24"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9" fill="#C8AA6E"/></svg>`,
-    // Pixel heart (đỏ son)
-    `<svg viewBox="0 0 24 24" width="24"><path d="M4 6 h5 v3 h6 V6 h5 v6 h-3 v3 h-3 v3 h-4 v-3 H7 v-3 H4 Z" fill="#BE1E37"/></svg>`,
-    // D-pad cross (đỏ son)
-    `<svg viewBox="0 0 24 24" width="24"><rect x="8" y="2" width="8" height="20" rx="1" fill="#BE1E37"/><rect x="2" y="8" width="20" height="8" rx="1" fill="#BE1E37"/></svg>`,
-    // Chim Lạc (vàng đồng) — chất liệu Việt
-    `<svg viewBox="-16 -12 36 20" width="24"><path d="M -14 3 Q -8 0 -3 0 Q 1 -6 8 -8 L 5 -2 Q 12 -4 18 -8 Q 16 -1 8 2 Q 1 4 -4 3 Q -9 7 -14 3 Z" fill="#C8AA6E"/></svg>`,
+    // Nút tròn controller ○
+    `<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>`,
+    // D-pad cross
+    `<svg viewBox="0 0 24 24" width="24"><rect x="8" y="2" width="8" height="20" rx="1" fill="currentColor"/><rect x="2" y="8" width="20" height="8" rx="1" fill="currentColor"/></svg>`,
+    // Photoshop "Ps" — khung + chữ
+    `<svg viewBox="0 0 24 24" width="24">${toolFrame}<text x="12" y="16.2" font-family="Oswald, sans-serif" font-size="10.5" font-weight="700" fill="currentColor" text-anchor="middle">Ps</text></svg>`,
+    // Unity — khung + logo Unity thật (PNG tô màu qua filter)
+    `<svg viewBox="0 0 24 24" width="24">${toolFrame}<image href="img/ic_unity.png" x="4.5" y="4.5" width="15" height="15" preserveAspectRatio="xMidYMid meet" filter="url(#toolTint2)"/></svg>`,
+    // Blender — khung + logo Blender thật (PNG tô màu qua filter)
+    `<svg viewBox="0 0 24 24" width="24">${toolFrame}<image href="img/ic_blender.png" x="4" y="5.4" width="16" height="13" preserveAspectRatio="xMidYMid meet" filter="url(#toolTint2)"/></svg>`,
+    // Spine — khung + cột đốt sống bo tròn nhỏ dần (giống logo Spine)
+    `<svg viewBox="0 0 24 24" width="24">${toolFrame}<g fill="currentColor"><rect x="7.4" y="4.6" width="9.2" height="3.1" rx="1.55" transform="rotate(-7 12 6.15)"/><rect x="7.9" y="8.7" width="8.2" height="2.8" rx="1.4" transform="rotate(5 12 10.1)"/><rect x="8.6" y="12.4" width="6.6" height="2.5" rx="1.25" transform="rotate(-5 11.9 13.65)"/><rect x="9.7" y="15.9" width="4.6" height="2.1" rx="1.05" transform="rotate(4 12 16.95)"/></g></svg>`,
   ];
   const petals = [];   // {el, fall, wx, wy} — el là lớp ngoài nhận gió
   for (let i = 0; i < 18; i++) {
@@ -393,6 +457,11 @@
     const inner = document.createElement("span");
     inner.className = "petal-fall";
     inner.innerHTML = PETAL_SHAPES[i % PETAL_SHAPES.length];
+    // random 1 trong 3 màu cho hạt này (stroke/fill dùng currentColor)
+    const ci = Math.floor(Math.random() * PETAL_COLORS.length);
+    inner.style.color = PETAL_COLORS[ci];
+    const logo = inner.querySelector("image");   // logo PNG → đổi filter theo màu
+    if (logo) logo.setAttribute("filter", "url(#toolTint" + ci + ")");
     p.appendChild(inner);
     p.style.left = Math.random() * 100 + "%";
     const dur = 9 + Math.random() * 9;

@@ -248,96 +248,55 @@ function showreelArt() {
    1 chỉ đạo đứng nóc khung · 2 artist ngồi vẽ bên TRÁI
    · 2 dev ngồi code bên PHẢI.
 ========================================================= */
-/* =========================================================
-   SLIME SPRITE — pixel art. Lưới ký tự → <rect> 1×1 (đơn vị local),
-   group ngoài dùng transform translate+scale để đặt vào từng SVG.
-   Bảng màu tím: O viền · L sáng · M giữa · D tối · E mắt · W loé · K má · T miệng.
-========================================================= */
-const SLIME_PAL = {
-  O: "#382a5e", L: "#c9b8f0", M: "#9b7ed8", D: "#6a4fa3",
-  E: "#241a33", W: "#ffffff", K: "#f0a8c8", T: "#241a33",
-};
-const SLIME_GRID = [
-  ".......OO.......",
-  ".....OLLLLO.....",
-  "...OLLLLLLLLO...",
-  "..OLLLLLLLLLLO..",
-  ".OLLLLLLLLLLLLO.",
-  ".OLLLLLLLLLLLLO.",
-  "OMMMMMMMMMMMMMMO",
-  "OMMMWEMMMMWEMMMO",
-  "OMMMEEMMMMEEMMMO",
-  "OMKMMMMTTMMMMKMO",
-  ".OMMMMMMMMMMMMO.",
-  ".ODDDDDDDDDDDDO.",
-  ".ODDDDDDDDDDDDO.",
-  "..ODDDDDDDDDDO..",
-  "...OOOOOOOOOO...",
-  "................",
-];
-/* Trả { body, eyes } — mắt tách group riêng để chớp mắt độc lập. */
-function slimeSprite() {
-  let body = "", eyes = "";
-  SLIME_GRID.forEach((row, y) => {
-    [...row].forEach((ch, x) => {
-      const fill = SLIME_PAL[ch];
-      if (!fill) return;
-      const rect = `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${fill}"/>`;
-      if (ch === "E" || ch === "W") eyes += rect;
-      else body += rect;
-    });
-  });
-  // đốm sáng "shimmer" — 2 pixel trắng vùng đỉnh-trái, CSS cho lướt + nhấp nháy
-  const glint =
-    `<rect x="3" y="5" width="1.02" height="1.02" fill="#ffffff"/>` +
-    `<rect x="4" y="5" width="1.02" height="1.02" fill="#ffffff"/>`;
-  return { body, eyes, glint };
-}
-
 function crewFigs() {
-  const s = slimeSprite();
-  /* 1 · CHỈ ĐẠO — slime đứng nóc khung, cạnh lá cờ */
+  /* 1 · CHỈ ĐẠO — đứng trên nóc khung, cầm cờ, tay chỉ xuống */
   const lead = `
-    <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 66" aria-hidden="true">
-      <path class="hero-line" d="M50 48 L52 12"/>
-      <polygon class="crew-fill-seal" points="52,12 64,16 52,22"/>
-      <g transform="translate(10 20) scale(2.5)">
-        <g class="blob-crew">
-          ${s.body}
-          <g class="blob-glint">${s.glint}</g>
-          <g class="blob-eyes-c">${s.eyes}</g>
+    <svg class="ttl-crew__fig ttl-crew__fig--lead" viewBox="0 0 64 84" aria-hidden="true">
+      <g class="crew-line">
+        <circle cx="38" cy="13" r="7"/>
+        <path d="M38 20 L38 48"/>
+        <path d="M38 48 L28 68 L26 80"/>
+        <path d="M38 48 L48 66 L50 80"/>
+        <path d="M38 27 L52 20 L52 6"/>
+        <polygon class="crew-fill-seal" points="52,6 64,10 52,15"/>
+        <g class="crew-anim crew--point">
+          <path d="M38 27 L18 38"/>
         </g>
       </g>
     </svg>`;
 
-  /* 2-3 · ARTIST — blob bên trái khung, vẽ lên giá (cọ vẫy) */
+  /* 2-3 · ARTIST ngồi vẽ trước giá vẽ (mặt hướng PHẢI → đặt bên trái khung) */
   const draw = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
-      <g class="hero-line">
-        <path d="M46 22 L42 66 M54 34 L60 66 M44 60 L58 60"/>
-        <rect x="40" y="16" width="18" height="22" rx="1"/>
-      </g>
-      <g transform="translate(4 12) scale(2)">
-        <g class="blob-crew">
-          ${s.body}
-          <g class="blob-glint">${s.glint}</g>
-          <g class="blob-eyes-c">${s.eyes}</g>
+      <g class="crew-line">
+        <circle cx="20" cy="12" r="7"/>
+        <path d="M20 19 L20 42"/>
+        <path d="M20 42 L34 46 L34 62"/>
+        <path d="M20 42 L30 48 L30 64"/>
+        <!-- giá vẽ + khung tranh -->
+        <path d="M46 22 L42 64 M50 38 L56 64"/>
+        <rect x="40" y="20" width="18" height="20" rx="1"/>
+        <g class="crew-anim crew--draw">
+          <path d="M20 26 L40 30"/>
+          <rect class="crew-fill-seal" x="38" y="27" width="6" height="6" rx="1"/>
         </g>
       </g>
     </svg>`;
 
-  /* 4-5 · DEV — blob bên phải khung, gõ laptop */
+  /* 4-5 · DEV ngồi gõ laptop (mặt hướng TRÁI → đặt bên phải khung) */
   const code = (mod) => `
     <svg class="ttl-crew__fig ttl-crew__fig--${mod}" viewBox="0 0 64 72" aria-hidden="true">
-      <g class="hero-line">
-        <rect class="crew-fill-gold" x="10" y="40" width="20" height="3" rx="1"/>
-        <path d="M10 40 L6 24 L26 24"/>
-      </g>
-      <g transform="translate(28 12) scale(2)">
-        <g class="blob-crew">
-          ${s.body}
-          <g class="blob-glint">${s.glint}</g>
-          <g class="blob-eyes-c">${s.eyes}</g>
+      <g class="crew-line">
+        <circle cx="44" cy="12" r="7"/>
+        <path d="M44 19 L44 42"/>
+        <path d="M44 42 L30 46 L30 62"/>
+        <path d="M44 42 L34 48 L34 64"/>
+        <!-- laptop: bàn phím + màn hình mở -->
+        <rect class="crew-fill-gold" x="12" y="38" width="18" height="3" rx="1"/>
+        <path d="M12 38 L8 24 L24 24"/>
+        <g class="crew-anim crew--type">
+          <path d="M44 26 L28 36"/>
+          <path d="M44 29 L24 38"/>
         </g>
       </g>
     </svg>`;
@@ -476,68 +435,88 @@ function loopIcon(kind) {
   </svg>`;
 }
 
-/* Blob theo TỪNG node: mỗi node 1 nhân vật giọt mực cố định góc top-right,
-   pose khớp step (idea/doc/code/art/play/win). Node active → blob xuất hiện
-   (CSS .qm-node.is-cur .qm-node-blob), node tắt → biến mất. Đạo cụ "môi
-   trường" (bóng đèn/giá vẽ/màn hình/sao) đặt ngoài .blob để không bị bóp méo. */
-const QUEST_POSES = ["idea", "doc", "code", "art", "play", "win"];
-
-function questBlobEnv(pose) {
-  switch (pose) {
-    case "idea": return `
-      <g class="hero-bulb">
-        <circle class="crew-fill-gold" cx="40" cy="-14" r="6"/>
-        <path class="hero-line" d="M37 -7 L43 -7"/>
-        <path class="hero-ray hero-line" d="M40 -24 L40 -28 M28 -16 L24 -18 M52 -16 L56 -18"/>
-      </g>`;
-    case "art": return `
-      <g class="hero-line">
-        <path d="M70 14 L66 80 M82 30 L88 80 M68 72 L86 72"/>
-        <rect x="62" y="8" width="22" height="28" rx="1"/>
-      </g>`;
-    case "play": return `
-      <rect class="hero-screen hero-line" x="58" y="2" width="22" height="16" rx="1"/>
-      <polygon class="crew-fill-gold hero-screen-blip" points="66,7 66,13 73,10"/>`;
-    case "win": return `
-      <polygon class="crew-fill-gold hero-star"
-        points="40,-32 43.5,-23 53,-23 45.5,-17 48.5,-8 40,-13 31.5,-8 34.5,-17 27,-23 36.5,-23"/>`;
-    default: return "";
-  }
-}
-
-function questBlobArms(pose) {
-  switch (pose) {
-    case "doc": return `
-      <rect class="hero-line" x="45" y="56" width="17" height="22" rx="1" style="fill:rgba(0,0,0,0.35)"/>
-      <path class="hero-line" d="M48 62 L59 62 M48 67 L59 67 M48 72 L55 72" stroke-width="1.7" opacity="0.85"/>`;
-    case "code": return `
-      <path class="hero-line" d="M22 80 L52 80 L57 66 L27 66 Z"/>
-      <rect class="hero-line" x="28" y="48" width="27" height="18" rx="1"/>
-      <path class="hero-line" d="M32 53 L51 53 M32 58 L47 58" stroke-width="1.7" opacity="0.55"/>`;
-    case "play": return `
-      <g class="hero-pad">
-        <rect class="hero-line" x="28" y="64" width="34" height="12" rx="6" style="fill:rgba(0,0,0,0.4)"/>
-        <circle class="crew-fill-seal" cx="37" cy="70" r="1.9"/>
-        <circle class="crew-fill-gold" cx="53" cy="70" r="1.9"/>
-      </g>`;
-    default: return "";
-  }
-}
-
-function nodeBlobHTML(pose) {
-  const s = slimeSprite();
+/* Người que teleport tới góc top-right của node đang active. JS đổi pose theo
+   step (.hero--idea/doc/code/art/play/win) — mỗi pose lộ 1 bộ tay + đạo cụ
+   riêng; đổi node thì nhân vật biến mất rồi hiện lại (heroTpOut/heroTpIn). */
+function questHeroHTML() {
   return `
-    <div class="qm-node-blob hero--${pose}" aria-hidden="true">
-      <svg class="qm-blob__svg" viewBox="0 -34 92 118">
-        ${questBlobEnv(pose)}
-        <g transform="translate(12 27) scale(3.5)">
-          <g class="blob">
-            ${s.body}
-            <g class="blob-glint">${s.glint}</g>
-            <g class="blob-eyes">${s.eyes}</g>
+    <div class="qm-hero" aria-hidden="true">
+      <svg class="qm-hero__svg" viewBox="0 -22 90 106">
+        <g class="crew-line">
+          <!-- chân (đứng yên) -->
+          <g class="hero-legs">
+            <path class="hero-leg hero-leg--l" d="M36 50 L29 78"/>
+            <path class="hero-leg hero-leg--r" d="M36 50 L43 78"/>
+          </g>
+          <!-- thân + đầu -->
+          <path d="M36 22 L36 50"/>
+          <circle cx="36" cy="14" r="7.5"/>
+
+          <!-- 01 · Ý TƯỞNG → brainstorm: tay lên đầu + bóng đèn loé -->
+          <g class="hero-act hero-act--idea">
+            <path d="M36 30 L29 42"/>
+            <path d="M36 28 L46 26 L41 15"/>
+            <g class="hero-bulb">
+              <circle class="crew-fill-gold" cx="41" cy="-4" r="4.5"/>
+              <path d="M39 1 L43 1"/>
+              <path class="hero-ray" d="M41 -11 L41 -14 M33 -4 L30 -4 M49 -4 L52 -4"/>
+            </g>
+          </g>
+
+          <!-- 02 · THIẾT KẾ → viết tài liệu: cầm bảng kẹp, tay viết -->
+          <g class="hero-act hero-act--doc">
+            <path d="M36 30 L29 42"/>
+            <rect x="50" y="32" width="16" height="22" rx="1"/>
+            <path d="M53 38 L63 38 M53 43 L63 43 M53 48 L59 48" stroke-width="2" opacity="0.8"/>
+            <g class="hero-write">
+              <path d="M36 28 L52 40"/>
+              <rect class="crew-fill-seal" x="50" y="37" width="4.5" height="4.5" rx="0.6"/>
+            </g>
+          </g>
+
+          <!-- 03 · PROTOTYPE → code: gõ laptop -->
+          <g class="hero-act hero-act--code">
+            <rect x="46" y="44" width="22" height="3" rx="1"/>
+            <path d="M46 44 L49 26 L65 26 L68 44"/>
+            <path d="M50 30 L62 30 M50 34 L60 34" stroke-width="2" opacity="0.55"/>
+            <g class="hero-type">
+              <path class="hero-type--a" d="M36 29 L48 45"/>
+              <path class="hero-type--b" d="M36 31 L46 46"/>
+            </g>
+          </g>
+
+          <!-- 04 · MỸ THUẬT → vẽ: giá vẽ + cọ -->
+          <g class="hero-act hero-act--art">
+            <path d="M56 24 L52 80 M66 38 L72 80 M54 72 L70 72"/>
+            <rect x="50" y="20" width="20" height="26" rx="1"/>
+            <path d="M36 30 L30 42"/>
+            <g class="hero-brush">
+              <path d="M36 28 L54 34"/>
+              <rect class="crew-fill-seal" x="52" y="31" width="5" height="5" rx="0.6"/>
+            </g>
+          </g>
+
+          <!-- 05 · PLAYTEST → chơi game: cầm tay cầm + màn hình nhấp nháy -->
+          <g class="hero-act hero-act--play">
+            <rect class="hero-screen" x="46" y="14" width="20" height="14" rx="1"/>
+            <polygon class="crew-fill-gold hero-screen-blip" points="53,18 53,24 59,21"/>
+            <path d="M36 30 L46 42"/>
+            <path d="M36 31 L66 42"/>
+            <g class="hero-pad">
+              <rect x="44" y="38" width="24" height="10" rx="5"/>
+              <circle class="crew-fill-seal" cx="50" cy="43" r="1.6"/>
+              <circle class="crew-fill-gold" cx="62" cy="43" r="1.6"/>
+            </g>
+          </g>
+
+          <!-- 06 · HOÀN THIỆN → success: giơ hai tay + sao loé -->
+          <g class="hero-act hero-act--win">
+            <path d="M36 28 L26 13"/>
+            <path d="M36 28 L46 13"/>
+            <polygon class="crew-fill-gold hero-star"
+              points="36,-14 38.5,-7 46,-7 40,-2.5 42.3,4.5 36,0.2 29.7,4.5 32,-2.5 26,-7 33.5,-7"/>
           </g>
         </g>
-        ${questBlobArms(pose)}
       </svg>
     </div>`;
 }
@@ -545,6 +524,8 @@ function nodeBlobHTML(pose) {
 function processCardHTML() {
   return `
     <div class="ghost-index absolute select-none text-[40vh] md:text-[55vh] right-[3vw] top-1/2 -translate-y-1/2 -z-10">03</div>
+
+    ${questHeroHTML()}
 
     <div class="qm-wrap w-full max-w-[1180px] mx-auto px-8 md:px-12">
       <header class="qm-head">
@@ -555,7 +536,6 @@ function processCardHTML() {
       <ol class="qm-path">
         ${PROCESS_STEPS.map((s, i) => `
           <li class="qm-node fx fx-pop" style="--d:${(0.45 + i * 0.13).toFixed(2)}s">
-            ${nodeBlobHTML(QUEST_POSES[i] || "idea")}
             <span class="qm-node__num font-display">${s.num}</span>
             <div class="qm-node__body">
               <div class="qm-node__en font-display">${s.en}</div>
