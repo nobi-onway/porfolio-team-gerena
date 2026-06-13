@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(python -c \"import importlib.util as u; print\\('PIL', bool\\(u.find_spec\\('PIL'\\)\\)\\)\")",
+      "PowerShell(python -m pip install --quiet Pillow 2>&1 | Select-Object -Last 2; \"exit=$LASTEXITCODE\")",
+      "PowerShell(python _inspect_png.py)",
+      "PowerShell(python _try_png.py 2>$null)",
+      "PowerShell(python _verify_petals.py 2>$null)"
+    ]
+  }
+}
