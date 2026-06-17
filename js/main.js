@@ -169,6 +169,7 @@
       const on = i === idx;
       s.setAttribute("aria-hidden", on ? "false" : "true");
       s.classList.toggle("is-active", on);
+      s.tabIndex = on ? 0 : -1;
     });
     pagerDots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
     // hiệu ứng quét ngang khi đổi stage
@@ -177,6 +178,144 @@
     stageEl.classList.add("is-switching");
     setTimeout(() => stageEl.classList.remove("is-switching"), 420);
   }
+
+  /* =========================================================
+     SYSTEM DIAGNOSTIC MODAL (sản phẩm)
+  ========================================================= */
+  const gameModal = document.getElementById("gameModal");
+  const gameModalBox = document.getElementById("gameModalBox");
+  const gameModalContent = document.getElementById("gameModalContent");
+  const gameModalClose = document.getElementById("gameModalClose");
+  let lastModalTrigger = null;
+
+  function escHTML(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    })[ch]);
+  }
+
+  function diagnosticHTML(game) {
+    const modal = game.modal || {};
+    const video = modal.video || {};
+    const lore = modal.lore || {};
+    const party = modal.party || [];
+    const repository = modal.repository || {};
+    const gameIndex = PRODUCTS.findIndex((item) => item.id === game.id);
+    const placeholderArt = typeof coverArt === "function" ? coverArt(game.cover, Math.max(0, gameIndex)) : "";
+    const mediaHTML = video.src
+      ? (video.kind === "iframe"
+        ? `<iframe class="diag-video__media" src="${escHTML(video.src)}" title="${escHTML(game.title)} gameplay demo" allowfullscreen loading="lazy"></iframe>`
+        : `<video class="diag-video__media" src="${escHTML(video.src)}" ${game.screenshot ? `poster="${escHTML(game.screenshot)}"` : ""} controls playsinline preload="metadata"></video>`)
+      : `<div class="diag-video__placeholder">${placeholderArt}<span class="diag-video__label font-display">${escHTML(video.label || "GAMEPLAY DEMO SIGNAL")}</span></div>`;
+
+    return `
+      <header class="diag-hero diag-hero--page">
+        <div>
+          <div class="diag-kicker font-display">GAME DATA CARTRIDGE</div>
+          <h2 id="gameModalTitle" class="diag-title font-display">${escHTML(game.title)}</h2>
+          <div class="diag-meta">
+            <span>${escHTML(game.type)}</span>
+            <span>${escHTML(game.year)}</span>
+            ${(game.tags || []).map((tag) => `<span>${escHTML(tag)}</span>`).join("")}
+          </div>
+        </div>
+        <div class="diag-rank font-display">
+          <span>CURRENT STAGE RANK</span>
+          <strong>${escHTML(modal.rank || game.status)}</strong>
+        </div>
+      </header>
+
+      <section class="diag-video">
+        <div class="diag-video__cabinet">
+          <div class="diag-video__screen">
+            ${mediaHTML}
+            <span class="diag-video__scan" aria-hidden="true"></span>
+          </div>
+          <div class="diag-video__plate">
+            <span class="font-display">VIDEO DEMO HERO FRAME</span>
+            <small>${escHTML(video.caption || "Gameplay footage placeholder")}</small>
+          </div>
+        </div>
+      </section>
+
+      <div class="diag-page-grid">
+        <section class="diag-panel diag-lore">
+          <span class="diag-section__label font-display">${escHTML(lore.title || "QUEST DESCRIPTION")}</span>
+          ${lore.origin ? `<p class="diag-lore__origin">${escHTML(lore.origin)}</p>` : ""}
+          ${(lore.points && lore.points.length)
+            ? `<ul class="diag-lore__list">${lore.points.map((point) => `<li>${escHTML(point)}</li>`).join("")}</ul>`
+            : `<p>${escHTML(lore.text || game.desc)}</p>`}
+          ${lore.context ? `<p>${escHTML(lore.context)}</p>` : ""}
+        </section>
+
+        <section class="diag-panel diag-party">
+          <span class="diag-section__label font-display">PARTY ROSTER / CONTRIBUTORS</span>
+          ${modal.rosterNote ? `<div class="diag-party__alert font-display">${escHTML(modal.rosterNote)}</div>` : ""}
+          ${party.map((member) => `
+            <div class="diag-party__member">
+              <strong class="font-display">${escHTML(member.role || member.className || "[DEV]")}</strong>
+              <span>${escHTML(member.name)}</span>
+              <p>${escHTML(member.contribution)}</p>
+            </div>
+          `).join("")}
+        </section>
+      </div>
+
+      ${repository.url ? `
+        <section class="diag-panel diag-repo">
+          <span class="diag-section__label font-display">${escHTML(repository.label || "SOURCE CODE ACCESS")}</span>
+          <a class="diag-repo__link font-display" href="${escHTML(repository.url)}" target="_blank" rel="noopener noreferrer">
+            <span>RUN://OPEN_REPOSITORY</span>
+            <strong>${escHTML(repository.url)}</strong>
+          </a>
+        </section>
+      ` : ""}
+    `;
+  }
+
+  function openGameModal(gameId) {
+    const game = PRODUCTS.find((item) => item.id === gameId);
+    if (!game || !gameModal || !gameModalContent) return;
+    lastModalTrigger = document.activeElement;
+    gameModalContent.innerHTML = diagnosticHTML(game);
+    gameModalContent.scrollTop = 0;
+    gameModal.classList.add("is-open");
+    gameModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    requestAnimationFrame(() => gameModalClose && gameModalClose.focus());
+  }
+
+  function closeGameModal() {
+    if (!gameModal || !gameModal.classList.contains("is-open")) return;
+    gameModal.classList.remove("is-open");
+    gameModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    if (lastModalTrigger && typeof lastModalTrigger.focus === "function") {
+      lastModalTrigger.focus();
+    }
+  }
+
+  window.openGameModal = openGameModal;
+  window.closeGameModal = closeGameModal;
+
+  if (gameModalClose) gameModalClose.addEventListener("click", closeGameModal);
+  if (gameModal) {
+    gameModal.addEventListener("click", (e) => {
+      if (!gameModalBox || gameModalBox.contains(e.target)) return;
+      closeGameModal();
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    const card = e.target.closest && e.target.closest(".prod-slide");
+    if (!card || !["Enter", " "].includes(e.key)) return;
+    e.preventDefault();
+    card.click();
+  });
 
   /* ---- Pixel vàng bay lên từ chữ highlight ở title screen ---- */
   (function initIntroParticles() {
@@ -455,6 +594,7 @@
 
   let wheelLock = false;
   window.addEventListener("wheel", (e) => {
+    if (document.body.classList.contains("modal-open")) return;
     const sc = cardScroll();
     if (sc && ((e.deltaY > 0 && !sc.atBottom) || (e.deltaY < 0 && !sc.atTop))) {
       return;                       // để trình duyệt cuộn nội dung trong slide
@@ -470,13 +610,16 @@
   // Touch
   let touchStartY = null;
   window.addEventListener("touchstart", (e) => {
+    if (document.body.classList.contains("modal-open")) return;
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
   window.addEventListener("touchmove", (e) => {
+    if (document.body.classList.contains("modal-open")) return;
     // chỉ khóa cuộn khi slide KHÔNG tự cuộn được; ngược lại cho vuốt cuộn nội dung
     if (!cardScroll()) e.preventDefault();
   }, { passive: false });
   window.addEventListener("touchend", (e) => {
+    if (document.body.classList.contains("modal-open")) return;
     if (touchStartY === null) return;
     const dy = touchStartY - e.changedTouches[0].clientY;
     const sc = cardScroll();
@@ -491,6 +634,13 @@
 
   // Keyboard
   window.addEventListener("keydown", (e) => {
+    if (document.body.classList.contains("modal-open")) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeGameModal();
+      }
+      return;
+    }
     if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); next(); }
     if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); prev(); }
     if (e.key === "Home") goTo(0);

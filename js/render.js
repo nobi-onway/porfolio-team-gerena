@@ -11,10 +11,10 @@
 
 /* ---- Meta từng slide (header đọc để gõ tiêu đề) ---- */
 const SLIDE_META = [
-  { title: "Thiên Di Studio", sub: "TEAM PORTFOLIO" },
-  { title: "Sản Phẩm",        sub: "STAGE SELECT" },
-  { title: "Quy Trình",       sub: "QUEST LOG" },
-  { title: "Hành Trang",      sub: "INVENTORY" },
+  { title: "Thien Di Studio", sub: "TEAM PORTFOLIO" },
+  { title: "Products",        sub: "STAGE SELECT" },
+  { title: "Process",         sub: "QUEST LOG" },
+  { title: "Inventory",       sub: "INVENTORY" },
 ];
 
 /* =========================================================
@@ -205,6 +205,13 @@ function coverArt(kind, idx) {
   `;
 }
 
+function productCoverHTML(product, idx) {
+  if (product.screenshot) {
+    return `<img class="prod-cover-img" src="${product.screenshot}" alt="${product.title} screenshot" draggable="false"/>`;
+  }
+  return coverArt(product.cover || "birds", idx);
+}
+
 /* =========================================================
    SLIDE 0 — HOOK: "CHÚNG TÔI LÀ" + tagline + ẢNH HẬU TRƯỜNG
    Cụm ảnh polaroid Đông Sơn: ảnh giữ MÀU GỐC, viền đồng + scanline
@@ -274,7 +281,7 @@ function crewFigs() {
    giống hệt để cuộn liền mạch không gợn. */
 function introReelHTML() {
   const ART = ["mountain", "boat", "birds"];
-  const caps = ["Brainstorm", "Dựng prototype", "Playtest"];
+  const caps = ["Brainstorm", "Prototype build", "Playtest"];
   const base = (TEAM.photos && TEAM.photos.length)
     ? TEAM.photos
     : ART.map((art, i) => ({ art, caption: caps[i] || "" }));
@@ -286,7 +293,7 @@ function introReelHTML() {
 
   const frame = (p) => {
     const media = p.src
-      ? `<img class="ttl-reel__img" src="${p.src}" alt="${p.caption || "Ảnh hậu trường team"}" draggable="false"/>`
+      ? `<img class="ttl-reel__img" src="${p.src}" alt="${p.caption || "Team behind-the-scenes photo"}" draggable="false"/>`
       : `<div class="ttl-reel__art">${coverArt(p.art || "birds", 0)}</div>`;
     const cap = p.caption ? `<span class="ttl-reel__cap">${p.caption}</span>` : "";
     return `<div class="ttl-reel__frame">${media}${cap}</div>`;
@@ -294,7 +301,7 @@ function introReelHTML() {
 
   return `
     <div class="ttl-reel fx fx-wipe" style="--d:1.25s">
-      <span class="prod-status ttl-reel__badge font-display">HẬU TRƯỜNG</span>
+      <span class="prod-status ttl-reel__badge font-display">BEHIND THE SCENES</span>
       <div class="ttl-reel__viewport">
         <div class="ttl-reel__track">${seq.map(frame).join("")}</div>
       </div>
@@ -337,38 +344,34 @@ function productsCardHTML() {
     <div class="ps-wrap w-full max-w-[1100px] mx-auto px-8 md:px-12">
       <header class="ps-head">
         <div class="arc-label font-display fx fx-track" style="--d:0.1s">— STAGE SELECT —</div>
-        <h2 class="ps-title font-display fx fx-rise" style="--d:0.28s">SẢN PHẨM CỦA TEAM</h2>
+        <h2 class="ps-title font-display fx fx-rise" style="--d:0.28s">TEAM PRODUCTS</h2>
       </header>
 
       <div class="prod-stage fx fx-wipe" style="--d:0.5s" data-prod-current="0">
         <div class="prod-slides">
           ${PRODUCTS.map((p, i) => `
-            <article class="prod-slide ${i === 0 ? "is-active" : ""}" aria-hidden="${i === 0 ? "false" : "true"}">
+            <article class="prod-slide group cursor-pointer ${i === 0 ? "is-active" : ""}"
+                     aria-hidden="${i === 0 ? "false" : "true"}"
+                     role="button"
+                     tabindex="${i === 0 ? "0" : "-1"}"
+                     data-game-id="${p.id}"
+                     onclick="openGameModal('${p.id}')">
               <div class="prod-frame">
-                ${coverArt(p.cover, i)}
-                <span class="prod-frame__corner tl"></span>
-                <span class="prod-frame__corner tr"></span>
-                <span class="prod-frame__corner bl"></span>
-                <span class="prod-frame__corner br"></span>
+                ${productCoverHTML(p, i)}
+                <span class="prod-frame__corner tl group-hover:animate-pulse"></span>
+                <span class="prod-frame__corner tr group-hover:animate-pulse"></span>
+                <span class="prod-frame__corner bl group-hover:animate-pulse"></span>
+                <span class="prod-frame__corner br group-hover:animate-pulse"></span>
                 <span class="prod-status font-display">${p.status}</span>
               </div>
               <div class="prod-info">
                 <div class="prod-info__head">
                   <div class="prod-info__stage font-display">STAGE ${i + 1}</div>
-                  <h3 class="prod-info__title font-display">${p.title}</h3>
-                  <div class="prod-info__meta">
-                    <span class="prod-info__role">${p.type}</span>
-                    <span class="prod-info__sep">◆</span>
-                    <span class="prod-info__year">${p.year}</span>
-                  </div>
+                  <h3 class="prod-info__title font-display group-hover:text-seal">${p.title}</h3>
                 </div>
                 <p class="prod-info__contrib">${p.desc}</p>
                 <div class="prod-info__tags">
                   ${p.tags.map(t => `<span class="prod-tag">${t}</span>`).join("")}
-                </div>
-                <div class="prod-info__metric">
-                  <span class="prod-info__metric-seal">★</span>
-                  <span>${p.metric}</span>
                 </div>
               </div>
             </article>
@@ -376,7 +379,7 @@ function productsCardHTML() {
         </div>
 
         <div class="prod-pager">
-          <button class="prod-pager__arrow" type="button" data-prod-prev aria-label="Sản phẩm trước">‹</button>
+          <button class="prod-pager__arrow" type="button" data-prod-prev aria-label="Previous product">‹</button>
           <div class="prod-pager__dots">
             ${PRODUCTS.map((p, i) => `
               <button class="prod-pager__dot ${i === 0 ? "is-active" : ""}" type="button"
@@ -385,7 +388,7 @@ function productsCardHTML() {
               </button>
             `).join("")}
           </div>
-          <button class="prod-pager__arrow" type="button" data-prod-next aria-label="Sản phẩm sau">›</button>
+          <button class="prod-pager__arrow" type="button" data-prod-next aria-label="Next product">›</button>
         </div>
       </div>
     </div>
@@ -504,7 +507,7 @@ function processCardHTML() {
     <div class="qm-wrap w-full max-w-[1180px] mx-auto px-8 md:px-12">
       <header class="qm-head">
         <div class="arc-label font-display fx fx-track" style="--d:0.1s">— QUEST LOG —</div>
-        <h2 class="qm-title font-display fx fx-rise" style="--d:0.28s">CÁCH CHÚNG TÔI LÀM GAME</h2>
+        <h2 class="qm-title font-display fx fx-rise" style="--d:0.28s">HOW WE MAKE GAMES</h2>
       </header>
 
       <ol class="qm-path">
@@ -524,7 +527,7 @@ function processCardHTML() {
       ${dsBand("qm-band fx fx-draw", "--d:1.3s")}
 
       <div class="qm-loop">
-        <div class="qm-loop__label font-display fx fx-track" style="--d:1.45s">GIẢI QUYẾT VẤN ĐỀ</div>
+        <div class="qm-loop__label font-display fx fx-track" style="--d:1.45s">PROBLEM SOLVING</div>
         <div class="qm-loop__grid">
           ${PROCESS_LOOP.map((l, i) => `
             <div class="qm-rule fx fx-rise" style="--d:${(1.55 + i * 0.14).toFixed(2)}s">
@@ -598,8 +601,8 @@ function arsenalCardHTML() {
 
     <div class="inv-wrap w-full max-w-[1100px] mx-auto px-8 md:px-12">
       <header class="inv-head">
-        <div class="arc-label font-display fx fx-track" style="--d:0.1s">— HÀNH TRANG —</div>
-        <h2 class="inv-title font-display fx fx-rise" style="--d:0.28s">CHÚNG TÔI ĐÃ CHUẨN BỊ GÌ</h2>
+        <div class="arc-label font-display fx fx-track" style="--d:0.1s">— INVENTORY —</div>
+        <h2 class="inv-title font-display fx fx-rise" style="--d:0.28s">WHAT WE BRING TO THE JAM</h2>
       </header>
 
       <div class="inv-body">
@@ -618,10 +621,10 @@ function renderSlides(stage, navDots, onDotClick) {
   track.id = "cardTrack";
 
   const slides = [
-    { cls: "member-card--title",    html: titleCardHTML(),    dot: "Mở Đầu" },
-    { cls: "member-card--products", html: productsCardHTML(), dot: "Sản Phẩm" },
-    { cls: "member-card--process",  html: processCardHTML(),  dot: "Quy Trình" },
-    { cls: "member-card--arsenal",  html: arsenalCardHTML(),  dot: "Hành Trang" },
+    { cls: "member-card--title",    html: titleCardHTML(),    dot: "Opening" },
+    { cls: "member-card--products", html: productsCardHTML(), dot: "Products" },
+    { cls: "member-card--process",  html: processCardHTML(),  dot: "Process" },
+    { cls: "member-card--arsenal",  html: arsenalCardHTML(),  dot: "Inventory" },
   ];
 
   slides.forEach((s, i) => {
@@ -634,7 +637,7 @@ function renderSlides(stage, navDots, onDotClick) {
     const dot = document.createElement("button");
     dot.className = "nav-dot";
     dot.dataset.name = s.dot;
-    dot.setAttribute("aria-label", "Tới " + s.dot);
+    dot.setAttribute("aria-label", "Go to " + s.dot);
     dot.addEventListener("click", () => onDotClick(i));
     navDots.appendChild(dot);
   });

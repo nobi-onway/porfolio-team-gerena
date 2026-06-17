@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THIÊN DI STUDIO — Team Portfolio</title>
+  <title>THIEN DI STUDIO — Team Portfolio</title>
 
   <!-- Tailwind CSS (CDN) + cấu hình theme -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -103,7 +103,7 @@
           fill="#C8AA6E" />
       </svg>
       <div class="leading-tight">
-        <div class="font-display text-ink text-lg md:text-xl font-bold tracking-widest">THIÊN DI</div>
+        <div class="font-display text-ink text-lg md:text-xl font-bold tracking-widest">THIEN DI</div>
         <div class="text-[10px] tracking-[0.4em] text-ink/50">GAME STUDIO</div>
       </div>
     </div>
@@ -148,7 +148,7 @@
   <!-- ===== Scroll hint ===== -->
   <div id="scrollHint"
     class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 no-select transition-opacity duration-500">
-    <span class="text-[11px] tracking-[0.3em] text-ink/50">CUỘN ĐỂ KHÁM PHÁ</span>
+    <span class="text-[11px] tracking-[0.3em] text-ink/50">SCROLL TO EXPLORE</span>
     <!-- Con chuột máy tính: con lăn đỏ chạy lên xuống -->
     <svg class="mouse-hint" width="22" height="34" viewBox="0 0 24 38" fill="none" aria-hidden="true">
       <rect x="1" y="1" width="22" height="36" rx="11" fill="none" stroke="#C8AA6E" stroke-width="1.6" />
@@ -165,8 +165,23 @@
           points="20,4 21.7,13.7 28,6.1 24.6,15.4 33.9,12 26.3,18.3 36,20 26.3,21.7 33.9,28 24.6,24.6 28,33.9 21.7,26.3 20,36 18.3,26.3 12,33.9 15.4,24.6 6.1,28 13.7,21.7 4,20 13.7,18.3 6.1,12 15.4,15.4 12,6.1 18.3,13.7"
           fill="#C8AA6E" />
       </svg>
-      <div class="font-display text-gold tracking-[0.4em] text-sm">ĐANG KHỞI ĐỘNG...</div>
+      <div class="font-display text-gold tracking-[0.4em] text-sm">BOOTING...</div>
     </div>
+  </div>
+
+  <!-- ===== System Diagnostic Modal ===== -->
+  <div id="gameModal"
+    class="fixed inset-0 z-[90] bg-black/80 backdrop-blur-md flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300"
+    aria-hidden="true">
+    <section id="gameModalBox"
+      class="diag-modal w-[80vw] h-[80vh] opacity-0 scale-95 pointer-events-none transition-all duration-300"
+      role="dialog" aria-modal="true" aria-labelledby="gameModalTitle">
+      <div class="diag-modal__bar">
+        <span class="diag-modal__status font-display">● SYSTEM_DIAGNOSTIC_RUNNING...</span>
+        <button id="gameModalClose" class="diag-modal__close font-display" type="button">[ESC] CLOSE_</button>
+      </div>
+      <div id="gameModalContent" class="diag-modal__content overflow-y-auto"></div>
+    </section>
   </div>
 
   <!-- ===== Scripts (thứ tự: data -> render -> scenery -> main) ===== -->
