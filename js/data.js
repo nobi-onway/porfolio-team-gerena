@@ -86,9 +86,9 @@ const PRODUCTS = [
         ],
       },
       party: [
-        { role: "[ARTIST]", name: "Hằng, Giang, Khuyên", contribution: "Built the clown memory visuals, mood boards, character reads, and emotional mask language." },
-        { role: "[DEV]", name: "Khoa, Tấn, Bảo", contribution: "Implemented platforming, level flow, interaction triggers, build stability, and final demo packaging." },
-        { role: "[DESIGNER]", name: "Thiên", contribution: "Shaped narrative beats, memory chapter pacing, puzzle readability, and supporting gameplay scripts." },
+        { role: "[ARTIST]", name: "Hằng, Khuyên, Giang", contribution: "Built the clown memory visuals, mood boards, character reads, and emotional mask language." },
+        { role: "[DEV]", name: "Bảo, Thiên, Khoa + 1 other dev", contribution: "Implemented platforming, level flow, interaction triggers, build stability, and final demo packaging." },
+        { role: "[DESIGNER]", name: "Thiên, Hằng", contribution: "Shaped the game design, narrative beats, memory chapter pacing, and puzzle readability." },
       ],
       rosterNote: "CURRENT ACTIVE SQUAD OVERLAP: Hằng, Giang, Khoa, Bảo, and Thiên are the core members representing the active Garena Game Jam lineup.",
     },
@@ -96,15 +96,15 @@ const PRODUCTS = [
   {
     id: "feel",
     title: "FEEL",
-    type: "Arcade / Casual",
+    type: "Puzzle Platformer",
     year: "2025",
     status: "COMPLETED",
     cover: "boat",
     screenshot: gameAsset("FEEL", "Screenshot"),
     desc:
-      "A completed arcade-casual jam game created for the official Gameloft Game Jam 2025.",
-    tags: ["Arcade", "Casual", "Game Jam"],
-    metric: "Completed competition build with concise arcade loops and fast onboarding.",
+      "A Puzzle + Platform game that turns emotion into mechanics, following Lino's journey from numbness to empathy.",
+    tags: ["Unity", "C#", "Puzzle", "Platformer", "Emotion"],
+    metric: "Best Choice & Top 2 - Gameloft Gamedev Mentorship 2025.",
     modal: {
       rank: "STAGE: COMPLETED",
       repository: {
@@ -119,16 +119,17 @@ const PRODUCTS = [
       },
       lore: {
         title: "QUEST DESCRIPTION",
-        origin: "Created for the official Gameloft Game Jam 2025 competition.",
+        origin: "Built over 3+ months by the 3-person team HQ, powered by Unity & C#.",
         points: [
-          "LOG_UNLOCKED: Diagnostic narrative array pending encryption.",
-          "Arcade-first pacing keeps input, feedback, and replay cadence readable for judges.",
-          "The project proves the team can finish a compact competition build under pressure.",
+          "FEEL turns emotion into mechanics through Lino's journey from numbness to empathy.",
+          "An Emotion-Element system, mini-game mechanics, and 3 challenging Bosses were forged through countless sleepless nights.",
+          "More than code and art, it is the heart to believe in one daring idea.",
+          "The result: Best Choice & Top 2 - Gameloft Gamedev Mentorship 2025.",
         ],
       },
       party: [
-        { role: "[ARTIST]", name: "Hằng", contribution: "Produced the core visual pass, quick-read art language, and presentation-ready screenshots." },
-        { role: "[DEV]", name: "Khoa, Thịnh", contribution: "Built gameplay implementation, arcade loop stability, interaction timing, and final competition packaging." },
+        { role: "[ARTIST]", name: "Hằng", contribution: "Produced the emotional visual direction, character reads, and presentation-ready art language." },
+        { role: "[DEV]", name: "Khoa + 1 other dev", contribution: "Built the Unity/C# gameplay systems, Emotion-Element mechanics, boss encounters, and final competition build." },
       ],
       rosterNote: "CURRENT ACTIVE SQUAD OVERLAP: Hằng, Giang, Khoa, Bảo, and Thiên are the core members representing the active Garena Game Jam lineup.",
     },
@@ -142,9 +143,9 @@ const PRODUCTS = [
     cover: "birds",
     screenshot: gameAsset("HoiQuan", "Screenshot"),
     desc:
-      "A strategy-puzzle qualifier demo built specifically for the Gameloft Game Jam 2025 qualifying round.",
-    tags: ["Strategy", "Puzzle", "Qualifier"],
-    metric: "Qualifier-ready demo focused on tactical clarity, readable turns, and fast judge comprehension.",
+      'A puzzle game that breathes new life into the Vietnamese folk game "Ô Ăn Quan", set on a journey to recover lost memories.',
+    tags: ["Strategy", "Puzzle", "Vietnamese Folklore", "Memory"],
+    metric: "Easy to play yet hard to master, nostalgic yet fresh.",
     modal: {
       rank: "STAGE: QUALIFIER DEMO",
       repository: {
@@ -159,16 +160,16 @@ const PRODUCTS = [
       },
       lore: {
         title: "QUEST DESCRIPTION",
-        origin: "Developed specifically for the Qualifying Round of the Gameloft Game Jam 2025.",
+        origin: 'Inspired by the Vietnamese folk game "Ô Ăn Quan" and reimagined as a memory-recovery puzzle journey.',
         points: [
-          "LOG_UNLOCKED: Diagnostic narrative array pending encryption.",
-          "Strategy-puzzle structure emphasizes tactical reads, decision pressure, and judge-friendly pacing.",
-          "The qualifier demo shows the team can communicate systems quickly with limited runtime.",
+          "Every board is a logic puzzle: count each step of stamina and pick the right stone to reach the memory fragment.",
+          "A rich arsenal of Power Stones - teleport, swap, clone, freeze - opens up countless creative solutions.",
+          "Easy to play yet hard to master, nostalgic yet fresh, it wins players over with both mind and heart.",
         ],
       },
       party: [
-        { role: "[ARTIST]", name: "Hằng", contribution: "Created the visual direction, tactical board readability, and qualifier presentation assets." },
-        { role: "[DEV]", name: "Khoa, Thịnh", contribution: "Implemented core strategy interactions, puzzle flow, technical stability, and demo packaging." },
+        { role: "[ARTIST]", name: "Hằng", contribution: "Created the nostalgic visual direction, board readability, and memory-fragment presentation assets." },
+        { role: "[DEV]", name: "Khoa + 1 other dev", contribution: "Implemented the puzzle rules, stamina counting, Power Stone interactions, technical stability, and demo packaging." },
       ],
       rosterNote: "CURRENT ACTIVE SQUAD OVERLAP: Hằng, Giang, Khoa, Bảo, and Thiên are the core members representing the active Garena Game Jam lineup.",
     },
