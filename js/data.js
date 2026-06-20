@@ -31,11 +31,8 @@ const TEAM = {
 };
 
 const GAME_ASSET_FILES = [
-  "Under The Smile Demo.mp4",
   "Under The Smile Screenshot.jpg",
-  "FEEL Demo.mp4",
   "FEEL Screenshot.jpg",
-  "HoiQuan Demo.mp4",
   "HoiQuan Screenshot.jpg",
 ];
 
@@ -70,10 +67,10 @@ const PRODUCTS = [
         url: "https://github.com/vudkhoa/GlobalGameJam2026",
       },
       video: {
-        kind: "video",
-        src: gameAsset("Under The Smile", "Demo"),
+        kind: "iframe",
+        src: "https://www.youtube.com/embed/dZttaJ9npJc",
         label: "MASK MEMORY DEMO",
-        caption: "Gameplay showcase matched from assets/Under The Smile Demo.mp4.",
+        caption: "Gameplay showcase hosted on YouTube.",
       },
       lore: {
         title: "QUEST DESCRIPTION",
@@ -112,10 +109,10 @@ const PRODUCTS = [
         url: "https://github.com/vudkhoa/EmotionPuzzle.git",
       },
       video: {
-        kind: "video",
-        src: gameAsset("FEEL", "Demo"),
+        kind: "iframe",
+        src: "https://www.youtube.com/embed/Ae6QrM4dB3U",
         label: "FEEL DEMO SIGNAL",
-        caption: "Gameplay showcase matched from assets/FEEL Demo.mp4.",
+        caption: "Gameplay showcase hosted on YouTube.",
       },
       lore: {
         title: "QUEST DESCRIPTION",
@@ -153,10 +150,10 @@ const PRODUCTS = [
         url: "https://github.com/vudkhoa/HoiQuan.git",
       },
       video: {
-        kind: "video",
-        src: gameAsset("HoiQuan", "Demo"),
+        kind: "iframe",
+        src: "https://www.youtube.com/embed/VZkSSD93AOY",
         label: "HOI QUAN DEMO SIGNAL",
-        caption: "Gameplay showcase matched from assets/HoiQuan Demo.mp4.",
+        caption: "Gameplay showcase hosted on YouTube.",
       },
       lore: {
         title: "QUEST DESCRIPTION",
