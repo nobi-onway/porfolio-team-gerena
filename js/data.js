@@ -1,5 +1,5 @@
 /* =========================================================
-   DỮ LIỆU NỘI DUNG — THIÊN DI STUDIO
+   DỮ LIỆU NỘI DUNG — NPC STUDIO
    Cấu trúc 3 slide:
      · HOOK          — "CHÚNG TÔI LÀ" + tagline + showreel (TEAM)
      · STAGE SELECT  — sản phẩm của team (PRODUCTS)
@@ -10,7 +10,7 @@
 ========================================================= */
 
 const TEAM = {
-  name: "THIEN DI",
+  name: "NPC",
   sub: "GAME STUDIO",
   // Câu hook lớn trên slide mở đầu
   hook: "WE ARE",
