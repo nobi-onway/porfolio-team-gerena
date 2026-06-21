@@ -11,7 +11,7 @@
 
 /* ---- Meta từng slide (header đọc để gõ tiêu đề) ---- */
 const SLIDE_META = [
-  { title: "Thien Di Studio", sub: "TEAM PORTFOLIO" },
+  { title: "NPC Studio", sub: "TEAM PORTFOLIO" },
   { title: "Products",        sub: "STAGE SELECT" },
   { title: "Process",         sub: "QUEST LOG" },
   { title: "Inventory",       sub: "INVENTORY" },
