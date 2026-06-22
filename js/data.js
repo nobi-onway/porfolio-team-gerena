@@ -28,6 +28,8 @@ const TEAM = {
     { src: "img/gamejam2.jpg", caption: "Game jam" },
     { src: "img/gamejam3.jpg", caption: "Kick off" },
     { src: "img/gamejam4.jpg", caption: "Pitching" },
+    { src: "img/gameloft-gamejam.jpg", caption: "GameLoft" },
+    { src: "img/gameloft.jpg", caption: "GameLoft" },
   ],
 };
 
