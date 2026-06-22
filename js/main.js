@@ -247,8 +247,8 @@
           <span class="diag-section__label font-display">${escHTML(lore.title || "QUEST DESCRIPTION")}</span>
           ${lore.origin ? `<p class="diag-lore__origin">${escHTML(lore.origin)}</p>` : ""}
           ${(lore.points && lore.points.length)
-            ? `<ul class="diag-lore__list">${lore.points.map((point) => `<li>${escHTML(point)}</li>`).join("")}</ul>`
-            : `<p>${escHTML(lore.text || game.desc)}</p>`}
+        ? `<ul class="diag-lore__list">${lore.points.map((point) => `<li>${escHTML(point)}</li>`).join("")}</ul>`
+        : `<p>${escHTML(lore.text || game.desc)}</p>`}
           ${lore.context ? `<p>${escHTML(lore.context)}</p>` : ""}
         </section>
 

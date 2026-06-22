@@ -7,18 +7,28 @@
 ========================================================= */
 
 :root {
-  --ink: #F0E6D3;           /* text: giấy dó ấm */
-  --ink-soft: #C8AA6E;      /* text secondary: vàng đồng */
-  --paper: #000000;         /* bg: đen tuyền */
+  --ink: #F0E6D3;
+  /* text: giấy dó ấm */
+  --ink-soft: #C8AA6E;
+  /* text secondary: vàng đồng */
+  --paper: #000000;
+  /* bg: đen tuyền */
   --paper-2: #0d0b08;
-  --seal: #BE1E37;          /* đỏ son */
+  --seal: #BE1E37;
+  /* đỏ son */
   --seal-dark: #8C1528;
-  --gold: #C8AA6E;          /* vàng đồng */
-  --bronze: #8B6914;        /* đồng sậm */
+  --gold: #C8AA6E;
+  /* vàng đồng */
+  --bronze: #8B6914;
+  /* đồng sậm */
   /* Màu TRỐNG ĐỒNG — vàng đồng sáng hơn 1 bậc so với --gold để đủ sắc độ
      đối trọng với ảnh nền rực bên phải.
      Đổi màu trống chỉ cần sửa biến này (+ filter #birdDrum trong index.html). */
   --drum: #DCC08A;
+
+  /* ===== CONFIG: Nền gradient dọc (.bg-paper) — đổi 2 màu tại đây ===== */
+  --bg-gradient-top: #070304;
+  --bg-gradient-bottom: #3F101C;
 }
 
 * {
@@ -31,7 +41,8 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;            /* KHÓA scroll x & y */
+  overflow: hidden;
+  /* KHÓA scroll x & y */
   background: var(--paper);
   color: var(--ink);
   font-family: 'Be Vietnam Pro', sans-serif;
@@ -43,7 +54,7 @@ body {
   background:
     radial-gradient(ellipse 70% 55% at 18% 10%, rgba(200, 170, 110, 0.05), transparent 55%),
     radial-gradient(ellipse 75% 60% at 86% 86%, rgba(190, 30, 55, 0.04), transparent 55%),
-    #000000;
+    linear-gradient(to bottom, var(--bg-gradient-top), var(--bg-gradient-bottom));
 }
 
 .bg-paper::after {
@@ -92,8 +103,13 @@ body {
 }
 
 /* ===== Tiện ích ===== */
-.text-ink { color: var(--ink); }
-.text-seal { color: var(--seal); }
+.text-ink {
+  color: var(--ink);
+}
+
+.text-seal {
+  color: var(--seal);
+}
 
 .no-select {
   user-select: none;
@@ -117,9 +133,18 @@ body {
   margin: 6px auto;
 }
 
-.dsband line { stroke: rgba(200, 170, 110, 0.4); }
-.dsband__tri polygon { fill: rgba(200, 170, 110, 0.45); }
-.dsband__dot { stroke: rgba(200, 170, 110, 0.55); fill: rgba(200, 170, 110, 0.7); }
+.dsband line {
+  stroke: rgba(200, 170, 110, 0.4);
+}
+
+.dsband__tri polygon {
+  fill: rgba(200, 170, 110, 0.45);
+}
+
+.dsband__dot {
+  stroke: rgba(200, 170, 110, 0.55);
+  fill: rgba(200, 170, 110, 0.7);
+}
 
 /* =========================================================
    HỆ ANIMATION XUẤT HIỆN (.fx) — kích hoạt khi card .active
@@ -156,6 +181,7 @@ body {
     opacity: 0;
     transform: translateY(40px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -167,10 +193,12 @@ body {
     opacity: 0;
     transform: scale(0.55) translateY(14px);
   }
+
   70% {
     opacity: 1;
     transform: scale(1.05);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -182,10 +210,12 @@ body {
     opacity: 1;
     clip-path: inset(0 100% 0 0);
   }
+
   99% {
     opacity: 1;
     clip-path: inset(0 0 0 0);
   }
+
   /* trả clip về none sau khi quét xong — để phần tử con (người que,
      góc đỏ bay ra ngoài...) không bị xén tại mép khung */
   100% {
@@ -199,6 +229,7 @@ body {
     opacity: 0;
     transform: scaleX(0);
   }
+
   to {
     opacity: 1;
     transform: scaleX(1);
@@ -210,6 +241,7 @@ body {
     opacity: 0;
     letter-spacing: 0.75em;
   }
+
   to {
     opacity: 1;
     letter-spacing: 0.4em;
@@ -217,6 +249,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .member-card .fx,
   .member-card.active .fx-rise,
   .member-card.active .fx-pop,
@@ -256,10 +289,14 @@ body {
   height: 100vh;
   overflow: hidden;
   pointer-events: none;
-  display: none; /*tạm thời đóng */
+  display: none;
+  /*tạm thời đóng */
 }
 
-.scene-longwrap { width: 54vw; opacity: 0.82; }
+.scene-longwrap {
+  width: 54vw;
+  opacity: 0.82;
+}
 
 .scene-long {
   position: absolute;
@@ -272,7 +309,8 @@ body {
   transition:
     transform 1.25s cubic-bezier(0.7, 0, 0.2, 1),
     opacity 0.45s ease,
-    filter 0.45s ease;          /* BỪNG lên: nhanh */
+    filter 0.45s ease;
+  /* BỪNG lên: nhanh */
   will-change: transform;
   opacity: 0.9;
   filter: brightness(0.78) saturate(0.95);
@@ -337,12 +375,15 @@ body.is-reading .scene-birdimg {
   0% {
     transform: translateX(-18vw) translateY(0);
   }
+
   30% {
     transform: translateX(22vw) translateY(-26px);
   }
+
   60% {
     transform: translateX(62vw) translateY(10px);
   }
+
   100% {
     transform: translateX(112vw) translateY(-14px);
   }
@@ -378,7 +419,8 @@ body.is-reading .scene-birdimg {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 86px 0 56px;     /* chừa header + scroll hint */
+  padding: 86px 0 56px;
+  /* chừa header + scroll hint */
 }
 
 /* =========================================================
@@ -398,7 +440,8 @@ body.is-reading .scene-birdimg {
   transform: translate(-50%, -50%) rotate(var(--drum-rot, 0deg));
   transition:
     transform 1.25s cubic-bezier(0.34, 1.2, 0.4, 1),
-    opacity 0.45s ease;          /* BỪNG lên: nhanh */
+    opacity 0.45s ease;
+  /* BỪNG lên: nhanh */
   opacity: 0.68;
   will-change: transform;
 }
@@ -483,6 +526,7 @@ body.is-intro .member-name-wrap {
     opacity: 0;
     transform: translateY(0.22em) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -592,10 +636,24 @@ body.is-intro .member-name-wrap {
 }
 
 @keyframes mouseWheel {
-  0% { transform: translateY(0); opacity: 0; }
-  20% { opacity: 1; }
-  70% { transform: translateY(8px); opacity: 0; }
-  100% { transform: translateY(8px); opacity: 0; }
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  70% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -626,8 +684,15 @@ body.is-intro .member-name-wrap {
     transform: translateY(0) translateX(0) rotate(0deg);
     opacity: 0;
   }
-  10% { opacity: 0.65; }
-  90% { opacity: 0.55; }
+
+  10% {
+    opacity: 0.65;
+  }
+
+  90% {
+    opacity: 0.55;
+  }
+
   100% {
     transform: translateY(108vh) translateX(var(--drift, 40px)) rotate(360deg);
     opacity: 0;
@@ -675,7 +740,8 @@ body.is-intro .member-name-wrap {
   gap: 14px;
   width: 100%;
   max-width: 1020px;
-  margin: 0 auto 7vh;     /* đẩy cả khối nội dung LÊN TRÊN (card flex-center) */
+  margin: 0 auto 7vh;
+  /* đẩy cả khối nội dung LÊN TRÊN (card flex-center) */
   padding: 0 24px;
   text-align: center;
 }
@@ -709,6 +775,7 @@ body.is-intro .member-name-wrap {
     opacity: 0;
     transform: translateY(115%) rotate(5deg);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -716,6 +783,7 @@ body.is-intro .member-name-wrap {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .ttl-hook__ch,
   .member-card.active .ttl-hook__ch {
     animation: none !important;
@@ -751,7 +819,8 @@ body.is-intro .member-name-wrap {
   position: relative;
   width: min(940px, 94vw);
   margin-top: 6px;
-  padding-top: 84px;      /* vùng dành cho crew — không tràn lên nội dung trên */
+  padding-top: 84px;
+  /* vùng dành cho crew — không tràn lên nội dung trên */
 }
 
 /* Khung băng: lỗ phim trên (::before) + border + nền đen */
@@ -760,23 +829,25 @@ body.is-intro .member-name-wrap {
   overflow: hidden;
   background: #080604;
   border: 1.5px solid rgba(200, 170, 110, 0.4);
-  padding-top: 11px;     /* chừa dải lỗ phim trên */
+  padding-top: 11px;
+  /* chừa dải lỗ phim trên */
 }
 
 /* Dải lỗ phim Đông Sơn: nền đen + tick vàng đồng đều nhau */
 .ttl-reel__viewport::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 11px;
   z-index: 2;
   pointer-events: none;
   background-color: rgba(0, 0, 0, 0.9);
   background-image: repeating-linear-gradient(90deg,
-    transparent 0 4px,
-    rgba(200, 170, 110, 0.5) 4px 6px,
-    transparent 6px 18px
-  );
+      transparent 0 4px,
+      rgba(200, 170, 110, 0.5) 4px 6px,
+      transparent 6px 18px);
 }
 
 .ttl-reel__track {
@@ -789,7 +860,9 @@ body.is-intro .member-name-wrap {
   -webkit-user-select: none;
 }
 
-.ttl-reel__track:active { cursor: grabbing; }
+.ttl-reel__track:active {
+  cursor: grabbing;
+}
 
 .ttl-reel__frame {
   flex: 0 0 auto;
@@ -847,7 +920,8 @@ body.is-intro .member-name-wrap {
 ========================================================= */
 .ttl-crew {
   position: absolute;
-  top: 4px;               /* nằm trong vùng padding 84px — không đè nội dung trên */
+  top: 4px;
+  /* nằm trong vùng padding 84px — không đè nội dung trên */
   left: 0;
   right: 0;
   height: 76px;
@@ -868,7 +942,8 @@ body.is-intro .member-name-wrap {
 /* Badge "HẬU TRƯỜNG": nằm TRONG viewport góc trên-trái
    — hover thì nhấp nháy như đèn LIVE đang ghi hình */
 .ttl-reel__badge {
-  top: 98px;             /* 14px từ mép trên reel = 14px từ mép trong viewport */
+  top: 98px;
+  /* 14px từ mép trên reel = 14px từ mép trong viewport */
   left: 14px;
   z-index: 6;
 }
@@ -890,13 +965,29 @@ body.is-intro .member-name-wrap {
 }
 
 @keyframes reelLiveBlink {
-  0%, 100% { background: var(--seal); color: var(--ink); }
-  50%       { background: var(--seal-dark); color: rgba(240, 230, 211, 0.35); }
+
+  0%,
+  100% {
+    background: var(--seal);
+    color: var(--ink);
+  }
+
+  50% {
+    background: var(--seal-dark);
+    color: rgba(240, 230, 211, 0.35);
+  }
 }
 
 @keyframes reelDotBlink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }
 
 .ttl-crew__fig {
@@ -912,9 +1003,17 @@ body.is-intro .member-name-wrap {
   animation-play-state: paused;
 }
 
-.crew--point { transform-origin: 38px 27px; }
-.crew--draw  { transform-origin: 20px 26px; }
-.crew--type  { transform-origin: 44px 26px; }
+.crew--point {
+  transform-origin: 38px 27px;
+}
+
+.crew--draw {
+  transform-origin: 20px 26px;
+}
+
+.crew--type {
+  transform-origin: 44px 26px;
+}
 
 .ttl-reel:hover .crew--point {
   animation: crewPoint 1.4s ease-in-out infinite;
@@ -932,24 +1031,54 @@ body.is-intro .member-name-wrap {
 }
 
 @keyframes crewPoint {
-  0%, 100% { transform: rotate(0deg); }
-  40%       { transform: rotate(-16deg) translateY(-2px); }
-  70%       { transform: rotate(8deg); }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  40% {
+    transform: rotate(-16deg) translateY(-2px);
+  }
+
+  70% {
+    transform: rotate(8deg);
+  }
 }
 
 @keyframes crewDraw {
-  0%, 100% { transform: rotate(5deg); }
-  50%       { transform: rotate(-7deg) translateY(2px); }
+
+  0%,
+  100% {
+    transform: rotate(5deg);
+  }
+
+  50% {
+    transform: rotate(-7deg) translateY(2px);
+  }
 }
 
 @keyframes crewType {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(2px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(2px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ttl-crew { display: none; }
-  .crew-anim { animation: none !important; animation-play-state: paused !important; }
+  .ttl-crew {
+    display: none;
+  }
+
+  .crew-anim {
+    animation: none !important;
+    animation-play-state: paused !important;
+  }
 }
 
 /* ---- Chim Lạc (ảnh) bay trang trí trên intro ---- */
@@ -1039,6 +1168,7 @@ body.is-intro .member-name-wrap {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -1046,18 +1176,30 @@ body.is-intro .member-name-wrap {
 }
 
 /* nội dung cột info lần lượt trồi lên mỗi khi đổi stage */
-.member-card.active .prod-slide.is-active .prod-info > * {
+.member-card.active .prod-slide.is-active .prod-info>* {
   animation: fxRise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.member-card.active .prod-slide.is-active .prod-info > *:nth-child(1) { animation-delay: 0.06s; }
-.member-card.active .prod-slide.is-active .prod-info > *:nth-child(2) { animation-delay: 0.16s; }
-.member-card.active .prod-slide.is-active .prod-info > *:nth-child(3) { animation-delay: 0.26s; }
-.member-card.active .prod-slide.is-active .prod-info > *:nth-child(4) { animation-delay: 0.36s; }
+.member-card.active .prod-slide.is-active .prod-info>*:nth-child(1) {
+  animation-delay: 0.06s;
+}
+
+.member-card.active .prod-slide.is-active .prod-info>*:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.member-card.active .prod-slide.is-active .prod-info>*:nth-child(3) {
+  animation-delay: 0.26s;
+}
+
+.member-card.active .prod-slide.is-active .prod-info>*:nth-child(4) {
+  animation-delay: 0.36s;
+}
 
 @media (prefers-reduced-motion: reduce) {
+
   .prod-slide,
-  .member-card.active .prod-slide.is-active .prod-info > * {
+  .member-card.active .prod-slide.is-active .prod-info>* {
     animation: none !important;
   }
 }
@@ -1135,14 +1277,44 @@ body.is-intro .member-name-wrap {
 }
 
 @keyframes prodCornerBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.28; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.28;
+  }
 }
 
-.prod-frame__corner.tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
-.prod-frame__corner.tr { top: 6px; right: 6px; border-left: none; border-bottom: none; }
-.prod-frame__corner.bl { bottom: 6px; left: 6px; border-right: none; border-top: none; }
-.prod-frame__corner.br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+.prod-frame__corner.tl {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.prod-frame__corner.tr {
+  top: 6px;
+  right: 6px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.prod-frame__corner.bl {
+  bottom: 6px;
+  left: 6px;
+  border-right: none;
+  border-top: none;
+}
+
+.prod-frame__corner.br {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+}
 
 /* nhãn trạng thái — ô đỏ son góc trên trái */
 .prod-status {
@@ -1352,6 +1524,7 @@ body.is-intro .member-name-wrap {
     transform: translateX(-110%);
     opacity: 1;
   }
+
   100% {
     transform: translateX(110%);
     opacity: 0;
@@ -1408,7 +1581,9 @@ body.modal-open #scrollHint {
 }
 
 @keyframes diagStatusBlink {
-  50% { opacity: 0.45; }
+  50% {
+    opacity: 0.45;
+  }
 }
 
 .diag-modal__close {
@@ -1714,7 +1889,7 @@ body.modal-open #scrollHint {
   font-family: 'Oswald', sans-serif;
 }
 
-.diag-lore p + p {
+.diag-lore p+p {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px dashed rgba(200, 170, 110, 0.28);
@@ -1832,7 +2007,7 @@ body.modal-open #scrollHint {
   border-left: 2px solid rgba(190, 30, 55, 0.65);
 }
 
-.diag-split + .diag-split {
+.diag-split+.diag-split {
   border-top: 1px dashed rgba(200, 170, 110, 0.25);
 }
 
@@ -1879,15 +2054,18 @@ body.modal-open #scrollHint {
 }
 
 @media (max-width: 860px) {
+
   .diag-hero,
   .diag-grid,
   .diag-page-grid,
   .diag-patches {
     grid-template-columns: 1fr;
   }
+
   .diag-status {
     justify-self: start;
   }
+
   .diag-rank {
     min-width: 0;
   }
@@ -1899,13 +2077,16 @@ body.modal-open #scrollHint {
     flex-direction: column;
     padding: 12px;
   }
+
   .diag-stat {
     grid-template-columns: 1fr 40px;
   }
+
   .diag-stat__bar {
     grid-column: 1 / -1;
     grid-row: 2;
   }
+
   .diag-video__plate,
   .diag-repo__link {
     align-items: flex-start;
@@ -2034,10 +2215,13 @@ body.modal-open #scrollHint {
 }
 
 @keyframes qmArrowBlink {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: translateY(-50%) translateX(0);
   }
+
   50% {
     opacity: 0.25;
     transform: translateY(-50%) translateX(3px);
@@ -2045,6 +2229,7 @@ body.modal-open #scrollHint {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .qm-node::before,
   .qm-node.is-cur .qm-node__link {
     animation: none !important;
@@ -2066,8 +2251,15 @@ body.modal-open #scrollHint {
   stroke-linejoin: round;
 }
 
-.crew-fill-seal { fill: var(--seal); stroke: none; }
-.crew-fill-gold { fill: var(--gold); stroke: none; }
+.crew-fill-seal {
+  fill: var(--seal);
+  stroke: none;
+}
+
+.crew-fill-gold {
+  fill: var(--gold);
+  stroke: none;
+}
 
 .qm-hero {
   position: absolute;
@@ -2075,7 +2267,8 @@ body.modal-open #scrollHint {
   top: 40px;
   width: clamp(50px, 5.2vw, 70px);
   z-index: 8;
-  transform: translate(var(--hx, 0), var(--hy, 0));   /* nhảy chỗ tức thời */
+  transform: translate(var(--hx, 0), var(--hy, 0));
+  /* nhảy chỗ tức thời */
 }
 
 .qm-hero__svg {
@@ -2083,38 +2276,94 @@ body.modal-open #scrollHint {
   width: 100%;
   height: auto;
   overflow: visible;
-  opacity: 0;                       /* ẩn tới khi teleport-in */
-  transform-origin: 50% 100%;       /* gốc co giãn ở chân (đáy giữa) */
+  opacity: 0;
+  /* ẩn tới khi teleport-in */
+  transform-origin: 50% 100%;
+  /* gốc co giãn ở chân (đáy giữa) */
   will-change: transform, opacity;
 }
 
-.qm-hero.is-on .qm-hero__svg { opacity: 1; }
+.qm-hero.is-on .qm-hero__svg {
+  opacity: 1;
+}
 
 /* ---- TELEPORT: co thành cột dọc rồi hiện/biến (dịch chuyển tức thời) ----
    .is-on luôn có khi teleport → đủ specificity để thắng heroWin trên svg */
-.qm-hero.is-on.is-tp-in  .qm-hero__svg { animation: heroTpIn  0.19s cubic-bezier(0.3, 0.8, 0.3, 1) both; }
-.qm-hero.is-on.is-tp-out .qm-hero__svg { animation: heroTpOut 0.15s ease-in both; }
+.qm-hero.is-on.is-tp-in .qm-hero__svg {
+  animation: heroTpIn 0.19s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+
+.qm-hero.is-on.is-tp-out .qm-hero__svg {
+  animation: heroTpOut 0.15s ease-in both;
+}
 
 @keyframes heroTpIn {
-  0%   { opacity: 0; transform: scaleX(0.12) scaleY(1.7); }
-  45%  { opacity: 1; transform: scaleX(0.12) scaleY(1.7); }
-  72%  { opacity: 1; transform: scaleX(1.12) scaleY(0.88); }
-  100% { opacity: 1; transform: scaleX(1) scaleY(1); }
+  0% {
+    opacity: 0;
+    transform: scaleX(0.12) scaleY(1.7);
+  }
+
+  45% {
+    opacity: 1;
+    transform: scaleX(0.12) scaleY(1.7);
+  }
+
+  72% {
+    opacity: 1;
+    transform: scaleX(1.12) scaleY(0.88);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleX(1) scaleY(1);
+  }
 }
+
 @keyframes heroTpOut {
-  0%   { opacity: 1; transform: scaleX(1) scaleY(1); }
-  35%  { opacity: 1; transform: scaleX(1.12) scaleY(0.88); }
-  100% { opacity: 0; transform: scaleX(0.1) scaleY(1.85); }
+  0% {
+    opacity: 1;
+    transform: scaleX(1) scaleY(1);
+  }
+
+  35% {
+    opacity: 1;
+    transform: scaleX(1.12) scaleY(0.88);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleX(0.1) scaleY(1.85);
+  }
 }
 
 /* mỗi pose chỉ lộ bộ tay + đạo cụ tương ứng */
-.hero-act { display: none; }
-.qm-hero.hero--idea .hero-act--idea { display: block; }
-.qm-hero.hero--doc  .hero-act--doc  { display: block; }
-.qm-hero.hero--code .hero-act--code { display: block; }
-.qm-hero.hero--art  .hero-act--art  { display: block; }
-.qm-hero.hero--play .hero-act--play { display: block; }
-.qm-hero.hero--win  .hero-act--win  { display: block; }
+.hero-act {
+  display: none;
+}
+
+.qm-hero.hero--idea .hero-act--idea {
+  display: block;
+}
+
+.qm-hero.hero--doc .hero-act--doc {
+  display: block;
+}
+
+.qm-hero.hero--code .hero-act--code {
+  display: block;
+}
+
+.qm-hero.hero--art .hero-act--art {
+  display: block;
+}
+
+.qm-hero.hero--play .hero-act--play {
+  display: block;
+}
+
+.qm-hero.hero--win .hero-act--win {
+  display: block;
+}
 
 /* ---- 01 Ý TƯỞNG · bóng đèn loé ---- */
 .hero-bulb {
@@ -2122,15 +2371,41 @@ body.modal-open #scrollHint {
   transform-origin: 41px -4px;
   animation: heroBulb 1.1s ease-in-out infinite;
 }
-.hero-ray { opacity: 0; }
-.qm-hero.hero--idea .hero-ray { animation: heroRay 1.1s ease-in-out infinite; }
-@keyframes heroBulb {
-  0%, 100% { transform: scale(0.78); opacity: 0.55; }
-  50% { transform: scale(1); opacity: 1; }
+
+.hero-ray {
+  opacity: 0;
 }
+
+.qm-hero.hero--idea .hero-ray {
+  animation: heroRay 1.1s ease-in-out infinite;
+}
+
+@keyframes heroBulb {
+
+  0%,
+  100% {
+    transform: scale(0.78);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 @keyframes heroRay {
-  0%, 40%, 100% { opacity: 0; }
-  55%, 80% { opacity: 0.9; }
+
+  0%,
+  40%,
+  100% {
+    opacity: 0;
+  }
+
+  55%,
+  80% {
+    opacity: 0.9;
+  }
 }
 
 /* ---- 02 THIẾT KẾ · tay viết đưa qua lại ---- */
@@ -2139,9 +2414,17 @@ body.modal-open #scrollHint {
   transform-origin: 36px 28px;
   animation: heroWrite 0.5s ease-in-out infinite;
 }
+
 @keyframes heroWrite {
-  0%, 100% { transform: rotate(4deg); }
-  50% { transform: rotate(-5deg); }
+
+  0%,
+  100% {
+    transform: rotate(4deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
 }
 
 /* ---- 03 PROTOTYPE · gõ phím lạch cạch ---- */
@@ -2151,10 +2434,21 @@ body.modal-open #scrollHint {
   transform-origin: 36px 30px;
   animation: heroType 0.26s steps(2) infinite;
 }
-.hero-type--b { animation-delay: -0.13s; }
+
+.hero-type--b {
+  animation-delay: -0.13s;
+}
+
 @keyframes heroType {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(1.8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(1.8px);
+  }
 }
 
 /* ---- 04 MỸ THUẬT · cọ phẩy nét ---- */
@@ -2163,9 +2457,17 @@ body.modal-open #scrollHint {
   transform-origin: 36px 28px;
   animation: heroBrush 0.6s ease-in-out infinite;
 }
+
 @keyframes heroBrush {
-  0%, 100% { transform: rotate(7deg) translateY(0); }
-  50% { transform: rotate(-4deg) translateY(2px); }
+
+  0%,
+  100% {
+    transform: rotate(7deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-4deg) translateY(2px);
+  }
 }
 
 /* ---- 05 PLAYTEST · bấm tay cầm + màn hình nhấp nháy ---- */
@@ -2174,36 +2476,89 @@ body.modal-open #scrollHint {
   transform-origin: 56px 43px;
   animation: heroPad 0.4s ease-in-out infinite;
 }
+
 @keyframes heroPad {
-  0%, 100% { transform: rotate(-3deg); }
-  50% { transform: rotate(3deg); }
+
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+
+  50% {
+    transform: rotate(3deg);
+  }
 }
-.qm-hero.hero--play .hero-screen-blip { animation: heroBlip 0.5s steps(1) infinite; }
+
+.qm-hero.hero--play .hero-screen-blip {
+  animation: heroBlip 0.5s steps(1) infinite;
+}
+
 @keyframes heroBlip {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
 }
 
 /* ---- 06 HOÀN THIỆN · nhảy ăn mừng + sao loé ---- */
-.qm-hero.hero--win .qm-hero__svg { animation: heroWin 0.72s ease-in-out infinite; }
-@keyframes heroWin {
-  0%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-7px); }
-  60% { transform: translateY(0); }
+.qm-hero.hero--win .qm-hero__svg {
+  animation: heroWin 0.72s ease-in-out infinite;
 }
-.hero-star { transform-box: view-box; transform-origin: 36px -5px; }
-.qm-hero.hero--win .hero-star { animation: heroStar 0.72s ease-in-out infinite; }
+
+@keyframes heroWin {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-7px);
+  }
+
+  60% {
+    transform: translateY(0);
+  }
+}
+
+.hero-star {
+  transform-box: view-box;
+  transform-origin: 36px -5px;
+}
+
+.qm-hero.hero--win .hero-star {
+  animation: heroStar 0.72s ease-in-out infinite;
+}
+
 @keyframes heroStar {
-  0%, 100% { transform: scale(0.7) rotate(-8deg); opacity: 0.7; }
-  50% { transform: scale(1.12) rotate(8deg); opacity: 1; }
+
+  0%,
+  100% {
+    transform: scale(0.7) rotate(-8deg);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.12) rotate(8deg);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 640px) {
-  .qm-hero { display: none; }
+  .qm-hero {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .qm-hero { display: none; }
+  .qm-hero {
+    display: none;
+  }
 }
 
 .qm-band {
@@ -2380,12 +2735,21 @@ body.modal-open #scrollHint {
 }
 
 @keyframes invFade {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inv-card { animation: none !important; }
+  .inv-card {
+    animation: none !important;
+  }
 }
 
 .inv-card__top {
@@ -2448,144 +2812,406 @@ body.modal-open #scrollHint {
 
 /* ---------- TABLET NGANG ≤1024 ---------- */
 @media (max-width: 1024px) {
-  #siteHeader { padding-left: 2rem; padding-right: 2rem; }
-  #memberName { font-size: clamp(22px, 4vw, 34px); }
+  #siteHeader {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  #memberName {
+    font-size: clamp(22px, 4vw, 34px);
+  }
 
   /* Quy trình: 6 node → 2 cột (3 hàng) */
-  .qm-path { grid-template-columns: repeat(2, 1fr); }
-  .qm-node:nth-child(3n) .qm-node__link { display: block; }
+  .qm-path {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .qm-node:nth-child(3n) .qm-node__link {
+    display: block;
+  }
+
   .qm-node:nth-child(2n) .qm-node__link,
-  .qm-node:last-child   .qm-node__link { display: none; }
+  .qm-node:last-child .qm-node__link {
+    display: none;
+  }
 
   /* Chrome dọc kéo sát mép, chừa bề ngang cho nội dung */
-  #navDots { right: 1.25rem; }
-  #sideProgress { left: 1.25rem; }
+  #navDots {
+    right: 1.25rem;
+  }
+
+  #sideProgress {
+    left: 1.25rem;
+  }
 }
 
 /* ---------- TABLET DỌC / PHABLET ≤860 ---------- */
 @media (max-width: 860px) {
+
   /* Cho phép slide dài tự cuộn (an toàn khi nội dung > 100vh) */
   .member-card {
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
+
   /* Slide thường neo TOP để cuộn tới được; slide mở đầu vẫn căn giữa */
-  .member-card:not(.member-card--title) { align-items: flex-start; }
+  .member-card:not(.member-card--title) {
+    align-items: flex-start;
+  }
 
   /* Sản phẩm: ảnh trên · thông tin dưới */
-  .prod-slide.is-active { grid-template-columns: 1fr; gap: 14px; }
-  .prod-frame { aspect-ratio: 16 / 8; }
+  .prod-slide.is-active {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .prod-frame {
+    aspect-ratio: 16 / 8;
+  }
 
   /* Kho đồ: lưới ô trên · bảng mô tả dưới */
-  .inv-body { grid-template-columns: 1fr; gap: 16px; }
-  .inv-slot { aspect-ratio: 3 / 2; }
+  .inv-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 
-  .ghost-index { display: none; }
+  .inv-slot {
+    aspect-ratio: 3 / 2;
+  }
 
-  .dongson-drum { width: 39vh; height: 39vh; opacity: 0.32; }
-  .frame-corner { width: 40px; height: 40px; }
+  .ghost-index {
+    display: none;
+  }
 
-  .ttl-reel { width: min(680px, 92vw); }
+  .dongson-drum {
+    width: 39vh;
+    height: 39vh;
+    opacity: 0.32;
+  }
 
-  #memberName { font-size: clamp(20px, 3.6vw, 30px); }
+  .frame-corner {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ttl-reel {
+    width: min(680px, 92vw);
+  }
+
+  #memberName {
+    font-size: clamp(20px, 3.6vw, 30px);
+  }
 }
 
 /* ---------- MOBILE ≤640 ---------- */
 @media (max-width: 640px) {
+
   /* --- Chrome thu sát mép, nhường bề ngang cho nội dung --- */
-  #siteHeader { padding: 0.85rem 1rem 0; }
-  #navDots { right: 0.5rem; gap: 1rem; }
-  #navDots .nav-dot::before { display: none; }     /* nhãn hover thừa trên cảm ứng */
-  #sideProgress { left: 0.5rem; gap: 0; }
-  #sideProgress .progress-num { display: none; }
-  .xp-bar { height: 84px; }
-  .frame-corner { width: 26px; height: 26px; }
-  #scrollHint { display: none; }                    /* vuốt thay cho con lăn chuột */
+  #siteHeader {
+    padding: 0.85rem 1rem 0;
+  }
+
+  #navDots {
+    right: 0.5rem;
+    gap: 1rem;
+  }
+
+  #navDots .nav-dot::before {
+    display: none;
+  }
+
+  /* nhãn hover thừa trên cảm ứng */
+  #sideProgress {
+    left: 0.5rem;
+    gap: 0;
+  }
+
+  #sideProgress .progress-num {
+    display: none;
+  }
+
+  .xp-bar {
+    height: 84px;
+  }
+
+  .frame-corner {
+    width: 26px;
+    height: 26px;
+  }
+
+  #scrollHint {
+    display: none;
+  }
+
+  /* vuốt thay cho con lăn chuột */
 
   /* Tiêu đề slide trên header gọn lại để không đè logo */
-  #memberName { font-size: clamp(17px, 5.2vw, 23px); }
-  .name-rule { width: clamp(12px, 4vw, 26px); }
+  #memberName {
+    font-size: clamp(17px, 5.2vw, 23px);
+  }
 
-  .member-card { padding: 70px 0 40px; }
+  .name-rule {
+    width: clamp(12px, 4vw, 26px);
+  }
+
+  .member-card {
+    padding: 70px 0 40px;
+  }
 
   /* --- INTRO --- */
-  .ttl { gap: 10px; padding: 0 16px; margin-bottom: 4vh; }
-  .ttl-hook { font-size: clamp(30px, 9vw, 44px); white-space: normal; }
-  .ttl-tagline { font-size: 13.5px; line-height: 1.6; }
+  .ttl {
+    gap: 10px;
+    padding: 0 16px;
+    margin-bottom: 4vh;
+  }
+
+  .ttl-hook {
+    font-size: clamp(30px, 9vw, 44px);
+    white-space: normal;
+  }
+
+  .ttl-tagline {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
   /* reel: khung hẹp, frame + crew zone nhỏ lại */
-  .ttl-reel { width: min(440px, 96vw); margin-top: 8px; padding-top: 60px; }
-  .ttl-reel__frame { width: clamp(130px, 38vw, 185px); }
-  .ttl-crew { top: 2px; height: 54px; }
-  .ttl-bird--1 { width: 74px; }
-  .ttl-bird--2 { display: none; }
+  .ttl-reel {
+    width: min(440px, 96vw);
+    margin-top: 8px;
+    padding-top: 60px;
+  }
+
+  .ttl-reel__frame {
+    width: clamp(130px, 38vw, 185px);
+  }
+
+  .ttl-crew {
+    top: 2px;
+    height: 54px;
+  }
+
+  .ttl-bird--1 {
+    width: 74px;
+  }
+
+  .ttl-bird--2 {
+    display: none;
+  }
 
   /* --- SẢN PHẨM --- */
-  .member-card--products .ps-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
-  .ps-title { font-size: clamp(22px, 6.4vw, 30px); }
-  .prod-frame { aspect-ratio: 16 / 9; }
-  .prod-info__title { font-size: clamp(20px, 5.6vw, 26px); }
-  .prod-info__contrib { font-size: 12px; margin: 6px 0 10px; }
-  .prod-pager { margin-top: 12px; }
+  .member-card--products .ps-wrap {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .ps-title {
+    font-size: clamp(22px, 6.4vw, 30px);
+  }
+
+  .prod-frame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .prod-info__title {
+    font-size: clamp(20px, 5.6vw, 26px);
+  }
+
+  .prod-info__contrib {
+    font-size: 12px;
+    margin: 6px 0 10px;
+  }
+
+  .prod-pager {
+    margin-top: 12px;
+  }
 
   /* --- KHO ĐỒ: 2 ô/hàng, bảng mô tả dưới --- */
-  .member-card--arsenal .inv-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
-  .inv-title { font-size: clamp(20px, 5.6vw, 28px); }
-  .inv-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .inv-slot { aspect-ratio: 2 / 1; }
-  .inv-slot__icon { width: 30px; height: 30px; }
-  .inv-detail { padding: 16px 16px; }
-  .inv-card__desc { font-size: 12.5px; line-height: 1.6; }
+  .member-card--arsenal .inv-wrap {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .inv-title {
+    font-size: clamp(20px, 5.6vw, 28px);
+  }
+
+  .inv-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .inv-slot {
+    aspect-ratio: 2 / 1;
+  }
+
+  .inv-slot__icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .inv-detail {
+    padding: 16px 16px;
+  }
+
+  .inv-card__desc {
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
 
   /* --- QUY TRÌNH: 1 cột, đọc dọc --- */
-  .member-card--process .qm-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
-  .qm-title { font-size: clamp(20px, 5.6vw, 28px); }
-  .qm-path,
-  .qm-loop__grid { grid-template-columns: 1fr; gap: 8px; }
-  .qm-node__link { display: none !important; }
-  .qm-node { padding: 10px 12px; }
-  .qm-node__num { width: 30px; height: 30px; font-size: 13px; }
-  .qm-node__title { font-size: 15px; }
-  .qm-node__desc { font-size: 11px; line-height: 1.45; }
+  .member-card--process .qm-wrap {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
 
-  .dongson-drum { opacity: 0.2; }
+  .qm-title {
+    font-size: clamp(20px, 5.6vw, 28px);
+  }
+
+  .qm-path,
+  .qm-loop__grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .qm-node__link {
+    display: none !important;
+  }
+
+  .qm-node {
+    padding: 10px 12px;
+  }
+
+  .qm-node__num {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .qm-node__title {
+    font-size: 15px;
+  }
+
+  .qm-node__desc {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .dongson-drum {
+    opacity: 0.2;
+  }
 }
 
 /* ---------- MOBILE NHỎ ≤400 ---------- */
 @media (max-width: 400px) {
-  #siteHeader .font-display.text-lg { font-size: 1rem; }   /* tên brand */
-  #memberName { font-size: clamp(15px, 5.4vw, 20px); }
-  .ttl-hook { font-size: clamp(26px, 8.6vw, 36px); }
-  .ttl-tagline { font-size: 12.5px; }
-  .prod-info__tags { gap: 5px; }
-  .prod-tag { font-size: 10px; padding: 2px 6px 3px; }
+  #siteHeader .font-display.text-lg {
+    font-size: 1rem;
+  }
+
+  /* tên brand */
+  #memberName {
+    font-size: clamp(15px, 5.4vw, 20px);
+  }
+
+  .ttl-hook {
+    font-size: clamp(26px, 8.6vw, 36px);
+  }
+
+  .ttl-tagline {
+    font-size: 12.5px;
+  }
+
+  .prod-info__tags {
+    gap: 5px;
+  }
+
+  .prod-tag {
+    font-size: 10px;
+    padding: 2px 6px 3px;
+  }
 }
 
 /* ---------- LAPTOP THẤP ≤760 cao ---------- */
 @media (max-height: 760px) {
-  .ttl { gap: 10px; margin-bottom: 4vh; }
-  .ttl-hook { font-size: clamp(40px, 9vh, 72px); }
-  .ttl-band { display: none; }
-  .ttl-reel { margin-top: 4px; padding-top: 64px; }
-  .ttl-reel__badge { top: 66px; }
-  .ttl-crew { top: 2px; height: 58px; }
+  .ttl {
+    gap: 10px;
+    margin-bottom: 4vh;
+  }
+
+  .ttl-hook {
+    font-size: clamp(40px, 9vh, 72px);
+  }
+
+  .ttl-band {
+    display: none;
+  }
+
+  .ttl-reel {
+    margin-top: 4px;
+    padding-top: 64px;
+  }
+
+  .ttl-reel__badge {
+    top: 66px;
+  }
+
+  .ttl-crew {
+    top: 2px;
+    height: 58px;
+  }
+
   .ps-head,
   .qm-head,
-  .inv-head { margin-bottom: 10px; }
-  .qm-band { display: none; }
-  .inv-detail { padding: 16px 18px; }
-  .inv-card__desc { font-size: 12.5px; line-height: 1.6; }
-  .qm-node__desc { font-size: 11px; }
+  .inv-head {
+    margin-bottom: 10px;
+  }
+
+  .qm-band {
+    display: none;
+  }
+
+  .inv-detail {
+    padding: 16px 18px;
+  }
+
+  .inv-card__desc {
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  .qm-node__desc {
+    font-size: 11px;
+  }
+
   .qm-path,
-  .qm-loop__grid { gap: 10px; }
+  .qm-loop__grid {
+    gap: 10px;
+  }
 }
 
 /* ---------- RẤT THẤP / ĐIỆN THOẠI XOAY NGANG ≤520 cao ---------- */
 @media (max-height: 520px) {
-  .member-card { align-items: flex-start; }
-  .ttl-reel { display: none; }             /* nhường chỗ cho hook + tagline */
-  .ttl-hook { font-size: clamp(28px, 12vh, 52px); }
+  .member-card {
+    align-items: flex-start;
+  }
+
+  .ttl-reel {
+    display: none;
+  }
+
+  /* nhường chỗ cho hook + tagline */
+  .ttl-hook {
+    font-size: clamp(28px, 12vh, 52px);
+  }
+
   .scene-birdimg,
-  .ttl-bird { display: none; }
-  .qm-loop { display: none; }
+  .ttl-bird {
+    display: none;
+  }
+
+  .qm-loop {
+    display: none;
+  }
 }

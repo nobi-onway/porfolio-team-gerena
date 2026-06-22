@@ -24,9 +24,10 @@ const TEAM = {
   //   Khuyến nghị 3–4 ảnh, ngang (tỉ lệ ~4:3) cho đẹp.
   //   Để mảng RỖNG [] → tự hiển thị 3 tranh khắc đồng placeholder.
   photos: [
-    // { src: "img/team-1.jpg", caption: "Idea brainstorm" },
-    // { src: "img/team-2.jpg", caption: "Prototype build" },
-    // { src: "img/team-3.jpg", caption: "Internal playtest" },
+    { src: "img/gamejam1.jpg", caption: "Game jam" },
+    { src: "img/gamejam2.jpg", caption: "Game jam" },
+    { src: "img/gamejam3.jpg", caption: "Kick off" },
+    { src: "img/gamejam4.jpg", caption: "Pitching" },
   ],
 };
 
